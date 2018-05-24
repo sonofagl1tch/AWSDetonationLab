@@ -1,17 +1,10 @@
-# variables
-$serverAddress = "192.168.1.1"
-$authdAddress = "192.168.1.1"
-$password = "TopSecret"
-$agentName = "W2012"
-
 # Download agent
 $url = "https://packages.wazuh.com/3.x/windows/wazuh-agent-3.2.2-1.msi"
 $output = "$PSScriptRoot\wazuh-agent-3.2.2-1.msi"
 Invoke-WebRequest -Uri $url -OutFile $output
 
 # install agent
-wazuh-agent-3.2.2-1.msi /q
-
+./wazuh-agent-3.2.2-1.msi /q
 
 # https://raw.githubusercontent.com/wazuh/wazuh-api/3.2/examples/api-register-agent.ps1
 ###
