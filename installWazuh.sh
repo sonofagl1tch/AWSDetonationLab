@@ -31,6 +31,8 @@ python --version
 ## Install the Wazuh API
 yum install wazuh-api -y -q -e 0
 ## check the service status
+chkconfig --add wazuh-api
+service wazuh-api start
 service wazuh-api status
 #######################################
 # Installing Filebeat

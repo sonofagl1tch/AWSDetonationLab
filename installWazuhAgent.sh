@@ -54,6 +54,9 @@ echo ""
 echo "Importing authentication key:"
 echo "y" | /var/ossec/bin/manage_agents -i $AGENT_KEY
 
+# fix bad ossec config
+sed -i "s/MANAGER_IP/172.16.0.21/" /var/ossec/etc/ossec.conf
+
 # Restarting agent
 echo ""
 echo "Restarting:"
