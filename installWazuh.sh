@@ -100,5 +100,11 @@ service kibana start
 # It is recommended that the Elasticsearch repository be disabled in order to prevent an upgrade to a newer Elastic Stack version due to the possibility of undoing changes with the App.
 sed -i "s/^enabled=1/enabled=0/" /etc/yum.repos.d/elastic.repo
 #######################################
+# set user for wazuh
+cd /var/ossec/api/configuration/auth
+node htpasswd -c user wazuh -b wazuh
+service wazuh-manager restart
+service wazuh-api restart
+#######################################
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
