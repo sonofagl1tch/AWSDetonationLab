@@ -1236,7 +1236,7 @@
                 "yum update -y\n",
                 "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
-                "#bash /home/ec2-user/install -u false\n"
+                "bash /home/ec2-user/install -u false\n"
               ]
             ]
           }
