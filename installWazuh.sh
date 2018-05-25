@@ -42,7 +42,7 @@ service wazuh-api status
 ## install Oracle Java JRE 8
 curl -Lo jre-8-linux-x64.rpm --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/jre-8u172-linux-x64.rpm"
 ## install the RPM package using yum
-yum install jre-8-linux-x64.rpm
+yum install jre-8-linux-x64.rpm -y -q -e 0
 ## Install the Elastic repository and its GPG key
 rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elastic.repo << EOF
