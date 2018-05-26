@@ -889,20 +889,6 @@
         "PrivateIpAddress": "172.16.0.22"
       }
     },
-    "BasicWindowsNetInt": {
-      "Type": "AWS::EC2::NetworkInterface",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "PrivateSubnet"
-        },
-        "GroupSet": [
-          {
-            "Ref": "BasicWindowsSecurityGroup"
-          }
-        ],
-        "PrivateIpAddress": "172.16.0.23"
-      }
-    },
     "wazuhNetInt": {
       "Type": "AWS::EC2::NetworkInterface",
       "Properties": {
@@ -1111,6 +1097,9 @@
             "ToPort": "1514",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
+            },
+            "DestinationSecurityGroupId": {
+              "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
@@ -1118,6 +1107,9 @@
             "FromPort": "55000",
             "ToPort": "55000",
             "SourceSecurityGroupId": {
+              "Ref": "BasicLinuxSecurityGroup"
+            },
+            "DestinationSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           }
@@ -1360,9 +1352,6 @@
         },
         "NetworkInterfaces": [
           {
-            "Ref": "BasicWindowsNetInt"
-          },
-          {
             "GroupSet": [
               {
                 "Ref": "BasicWindowsSecurityGroup"
@@ -1371,6 +1360,7 @@
             "AssociatePublicIpAddress": "false",
             "DeviceIndex": "0",
             "DeleteOnTermination": "true",
+            "PrivateIpAddress": "172.16.0.23",
             "SubnetId": {
               "Ref": "PrivateSubnet"
             }
