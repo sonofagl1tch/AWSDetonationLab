@@ -2,6 +2,7 @@
 # install wazuh server
 # Wazuh documentation - https://documentation.wazuh.com/current/installation-guide/installing-wazuh-agent/wazuh_agent_rpm.html#wazuh-agent-rpm
 #######################################
+sleep 10m
 # Adding the Wazuh repository
 cat > /etc/yum.repos.d/wazuh.repo <<\EOF
 [wazuh_repo]
