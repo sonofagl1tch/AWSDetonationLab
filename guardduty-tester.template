@@ -884,6 +884,9 @@
         "GroupSet": [
           {
             "Ref": "BasicLinuxSecurityGroup"
+          },
+          {
+            "Ref": "WazuhAgentTrafficSecurityGroup"
           }
         ],
         "PrivateIpAddress": "172.16.0.22"
@@ -898,6 +901,9 @@
         "GroupSet": [
           {
             "Ref": "BasicLinuxSecurityGroup"
+          },
+          {
+            "Ref": "WazuhAgentTrafficSecurityGroup"
           }
         ],
         "PrivateIpAddress": "172.16.0.21"
@@ -1097,9 +1103,6 @@
             "ToPort": "1514",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
-            },
-            "DestinationSecurityGroupId": {
-              "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
@@ -1108,7 +1111,22 @@
             "ToPort": "55000",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
-            },
+            }
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "udp",
+            "FromPort": "1514",
+            "ToPort": "1514",
+            "DestinationSecurityGroupId": {
+              "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "55000",
+            "ToPort": "55000",
             "DestinationSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
@@ -1355,6 +1373,9 @@
             "GroupSet": [
               {
                 "Ref": "BasicWindowsSecurityGroup"
+              },
+              {
+                "Ref": "WazuhAgentTrafficSecurityGroup"
               }
             ],
             "AssociatePublicIpAddress": "false",
