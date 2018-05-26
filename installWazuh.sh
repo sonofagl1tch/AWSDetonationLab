@@ -16,7 +16,9 @@ EOF
 ## Installing the Wazuh Manager
 yum install wazuh-manager -y -q -e 0
 ## check the service status
-service wazuh-manager status
+#service wazuh-manager status
+chkconfig --add wazuh-manager
+service wazuh-manager start
 #######################################
 # Installing the Wazuh API
 ## NodeJS >= 4.6.1 is required in order to run the Wazuh API.
@@ -60,6 +62,7 @@ yum install elasticsearch-6.2.4 -y -q -e 0
 ## Enable and start the Elasticsearch service
 chkconfig --add elasticsearch
 service elasticsearch start
+sleep 5m
 ## Load the Wazuh template for Elasticsearch:
 curl https://raw.githubusercontent.com/wazuh/wazuh/3.2/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 #######################################
@@ -81,7 +84,7 @@ sed -i 's/LS_GROUP=logstash/LS_GROUP=ossec/' /etc/logstash/startup.options
 service logstash restart
 ## Enable and start the Logstash service
 chkconfig --add logstash
-#service logstash start
+service logstash start
 #######################################
 # install Kibana
 yum install kibana-6.2.4 -y -q -e 0
