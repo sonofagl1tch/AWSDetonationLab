@@ -871,7 +871,8 @@
           {
             "Ref": "RedTeamSecurityGroup"
           }
-        ]
+        ],
+        "PrivateIpAddress": "172.16.0.20"
       }
     },
     "BasicLinuxNetInt": {
@@ -884,7 +885,22 @@
           {
             "Ref": "BasicLinuxSecurityGroup"
           }
-        ]
+        ],
+        "PrivateIpAddress": "172.16.0.22"
+      }
+    },
+    "BasicWindowsNetInt": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivateSubnet"
+        },
+        "GroupSet": [
+          {
+            "Ref": "BasicWindowsSecurityGroup"
+          }
+        ],
+        "PrivateIpAddress": "172.16.0.23"
       }
     },
     "wazuhNetInt": {
@@ -897,7 +913,8 @@
           {
             "Ref": "BasicLinuxSecurityGroup"
           }
-        ]
+        ],
+        "PrivateIpAddress": "172.16.0.21"
       }
     },
     "RedTeam": {
@@ -1172,7 +1189,10 @@
                 "export LOCAL_HOST=`curl http://169.254.169.254/latest/meta-data/local-hostname`\n",
                 "wget -O /home/ec2-user/install https://d1wk0tztpsntt1.cloudfront.net/linux/latest/install\n",
                 "chmod +x /home/ec2-user/install\n",
-                "bash /home/ec2-user/install -u false\n"
+                "bash /home/ec2-user/install -u false\n",
+                "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.sh\n",
+                "chmod +x /home/ec2-user/installWazuh\n",
+                "bash /home/ec2-user/installWazuh -u false\n"
               ]
             ]
           }
@@ -1241,7 +1261,7 @@
             ]
           }
         },
-        "InstanceType": "m4.large",
+        "InstanceType": "m4.2xlarge",
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -1339,6 +1359,9 @@
           "Ref": "KeyPairName"
         },
         "NetworkInterfaces": [
+          {
+            "Ref": "BasicWindowsNetInt"
+          },
           {
             "GroupSet": [
               {
