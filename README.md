@@ -68,6 +68,17 @@ Host windows
 
 For more details on configuring and connecting through bastion hosts you can check out this article:
 https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/
+5. setup RoyalTSX or other preferred client to use the bastion host as a secure gateway to tunnel RDP through SSH
+   1. ![Example RoyalTSX required elemenets](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/1-RoyalTSX-requiredDocument.png "1-RoyalTSX-requiredDocument")
+   2. ![RDP connection Settings](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/2-RDP-connnectionSettings.png "2-RDP-connnectionSettings")
+   3. ![RDP credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/3-RDP-credentials.png "3-RDP-credentials")
+   4. ![RDP secure gateway](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/4-RDP-secureGateway.png "4-RDP-secureGateway")
+   5. ![bastion credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/5-bastion-%20credential.png "5-bastion-%20credential")
+   6. ![bastion key](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/6-bastion-key.png "6-bastion-key")
+   7. ![secure gateway config](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/7-secureGateway-config.png "7-secureGateway-config")
+   8. ![secure gateway credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/8-secureGateway-credentials.png "8-secureGateway-credentials")
+   
+
 
 ## run guardduty testing script
 This will generate guardduty alerts. Once connected to the redTeam instance, there is a single script that you can run:
