@@ -1,8 +1,3 @@
-
-# License
-
-This library is licensed under the Apache 2.0 License. 
-
 # AWS Detonation Lab
 
 These scripts can be used as proof-of-concept to generate a detonation lab via a cloudformation template. There are also scripts for a adding wazuh agents to the target systems as well as scripts to generate attacks on them that will be seen by AWS logging systems such as guardDuty, VPC flow, Route53 DNS, Macie, CloudTrail, and other systems. All of these logs can be configured to send to the kibana instance running on the wazuh server for usage in threat hunting and incident investigation and response.
