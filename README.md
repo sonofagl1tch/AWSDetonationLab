@@ -31,7 +31,8 @@ This process will walk you through getting the core detonation lab automatically
 3. Click the checkbox next to your running CloudFormation stack created in the step above. In the displayed set of tabs, select the Output tab. Note the IP addresses assigned to the bastion host and the redTeam EC2 instance. You need both of these IP addresses in order to ssh into the redTeam EC2 instance.
 
 4. Create the following entry in your ~/.ssh/config file to login to your instance through the bastion host:</br>
-`Host bastion
+```
+Host bastion
     HostName <EXTERNAL IP FOR BASTION HOST>
     User ec2-user
     IdentityFile <SSH KEY>
@@ -62,7 +63,8 @@ Host windows
     User Administrator
     IdentityFile ~/.ssh/<SSH KEY>
     ProxyCommand ssh bastion nc %h %p
-    ServerAliveInterval 240`
+    ServerAliveInterval 240
+```
 
 For more details on configuring and connecting through bastion hosts you can check out this article:
 https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/
