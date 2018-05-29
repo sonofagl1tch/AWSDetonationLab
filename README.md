@@ -70,7 +70,6 @@ For more details on configuring and connecting through bastion hosts you can che
 https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/
 5. setup RoyalTSX or other preferred client to use the bastion host as a secure gateway to tunnel RDP through SSH
    1. Example RoyalTSX required elemenets 
-   
    ![Example RoyalTSX required elemenets](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/1-RoyalTSX-requiredDocument.png "1-RoyalTSX-requiredDocument")
    2. RDP connection Settings 
    ![RDP connection Settings](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/2-RDP-connnectionSettings.png "2-RDP-connnectionSettings")
