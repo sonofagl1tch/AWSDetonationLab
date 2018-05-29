@@ -32,37 +32,37 @@ This process will walk you through getting the core detonation lab automatically
 
 4. Create the following entry in your ~/.ssh/config file to login to your instance through the bastion host:</br>
 > Host bastion
-    HostName <EXTERNAL IP FOR BASTION HOST>
-    User ec2-user
-    IdentityFile <SSH KEY>
-Host redTeam
-    ForwardAgent yes
-    HostName 172.16.0.20
-    User ec2-user
-    IdentityFile ~/.ssh/<SSH KEY>
-    ProxyCommand ssh bastion nc %h %p
-    ServerAliveInterval 240
-Host wazuh
-    ForwardAgent yes
-    HostName 172.16.0.21
-    User ec2-user
-    IdentityFile ~/.ssh/<SSH KEY>
-    ProxyCommand ssh bastion nc %h %p
-    ServerAliveInterval 240
-Host linuxClient
-    ForwardAgent yes
-    HostName 172.16.0.22
-    User ec2-user
-    IdentityFile ~/.ssh/<SSH KEY>
-    ProxyCommand ssh bastion nc %h %p
-    ServerAliveInterval 240
-Host windows
-    ForwardAgent yes
-    HostName 172.16.0.23
-    User Administrator
-    IdentityFile ~/.ssh/<SSH KEY>
-    ProxyCommand ssh bastion nc %h %p
-    ServerAliveInterval 240
+>     HostName <EXTERNAL IP FOR BASTION HOST>
+>     User ec2-user
+>     IdentityFile <SSH KEY>
+> Host redTeam
+>     ForwardAgent yes
+>     HostName 172.16.0.20
+>     User ec2-user
+>     IdentityFile ~/.ssh/<SSH KEY>
+>     ProxyCommand ssh bastion nc %h %p
+>     ServerAliveInterval 240
+> Host wazuh
+>     ForwardAgent yes
+>     HostName 172.16.0.21
+>     User ec2-user
+>     IdentityFile ~/.ssh/<SSH KEY>
+>     ProxyCommand ssh bastion nc %h %p
+>     ServerAliveInterval 240
+> Host linuxClient
+>     ForwardAgent yes
+>     HostName 172.16.0.22
+>     User ec2-user
+>     IdentityFile ~/.ssh/<SSH KEY>
+>     ProxyCommand ssh bastion nc %h %p
+>     ServerAliveInterval 240
+> Host windows
+>     ForwardAgent yes
+>     HostName 172.16.0.23
+>     User Administrator
+>     IdentityFile ~/.ssh/<SSH KEY>
+>     ProxyCommand ssh bastion nc %h %p
+>     ServerAliveInterval 240
 
 For more details on configuring and connecting through bastion hosts you can check out this article:
 https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/
