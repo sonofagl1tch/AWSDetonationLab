@@ -6,6 +6,9 @@ Invoke-WebRequest -Uri $url -OutFile $output
 # install agent
 ./wazuh-agent-3.2.2-1.msi /q
 
+# sleep for 2 minutes to allow for wazuh agent to finish installing
+#Start-Sleep -s 120
+
 # https://raw.githubusercontent.com/wazuh/wazuh-api/3.2/examples/api-register-agent.ps1
 ###
 #  Powershell script for registering agents automatically with the API
