@@ -1202,7 +1202,7 @@
                 "bash /home/ec2-user/install -u false\n",
                 "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.sh\n",
                 "chmod +x /home/ec2-user/installWazuh\n",
-                "bash /home/ec2-user/installWazuh -u false\n"
+                "#bash /home/ec2-user/installWazuh -u false\n"
               ]
             ]
           }
@@ -1326,6 +1326,14 @@
             "SourceSecurityGroupId": {
               "Ref": "RedTeamSecurityGroup"
             }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "SourceSecurityGroupId": {
+              "Ref": "BastionSecurityGroup"
+            }
           }
         ]
       }
@@ -1367,6 +1375,18 @@
       "Properties": {
         "KeyName": {
           "Ref": "KeyPairName"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "$url = \"https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.ps1\"\n",
+                "$output = \"$PSScriptRoot\\installWazuhAgent.ps1\"\n",
+                "Invoke-WebRequest -Uri $url -OutFile $output\n"
+              ]
+            ]
+          }
         },
         "NetworkInterfaces": [
           {
