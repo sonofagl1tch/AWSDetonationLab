@@ -1,5 +1,4 @@
 # AWS Detonation Lab
-
 These scripts can be used as proof-of-concept to generate a detonation lab via a cloudformation template. There are also scripts for a adding wazuh agents to the target systems as well as scripts to generate attacks on them that will be seen by AWS logging systems such as guardDuty, VPC flow, Route53 DNS, Macie, CloudTrail, and other systems. All of these logs can be configured to send to the kibana instance running on the wazuh server for usage in threat hunting and incident investigation and response.
 
 This cloudformation template is and guard duty alert generation scripts are based on  [guardduty-tester.template](https://github.com/awslabs/amazon-guardduty-tester/blob/master/guardduty-tester.template) uses AWS CloudFormation to create an isolated environment with a bastion host, a redTeam EC2 instance that you can ssh into, and two target EC2 instances. 
@@ -19,7 +18,7 @@ This process will walk you through getting the core detonation lab automatically
 
 ## create detonation lab
 
-1. Create a new CloudFormation stack using awsDetonationLab.template. 
+1. Create a new CloudFormation stack using awsDetonationLab.template at https://console.aws.amazon.com/cloudformation
    1. For detailed directions about creating a stack, see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-create-stack.html.
 2. Before you run awsDetonationLab.template , modify it with values for the following parameters: Stack Name to identify your new stack, Availability Zone where you want to run the stack, and Key Pair that you can use to launch the EC2 instances. Then you can use the corresponding private key to SSH into the EC2 instances.
    1. awsDetonationLab.template takes around 10 minutes to run and complete. It creates your environment and copies guardduty_tester.sh onto your redTeam EC2 instance.
@@ -86,3 +85,18 @@ https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-runnin
 ## run guardduty testing script
 This will generate guardduty alerts. Once connected to the redTeam instance, there is a single script that you can run:
 `$ ./guardduty_tester.sh` to initiate interaction between your redTeam and target EC2 instances, simulate attacks, and generate GuardDuty Findings.
+
+
+# Setting up logging for detonation lab
+This section will go over the steps required to enable logging for the detonation lab
+
+## GuardDuty
+https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_settingup.html#guardduty_enable-gd
+### enable guardDuty
+1. The IAM identity (user, role, group) that you use to enable GuardDuty must have the required permissions. To grant the permissions required to enable GuardDuty, attach the following policy to an IAM user, group, or role https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/awsPermissions/IAM-guardDuty-enablePermissions.json
+   1. Replace the sample account ID in the example below with your actual AWS account ID.
+2. Use the credentials of the IAM identity from step 1 to sign in to the GuardDuty console. When you open the GuardDuty console for the first time, choose Get Started, and then choose Enable GuardDuty.
+
+
+# get logging into SIEM
+TBD
