@@ -24,7 +24,7 @@ This process will walk you through getting the core detonation lab automatically
    1. awsDetonationLab.template takes around 10 minutes to run and complete. It creates your environment and copies guardduty_tester.sh onto your redTeam EC2 instance.
 3. Click the checkbox next to your running CloudFormation stack created in the step above. In the displayed set of tabs, select the Output tab. Note the IP addresses assigned to the bastion host and the redTeam EC2 instance. You need both of these IP addresses in order to ssh into the redTeam EC2 instance.
 
-4. Create the following entry in your ~/.ssh/config file to login to your instance through the bastion host:</br>
+4. Create an ssh config file to accessing servers. The config file isn't created automatically, you may not have one, so make one. Create the following entry in your ~/.ssh/config file to login to your instance through the bastion host:</br>
 ```
 Host bastion
     HostName <EXTERNAL IP FOR BASTION HOST>
