@@ -1,10 +1,10 @@
 # Download agent
 $url = "https://packages.wazuh.com/3.x/windows/wazuh-agent-3.2.2-1.msi"
-$output = "$PSScriptRoot\wazuh-agent-3.2.2-1.msi"
+$output = "C:\Users\Administrator\Desktop\wazuh-agent-3.2.2-1.msi"
 Invoke-WebRequest -Uri $url -OutFile $output
 
 # install agent
-./wazuh-agent-3.2.2-1.msi /q
+C:\Users\Administrator\Desktop\wazuh-agent-3.2.2-1.msi /q
 
 # sleep for 2 minutes to allow for wazuh agent to finish installing
 #Start-Sleep -s 120
