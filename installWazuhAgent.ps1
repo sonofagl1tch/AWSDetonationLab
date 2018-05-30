@@ -7,8 +7,8 @@ Invoke-WebRequest -Uri $url -OutFile $output
 C:\Users\Administrator\Desktop\wazuh-agent-3.2.2-1.msi /q
 
 # add firwall rules to allow wazuh agent traffic
-New-NetFirewallRule -DisplayName "Allow Wazuh Agent Traffic UDP 514" -Direction Outbound -LocalPort 1514 -Protocol UDP -Action Allow
-New-NetFirewallRule -DisplayName "Allow Wazuh Agent Traffic TCP 55000" -Direction Outbound -LocalPort 55000 -Protocol TCP -Action Allow
+#New-NetFirewallRule -DisplayName "Allow Wazuh Agent Traffic UDP 514" -Direction Outbound -LocalPort 1514 -Protocol UDP -Action Allow
+#New-NetFirewallRule -DisplayName "Allow Wazuh Agent Traffic TCP 55000" -Direction Outbound -LocalPort 55000 -Protocol TCP -Action Allow
 
 # sleep for 2 minutes to allow for wazuh agent to finish installing
 #Start-Sleep -s 120
