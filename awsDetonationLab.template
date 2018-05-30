@@ -59,14 +59,14 @@
     "PrivateSubnetCIDR": {
       "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
       "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.16/24",
+      "Default": "172.16.0.16/28",
       "Description": "CIDR block for isolated private subnet.",
       "Type": "String"
     },
     "PublicSubnetCIDR": {
       "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
       "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.0/24",
+      "Default": "172.16.0.0/28",
       "Description": "CIDR Block for the public DMZ subnet for secure administrative entry",
       "Type": "String"
     },
@@ -80,7 +80,7 @@
     "VPCCIDR": {
       "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
       "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.0/16",
+      "Default": "172.16.0.0/27",
       "Description": "CIDR Block for the VPC",
       "Type": "String"
     }
@@ -1123,11 +1123,27 @@
             }
           },
           {
+            "IpProtocol": "udp",
+            "FromPort": "1514",
+            "ToPort": "1514",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
+            }
+          },
+          {
             "IpProtocol": "tcp",
             "FromPort": "55000",
             "ToPort": "55000",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "55000",
+            "ToPort": "55000",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
             }
           }
         ],
@@ -1141,11 +1157,27 @@
             }
           },
           {
+            "IpProtocol": "udp",
+            "FromPort": "1514",
+            "ToPort": "1514",
+            "DestinationSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
+            }
+          },
+          {
             "IpProtocol": "tcp",
             "FromPort": "55000",
             "ToPort": "55000",
             "DestinationSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "55000",
+            "ToPort": "55000",
+            "DestinationSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
             }
           }
         ]
