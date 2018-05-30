@@ -892,6 +892,23 @@
         "PrivateIpAddress": "172.16.0.22"
       }
     },
+    "BasicWindowsNetInt": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivateSubnet"
+        },
+        "GroupSet": [
+          {
+            "Ref": "BasicWindowsSecurityGroup"
+          },
+          {
+            "Ref": "WazuhAgentTrafficSecurityGroup"
+          }
+        ],
+        "PrivateIpAddress": "172.16.0.23"
+      }
+    },
     "wazuhNetInt": {
       "Type": "AWS::EC2::NetworkInterface",
       "Properties": {
@@ -1390,21 +1407,10 @@
         },
         "NetworkInterfaces": [
           {
-            "GroupSet": [
-              {
-                "Ref": "BasicWindowsSecurityGroup"
-              },
-              {
-                "Ref": "WazuhAgentTrafficSecurityGroup"
-              }
-            ],
-            "AssociatePublicIpAddress": "false",
-            "DeviceIndex": "0",
-            "DeleteOnTermination": "true",
-            "PrivateIpAddress": "172.16.0.23",
-            "SubnetId": {
-              "Ref": "PrivateSubnet"
-            }
+            "NetworkInterfaceId": {
+              "Ref": "BasicWindowsNetInt"
+            },
+            "DeviceIndex": "0"
           }
         ],
         "InstanceType": "m4.large",
