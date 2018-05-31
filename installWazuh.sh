@@ -152,7 +152,7 @@ curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuratio
     "cluster_info": {
         "node": "wazuh-manager-master",
         "cluster": "wazuh",
-        "manager": "wazuh-manager-master-0",
+        "manager": "ip-172-16-0-21.ec2.internal",
         "status": "enabled"
     }
 }
