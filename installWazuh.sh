@@ -118,21 +118,15 @@ service wazuh-api restart
 #######################################
 #confugure wazuh api 
 #curl -X POST "localhost:9200/.wazuh/wazuh-configuration" -H 'Content-Type: application/json' -d' {"took":0,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":1,"max_score":1.0,"hits":[{"_index":".wazuh","_type":"wazuh-configuration","_score":1.0,"_source":{"api_user":"wazuh","api_password":"d2F6dWg=","url":"http://172.16.0.21","api_port":"55000","insecure":"true","component":"API","cluster_info":{"manager":"ip-172-16-0-21.ec2.internal","cluster":"Disabled","status":"disabled"},"extensions":{"audit":true,"pci":true,"oscap":true,"aws":false,"virustotal":false}}}]}}'
-API_PROTOCOL=${API_PROTOCOL:-https}
-API_SERVER=${API_SERVER:-wazuh}
+API_PROTOCOL=${API_PROTOCOL:-http}
+API_SERVER=${API_SERVER:-172.16.0.21}
 API_PORT=${API_PORT:-55000}
 API_USER=${API_USER:-wazuh}
 API_PASS=${API_PASS:-wazuh}
+API_PASS_BASE64=$(echo -n ${API_PASS} | base64)
 ES_URL=${ES_URL:-'http://localhost:9200'}
 ES_USER=${ES_USER:-kibana}
 ES_PASSWORD=${ES_PASSWORD:-changeme}
-if [ ! -d /usr/share/kibana/config/certificate ]; then
-  echo "Generating SSL certificates"
-  mkdir -p /usr/share/kibana/config/certificate
-  openssl req -x509 -batch -nodes -days 365 -newkey rsa:2048 -keyout /usr/share/kibana/config/certificate/kibana-cert.key -out /usr/share/kibana/config/certificate/kibana-cert.pem >/dev/null
-else
-  echo "SSL certificates already present"
-fi
 until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
   >&2 echo "Elastic is unavailable - sleeping for 5 seconds"
   sleep 5
@@ -140,7 +134,6 @@ done
 >&2 echo "Elastic is up - executing commands"
 sleep 5
 echo -e "\nSetting Wazuh API credentials into the Wazuh Kibana application"
-API_PASS_BASE64=$(echo -n ${API_PASS} | base64)
 # The Wazuh Kibana application configuration is the document with the ID 1513629884013, don't change that!
 curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuration/1513629884013" -H 'Content-Type: application/json' -H "Accept: application/json" -d'
 {
