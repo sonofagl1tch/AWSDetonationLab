@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#https://docs.aws.amazon.com/cli/latest/reference/ec2/create-flow-logs.html
+#
 #get VPC ID of AWS Detonation Lab
 #aws ec2 describe-vpcs 
 #--query 'Vpcs[?Tags[?Key==`Name`]|[?Value==`awsdetonationlab`]].VpcId' 
