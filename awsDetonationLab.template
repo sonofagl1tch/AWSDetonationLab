@@ -1251,7 +1251,7 @@
                 "bash /home/ec2-user/install -u false\n",
                 "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.sh\n",
                 "chmod +x /home/ec2-user/installWazuh\n",
-                "#bash /home/ec2-user/installWazuh -u false\n"
+                "bash /home/ec2-user/installWazuh -u false\n"
               ]
             ]
           }
