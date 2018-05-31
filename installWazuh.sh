@@ -109,5 +109,8 @@ node htpasswd -c user wazuh -b wazuh
 service wazuh-manager restart
 service wazuh-api restart
 #######################################
+#confugure wazuh api 
+curl -X POST "localhost:9200/.wazuh/wazuh-configuration" -H 'Content-Type: application/json' -d' {"took":0,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":1,"max_score":1.0,"hits":[{"_index":".wazuh","_type":"wazuh-configuration","_score":1.0,"_source":{"api_user":"wazuh","api_password":"d2F6dWg=","url":"http://172.16.0.21","api_port":"55000","insecure":"true","component":"API","cluster_info":{"manager":"ip-172-16-0-21.ec2.internal","cluster":"Disabled","status":"disabled"},"extensions":{"audit":true,"pci":true,"oscap":true,"aws":false,"virustotal":false}}}]}}'
+#######################################
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
