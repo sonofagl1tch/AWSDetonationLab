@@ -49,7 +49,7 @@ For more information about generating EC2 key pairs, see [this AWS document on k
   
   * For detailed directions about creating a stack, see the [Create Stack guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-create-stack.html).
 
-*INSERT SCREEN SHOT OF EC2 CONSOLE SHOWING ALL THE NEW INSTANCES*
+![DetonationLab Created](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/detonationLab-created.png "detonationLab-created")
 
 5. After the build has completed, click the checkbox next to your running CloudFormation stack created in the step above. In the displayed set of tabs,
   * Select the **Output** tab.
