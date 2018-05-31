@@ -62,7 +62,14 @@ yum install elasticsearch-6.2.4 -y -q -e 0
 ## Enable and start the Elasticsearch service
 chkconfig --add elasticsearch
 service elasticsearch start
-sleep 5m
+ES_URL=${ES_URL:-'http://localhost:9200'}
+ES_USER=${ES_USER:-kibana}
+ES_PASSWORD=${ES_PASSWORD:-changeme}
+until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
+  >&2 echo "Elastic is unavailable - sleeping for 5 seconds"
+  sleep 5
+done
+>&2 echo "Elastic is up - executing commands"
 ## Load the Wazuh template for Elasticsearch:
 curl https://raw.githubusercontent.com/wazuh/wazuh/3.2/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 #######################################
@@ -110,7 +117,53 @@ service wazuh-manager restart
 service wazuh-api restart
 #######################################
 #confugure wazuh api 
-curl -X POST "localhost:9200/.wazuh/wazuh-configuration" -H 'Content-Type: application/json' -d' {"took":0,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":1,"max_score":1.0,"hits":[{"_index":".wazuh","_type":"wazuh-configuration","_score":1.0,"_source":{"api_user":"wazuh","api_password":"d2F6dWg=","url":"http://172.16.0.21","api_port":"55000","insecure":"true","component":"API","cluster_info":{"manager":"ip-172-16-0-21.ec2.internal","cluster":"Disabled","status":"disabled"},"extensions":{"audit":true,"pci":true,"oscap":true,"aws":false,"virustotal":false}}}]}}'
+#curl -X POST "localhost:9200/.wazuh/wazuh-configuration" -H 'Content-Type: application/json' -d' {"took":0,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":1,"max_score":1.0,"hits":[{"_index":".wazuh","_type":"wazuh-configuration","_score":1.0,"_source":{"api_user":"wazuh","api_password":"d2F6dWg=","url":"http://172.16.0.21","api_port":"55000","insecure":"true","component":"API","cluster_info":{"manager":"ip-172-16-0-21.ec2.internal","cluster":"Disabled","status":"disabled"},"extensions":{"audit":true,"pci":true,"oscap":true,"aws":false,"virustotal":false}}}]}}'
+API_PROTOCOL=${API_PROTOCOL:-https}
+API_SERVER=${API_SERVER:-wazuh}
+API_PORT=${API_PORT:-55000}
+API_USER=${API_USER:-wazuh}
+API_PASS=${API_PASS:-wazuh}
+ES_URL=${ES_URL:-'http://localhost:9200'}
+ES_USER=${ES_USER:-kibana}
+ES_PASSWORD=${ES_PASSWORD:-changeme}
+if [ ! -d /usr/share/kibana/config/certificate ]; then
+  echo "Generating SSL certificates"
+  mkdir -p /usr/share/kibana/config/certificate
+  openssl req -x509 -batch -nodes -days 365 -newkey rsa:2048 -keyout /usr/share/kibana/config/certificate/kibana-cert.key -out /usr/share/kibana/config/certificate/kibana-cert.pem >/dev/null
+else
+  echo "SSL certificates already present"
+fi
+until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
+  >&2 echo "Elastic is unavailable - sleeping for 5 seconds"
+  sleep 5
+done
+>&2 echo "Elastic is up - executing commands"
+sleep 5
+echo -e "\nSetting Wazuh API credentials into the Wazuh Kibana application"
+API_PASS_BASE64=$(echo -n ${API_PASS} | base64)
+# The Wazuh Kibana application configuration is the document with the ID 1513629884013, don't change that!
+curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuration/1513629884013" -H 'Content-Type: application/json' -H "Accept: application/json" -d'
+{
+    "api_user": "'${API_USER}'",
+    "api_password": "'${API_PASS_BASE64}'",
+    "url": "'${API_PROTOCOL}'://'${API_SERVER}'",
+    "api_port": "'${API_PORT}'",
+    "insecure": "true",
+    "component": "API",
+    "active": true,
+    "extensions": {
+        "oscap": true,
+        "audit": true,
+        "pci": true
+    },
+    "cluster_info": {
+        "node": "wazuh-manager-master",
+        "cluster": "wazuh",
+        "manager": "wazuh-manager-master-0",
+        "status": "enabled"
+    }
+}
+'
 #######################################
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
