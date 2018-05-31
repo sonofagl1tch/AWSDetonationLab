@@ -102,40 +102,40 @@ Select **File > New Document**
 Right Click your folder **Add > Credential > Credential**
 
  * **Bastion Credentials**
-   ![bastion credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/5-bastion-%20credential.png "5-bastion-%20credential")
+   ![bastion credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/5-bastion-%20credential.png "5-bastion-%20credential")
    
    In that same window, click **Private Key File**
    
    * **Bastion Key**
-   ![bastion key](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/6-bastion-key.png "6-bastion-key")
+   ![bastion key](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/6-bastion-key.png "6-bastion-key")
    
    Back to your folder, **Right Click > Add > Secure Gateway**
    
    * **Secure Gateway Config**
-   ![secure gateway config](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/7-secureGateway-config.png "7-secureGateway-config")
+   ![secure gateway config](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/7-secureGateway-config.png "7-secureGateway-config")
    
    In that same window, click **Credentials
    
    * **Secure Gateway Credentials**
-   ![secure gateway credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/8-secureGateway-credentials.png "8-secureGateway-credentials")
+   ![secure gateway credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/8-secureGateway-credentials.png "8-secureGateway-credentials")
    
    Back out to your folder, **Right Click > Add > RDP Session**
 
    * **RDP connection Settings** 
-   ![RDP connection Settings](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/2-RDP-connnectionSettings.png "2-RDP-connnectionSettings")
+   ![RDP connection Settings](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/2-RDP-connnectionSettings.png "2-RDP-connnectionSettings")
    
    * **RDP Credentials**
-   ![RDP credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/3-RDP-credentials.png "3-RDP-credentials")
+   ![RDP credentials](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/3-RDP-credentials.png "3-RDP-credentials")
    
    * **RDP Secure Gateway**
-   ![RDP secure gateway](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/4-RDP-secureGateway.png "4-RDP-secureGateway")
+   ![RDP secure gateway](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/4-RDP-secureGateway.png "4-RDP-secureGateway")
    
   
    
    When you're done, your Connections list should look like this. 
    
     **Example RoyalTSX required elemenets**
-   ![Example RoyalTSX required elemenets](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/RoyalTSX-Config/1-RoyalTSX-requiredDocument.png "1-RoyalTSX-requiredDocument")
+   ![Example RoyalTSX required elemenets](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/RoyalTSX-Config/1-RoyalTSX-requiredDocument.png "1-RoyalTSX-requiredDocument")
 
 
 ## Connect To redTeam Instance & Run GuardDuty Testing Script
@@ -150,7 +150,7 @@ Once connected to the redTeam instance, there is a single script that you can ru
 
 This will initiate interaction between your redTeam and target EC2 instances, simulate attacks, and generate GuardDuty Findings.
 
-*INSERT A SCREENSHOT OF GUARDDUTY WITH FINDINGS*
+![GuardDutyFindings Example](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/guardDutyFindings-example.png "guardDutyFindings-example")
 
 
 # Setup Logging for Detonation Lab.
