@@ -185,4 +185,5 @@ creating an AMI with encrypted volumes. I do this and modify the cloudformation 
 3. Share your encrypted snapshots with the target account.
 4. Copy the snapshots to the target region and reencrypt them using the target account’s KMS encryption keys in the target region.
 5. Have the target account create an AMI using the encrypted EBS snapshots in the target region. 
+
 `aws ec2 copy-image --source-region us-east-1 --source-image-id ami-123abc456 --region us-east-1 --name "windows2k16-encrypted" --encrypted`
