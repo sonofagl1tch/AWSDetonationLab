@@ -7,6 +7,21 @@ This cloudformation template and guard duty alert generation scripts are based o
 
 Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guardduty-tester/blob/master/guardduty_tester.sh) that starts interaction between the redTeam EC2 instance and the target Windows EC2 instance and the target Linux EC2 instance to simulate five types of common attacks that GuardDuty is built to detect and notify you about with generated findings.
 
+# todo List (AKA things i still need to automate)
+- figure out how to autosetup the wazuh api setup for kibana
+- add additional sources to kibana
+  - cloudtrail
+  - Macie
+  - guardduty
+  - vpcflow
+  - route53
+  - figure out how to auto setup logging for additional sources
+- get cloudtrail into wazuh https://documentation.wazuh.com/current/amazon/installation.html
+- get vpcflow into wazuh
+  - https://aws.amazon.com/blogs/aws/cloudwatch-logs-subscription-consumer-elasticsearch-kibana-dashboards/
+  - borrow their kibana dashboards
+    - https://app.logz.io/#/dashboard/apps
+
 # Getting Started
 
 This process will walk you through getting the core detonation lab automatically configured and additional processes for setting up each item
@@ -152,9 +167,22 @@ This will initiate interaction between your redTeam and target EC2 instances, si
 
 ![GuardDutyFindings Example](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/guardDutyFindings-example.png "guardDutyFindings-example")
 
+## EDR Logs
+For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source host-based intrusion detection system. It performs log analysis, integrity checking, Windows registry monitoring, rootkit detection, time-based alerting, and active response." you can find more information about them at https://documentation.wazuh.com/current/index.html
+### forward kibana console
+`ssh -L 8080:localhost:5601 wazuh -N`
 
 # Setup Logging for Detonation Lab.
 This section will go over the steps required to enable logging for the detonation lab. To Be Completed.
 
 # Getting Logs Into SIEM.
 This section will go over the steps required to enable logging into SIEM. To Be Completed.
+
+# additional considerations
+creating an AMI with encrypted volumes. I do this and modify the cloudformation template included in this repo to point to my private AMI versions for usage so all systems have full disk encryption.
+1. In the source account, create an EBS-backed custom AMI starting from a public AWS AMI in the source region.
+2. Add your encrypted EBS snapshots to the custom AMI, and give the target account access to the KMS encryption keys.
+3. Share your encrypted snapshots with the target account.
+4. Copy the snapshots to the target region and reencrypt them using the target account’s KMS encryption keys in the target region.
+5. Have the target account create an AMI using the encrypted EBS snapshots in the target region. 
+`aws ec2 copy-image --source-region us-east-1 --source-image-id ami-123abc456 --region us-east-1 --name "windows2k16-encrypted" --encrypted`
