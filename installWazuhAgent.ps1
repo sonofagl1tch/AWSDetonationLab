@@ -11,7 +11,10 @@ C:\Users\Administrator\Desktop\wazuh-agent-3.2.2-1.msi /q
 #New-NetFirewallRule -DisplayName "Allow Wazuh Agent Traffic TCP 55000" -Direction Outbound -LocalPort 55000 -Protocol TCP -Action Allow
 
 # sleep for 2 minutes to allow for wazuh agent to finish installing
-#Start-Sleep -s 120
+Start-Sleep -s 120
+
+# sleep for 5 minutes to allow for wazuh server to finish installing
+Start-Sleep -s 300
 
 # https://raw.githubusercontent.com/wazuh/wazuh-api/3.2/examples/api-register-agent.ps1
 ###

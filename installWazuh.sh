@@ -62,6 +62,7 @@ yum install elasticsearch-6.2.4 -y -q -e 0
 ## Enable and start the Elasticsearch service
 chkconfig --add elasticsearch
 service elasticsearch start
+#wait until elasticsearch comes up before continuing 
 ES_URL=${ES_URL:-'http://localhost:9200'}
 ES_USER=${ES_USER:-kibana}
 ES_PASSWORD=${ES_PASSWORD:-changeme}
