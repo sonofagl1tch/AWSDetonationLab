@@ -10,16 +10,17 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
 # todo List (AKA things i still need to automate)
 - add additional sources to kibana
   - cloudtrail
+    - get cloudtrail into wazuh https://documentation.wazuh.com/current/amazon/installation.html
   - Macie
   - guardduty
   - vpcflow
+    - get vpcflow into wazuh
+      - https://aws.amazon.com/blogs/aws/cloudwatch-logs-subscription-consumer-elasticsearch-kibana-dashboards/
+      - audoload their kibana dashboards
+        - https://app.logz.io/#/dashboard/apps
   - route53
   - figure out how to auto setup logging for additional sources
-- get cloudtrail into wazuh https://documentation.wazuh.com/current/amazon/installation.html
-- get vpcflow into wazuh
-  - https://aws.amazon.com/blogs/aws/cloudwatch-logs-subscription-consumer-elasticsearch-kibana-dashboards/
-  - borrow their kibana dashboards
-    - https://app.logz.io/#/dashboard/apps
+
 
 # Getting Started
 
@@ -170,6 +171,75 @@ This will initiate interaction between your redTeam and target EC2 instances, si
 For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source host-based intrusion detection system. It performs log analysis, integrity checking, Windows registry monitoring, rootkit detection, time-based alerting, and active response." you can find more information about them at https://documentation.wazuh.com/current/index.html
 ### forward kibana console
 `ssh -L 8080:localhost:5601 wazuh -N`
+
+### what do I do if the clients have not automatically joined the server?
+1. Test to see if the server is running. Both clients have service checks built into them and can be stuck waiting for the server to come up.
+  1. `ssh wazuh`
+  2. `sudo service elasticsearch start`
+  3. `sudo service logstash start`
+  4. `sudo service kibana start`
+  5. `curl -XGET http://172.16.0.21:9200`
+    1. if this comes back with something like the following then you're good to go on the server side
+    ```
+    {
+      "name" : "rFj3Puu",
+      "cluster_name" : "elasticsearch",
+      "cluster_uuid" : "mOotI9kLSDKgeqWrNkC5ww",
+      "version" : {
+        "number" : "6.2.4",
+        "build_hash" : "ccec39f",
+        "build_date" : "2018-04-12T20:37:28.497551Z",
+        "build_snapshot" : false,
+        "lucene_version" : "7.2.1",
+        "minimum_wire_compatibility_version" : "5.6.0",
+        "minimum_index_compatibility_version" : "5.0.0"
+      },
+      "tagline" : "You Know, for Search"
+    }
+    ```
+2. Test on the client side
+  1. For Linux: `curl -XGET http://172.16.0.21:9200`
+    1. if this comes back with something like the following then you're good to go on the server side
+    ```
+    {
+      "name" : "rFj3Puu",
+      "cluster_name" : "elasticsearch",
+      "cluster_uuid" : "mOotI9kLSDKgeqWrNkC5ww",
+      "version" : {
+        "number" : "6.2.4",
+        "build_hash" : "ccec39f",
+        "build_date" : "2018-04-12T20:37:28.497551Z",
+        "build_snapshot" : false,
+        "lucene_version" : "7.2.1",
+        "minimum_wire_compatibility_version" : "5.6.0",
+        "minimum_index_compatibility_version" : "5.0.0"
+      },
+      "tagline" : "You Know, for Search"
+    }
+    ```
+  2. For Windows: 
+  ```
+  $HTTP_Status = 0
+  do{
+      #To check whether it is operational, you should use the following example code:
+      # First we create the request.
+      $HTTP_Request = [System.Net.WebRequest]::Create('http://172.16.0.21:9200')
+      # We then get a response from the site.
+      $HTTP_Response = $HTTP_Request.GetResponse()
+      # We then get the HTTP code as an integer.
+      $HTTP_Status = [int]$HTTP_Response.StatusCode
+      If ($HTTP_Status -ne 200) {
+          Write-Host "The Site may be down, please check!"
+          Start-Sleep -s 10
+      }
+      # Finally, we clean up the http request by closing it.
+      $HTTP_Response.Close()
+  } until ($HTTP_Status -eq 200)
+  Write-Host "Connection Successful: $HTTP_Status"
+  ```
+3. connect client to server manually
+  1. Linux: `sudo bash installWazuh`
+  2. Windows: `C:\Users\Administrator\Desktop\testConnextion.ps1`
 
 # Setup Logging for Detonation Lab.
 This section will go over the steps required to enable logging for the detonation lab. To Be Completed.
