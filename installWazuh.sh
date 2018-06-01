@@ -73,8 +73,17 @@ done
 >&2 echo "Elastic is up - executing commands"
 ## Load the Wazuh template for Elasticsearch:
 curl https://raw.githubusercontent.com/wazuh/wazuh/3.2/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
-#######################################
+service elasticsearch restart
 sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
+#wait until elasticsearch comes up before continuing 
+ES_URL=${ES_URL:-'http://172.16.0.1:9200'}
+ES_USER=${ES_USER:-kibana}
+ES_PASSWORD=${ES_PASSWORD:-changeme}
+until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
+  service elasticsearch restart
+  sleep 5
+done
+>&2 echo "Elastic is up - executing commands"
 #######################################
 # Install the Logstash package
 yum install logstash-6.2.4 -y -q -e 0
