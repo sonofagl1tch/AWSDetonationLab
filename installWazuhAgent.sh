@@ -19,7 +19,7 @@ EOF
 yum install wazuh-agent -y -q -e 0
 
 #wait until elasticsearch comes up before continuing 
-ES_URL=${ES_URL:-'http://localhost:9200'}
+ES_URL=${ES_URL:-'http://172.16.0.21:9200'}
 ES_USER=${ES_USER:-kibana}
 ES_PASSWORD=${ES_PASSWORD:-changeme}
 until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
