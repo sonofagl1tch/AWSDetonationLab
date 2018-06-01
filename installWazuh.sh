@@ -74,6 +74,8 @@ done
 ## Load the Wazuh template for Elasticsearch:
 curl https://raw.githubusercontent.com/wazuh/wazuh/3.2/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 #######################################
+sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
+#######################################
 # Install the Logstash package
 yum install logstash-6.2.4 -y -q -e 0
 ## Download the Wazuh configuration file for Logstash

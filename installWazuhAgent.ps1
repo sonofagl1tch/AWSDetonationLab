@@ -13,8 +13,25 @@ C:\Users\Administrator\Desktop\wazuh-agent-3.2.2-1.msi /q
 # sleep for 2 minutes to allow for wazuh agent to finish installing
 Start-Sleep -s 120
 
-# sleep for 5 minutes to allow for wazuh server to finish installing
-Start-Sleep -s 300
+# sleep for 10 seconds to allow for wazuh server to finish installing
+$HTTP_Status = 0
+do{
+    #To check whether it is operational, you should use the following example code:
+    # First we create the request.
+    $HTTP_Request = [System.Net.WebRequest]::Create('http://172.16.0.21:9200')
+    # We then get a response from the site.
+    $HTTP_Response = $HTTP_Request.GetResponse()
+    # We then get the HTTP code as an integer.
+    $HTTP_Status = [int]$HTTP_Response.StatusCode
+    If ($HTTP_Status -ne 200) {
+        Write-Host "The Site may be down, please check!"
+        Start-Sleep -s 10
+    }
+    # Finally, we clean up the http request by closing it.
+    $HTTP_Response.Close()
+} until ($HTTP_Status -eq 200)
+Write-Host $HTTP_Status
+
 
 # https://raw.githubusercontent.com/wazuh/wazuh-api/3.2/examples/api-register-agent.ps1
 ###
