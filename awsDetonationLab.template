@@ -1465,7 +1465,10 @@
                 "<powershell>\n",
                 "Set-ExecutionPolicy RemoteSigned -Force\n",
                 "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
-                "</powershell>"
+                "</powershell>\n",
+                "<script>\n",
+                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1", "\n", 
+                "</script>\n"
               ]
             ]
           }
