@@ -1145,6 +1145,22 @@
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9200",
+            "ToPort": "9200",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9200",
+            "ToPort": "9200",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
+            }
           }
         ],
         "SecurityGroupEgress": [
@@ -1177,6 +1193,22 @@
             "FromPort": "55000",
             "ToPort": "55000",
             "DestinationSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9200",
+            "ToPort": "9200",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9200",
+            "ToPort": "9200",
+            "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
           }
