@@ -28,22 +28,8 @@ This process will walk you through getting the core detonation lab automatically
 
 ## Prerequisites
 
-Before you do anything, you have to enable GuardDuty in the same account and region where you want to run the Amazon GuardDuty Tester script. What happens if you don't? Stuff will be broken. Do it now, go ahead, we'll wait. 
-
-For more information about enabling GuardDuty, see the [GuardDuty Setup Guide](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_settingup.html#guardduty_enable-gd).
-
-
-### Enabling GuardDuty
-
-1. The IAM identity (user, role, group) that you use to enable GuardDuty must have the required permissions. To grant the permissions required to enable GuardDuty, attach [this policy](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/awsPermissions/IAM-guardDuty-enablePermissions.json) to an IAM user, group, or role. 
-
-2. Replace the sample account ID in the example below with your actual AWS account ID.
-
-3. Use the credentials of the IAM identity from Step 1 to sign in to the GuardDuty console. When you open the GuardDuty console for the first time, choose **Get Started** and then choose **Enable GuardDuty**.
-
-4. You must generate a new or use an existing EC2 key pair in each region where you want to run these scripts. This EC2 keypair is used as a parameter in the guardduty-tester.template script that you use in Step 1 to create a new CloudFormation stack. 
-
-For more information about generating EC2 key pairs, see [this AWS document on key pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html).
+- Setup AWS logging sources: 
+  - https://github.com/sonofagl1tch/AWSDetonationLab/tree/master/AWS-Logging
 
 
 ## Create Your Detonation Lab
@@ -242,10 +228,12 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
   2. Windows: `C:\Users\Administrator\Desktop\testConnextion.ps1`
 
 # Setup Logging for Detonation Lab.
-This section will go over the steps required to enable logging for the detonation lab. To Be Completed.
+- setup AWS logging sources
+  - https://github.com/sonofagl1tch/AWSDetonationLab/tree/master/Wazuh-configurations/runOnAWSCLIHost
 
 # Getting Logs Into SIEM.
-This section will go over the steps required to enable logging into SIEM. To Be Completed.
+- setup AWS log ingestion on Wazuh server (ELK)
+  - https://github.com/sonofagl1tch/AWSDetonationLab/tree/master/Wazuh-configurations/runOnWazuh
 
 # additional considerations
 creating an AMI with encrypted volumes. I do this and modify the cloudformation template included in this repo to point to my private AMI versions for usage so all systems have full disk encryption.
