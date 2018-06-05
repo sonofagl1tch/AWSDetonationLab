@@ -224,8 +224,8 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
   Write-Host "Connection Successful: $HTTP_Status"
   ```
 3. connect client to server manually
-  1. Linux: `sudo bash installWazuh`
-  2. Windows: `C:\Users\Administrator\Desktop\testConnextion.ps1`
+   1. Linux: `sudo bash installWazuh`
+   2. Windows: `C:\Users\Administrator\Desktop\testConnextion.ps1`
 
 # Setup Logging for Detonation Lab.
 - setup AWS logging sources
