@@ -160,12 +160,12 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
 
 ### what do I do if the clients have not automatically joined the server?
 1. Test to see if the server is running. Both clients have service checks built into them and can be stuck waiting for the server to come up.
-  1. `ssh wazuh`
-  2. `sudo service elasticsearch start`
-  3. `sudo service logstash start`
-  4. `sudo service kibana start`
-  5. `curl -XGET http://172.16.0.21:9200`
-    1. if this comes back with something like the following then you're good to go on the server side
+   1. `ssh wazuh`
+   2. `sudo service elasticsearch start`
+   3. `sudo service logstash start`
+   4. `sudo service kibana start`
+   5. `curl -XGET http://172.16.0.21:9200`
+     1. if this comes back with something like the following then you're good to go on the server side
     ```
     {
       "name" : "rFj3Puu",
@@ -184,8 +184,8 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
     }
     ```
 2. Test on the client side
-  1. For Linux: `curl -XGET http://172.16.0.21:9200`
-    1. if this comes back with something like the following then you're good to go on the server side
+   1. For Linux: `curl -XGET http://172.16.0.21:9200`
+     1. if this comes back with something like the following then you're good to go on the server side
     ```
     {
       "name" : "rFj3Puu",
