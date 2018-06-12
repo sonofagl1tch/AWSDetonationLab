@@ -403,7 +403,7 @@
                 "wget -O /home/ec2-user/install https://d1wk0tztpsntt1.cloudfront.net/linux/latest/install\n",
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n",
-                "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.sh\n",
+                "wget -O /home/ec2-user/installWazuh https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/additionalInstallationScripts/installWazuhAgent.sh\n",
                 "chmod +x /home/ec2-user/installWazuh\n",
                 "bash /home/ec2-user/installWazuh -u false\n"
               ]
@@ -539,7 +539,7 @@
               [
                 "<powershell>\n",
                 "Set-ExecutionPolicy RemoteSigned -Force\n",
-                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
+                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/additionalInstallationScripts/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
                 "</powershell>\n",
                 "<script>\n",
                 "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
@@ -769,7 +769,7 @@
                 "yum update -y\n",
                 "yum install nmap -y\n",
                 "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
-                "curl -L -o /tmp/bastion_bootstrap.sh https://github.com/awslabs/amazon-guardduty-tester/raw/master/bastion_bootstrap.sh\n",
+                "curl -L -o /tmp/bastion_bootstrap.sh https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/additionalInstallationScripts/bastion_bootstrap.sh\n",
                 "chown root: /tmp/bastion_bootstrap.sh\n",
                 "chmod +x /tmp/bastion_bootstrap.sh\n",
                 "EIP_LIST=\"",
@@ -1928,7 +1928,7 @@
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
                 "yum update -y\n",
-                "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuh.sh\n",
+                "wget -O /home/ec2-user/install https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/additionalInstallationScripts/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n"
               ]
