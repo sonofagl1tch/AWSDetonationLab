@@ -1,90 +1,5 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "This template creates the basic VPC infrastructure for an isolated testing environment. It will deploy a bastion host into the public subnet for a single Availability Zone so we have a protected point of entry. It will then create a linux instance with some red team scripts & tools that operate against common applications that are created in the same private subnet. **WARNING** This template creates Amazon EC2 instance and related resources. You will be billed for the AWS resources used if you create a stack from this template.",
-  "Metadata": {
-    "AWS::CloudFormation::Interface": {
-      "ParameterGroups": [
-        {
-          "Label": {
-            "default": "Network Configuration"
-          },
-          "Parameters": [
-            "AvailabilityZones",
-            "VPCCIDR",
-            "PrivateSubnet1CIDR",
-            "PublicSubnet1CIDR",
-            "RemoteAccessCIDR"
-          ]
-        },
-        {
-          "Label": {
-            "default": "Amazon EC2 Configuration"
-          },
-          "Parameters": [
-            "KeyPairName"
-          ]
-        }
-      ],
-      "ParameterLabels": {
-        "AvailabilityZones": {
-          "default": "Availability Zones"
-        },
-        "KeyPairName": {
-          "default": "Key Pair Name"
-        },
-        "PrivateSubnetCIDR": {
-          "default": "Private Subnet CIDR"
-        },
-        "PublicSubnetCIDR": {
-          "default": "Public Subnet CIDR"
-        },
-        "RemoteAccessCIDR": {
-          "default": "Allowed Bastion External Access CIDR"
-        },
-        "VPCCIDR": {
-          "default": "VPC CIDR"
-        }
-      }
-    }
-  },
-  "Parameters": {
-    "AvailabilityZones": {
-      "Description": "Availability Zone to use for the subnets in the VPC. You can select many, but we just use 1 (the first).",
-      "Type": "List<AWS::EC2::AvailabilityZone::Name>"
-    },
-    "KeyPairName": {
-      "Description": "Public/private key pairs allow you to securely connect to your instance after it launches",
-      "Type": "AWS::EC2::KeyPair::KeyName"
-    },
-    "PrivateSubnetCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.16/28",
-      "Description": "CIDR block for isolated private subnet.",
-      "Type": "String"
-    },
-    "PublicSubnetCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.0/28",
-      "Description": "CIDR Block for the public DMZ subnet for secure administrative entry",
-      "Type": "String"
-    },
-    "RemoteAccessCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/x",
-      "Default": "0.0.0.0/0",
-      "Description": "CIDR from which access to bastion is to be permitted",
-      "Type": "String"
-    },
-    "VPCCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.0/27",
-      "Description": "CIDR Block for the VPC",
-      "Type": "String"
-    }
-  },
   "Conditions": {
     "GovCloudCondition": {
       "Fn::Equals": [
@@ -118,6 +33,7 @@
       ]
     }
   },
+  "Description": "This template creates the basic VPC infrastructure for an isolated testing environment. It will deploy a bastion host into the public subnet for a single Availability Zone so we have a protected point of entry. It will then create a linux instance with some red team scripts & tools that operate against common applications that are created in the same private subnet. **WARNING** This template creates Amazon EC2 instance and related resources. You will be billed for the AWS resources used if you create a stack from this template.",
   "Mappings": {
     "AWSAMIRegionMap": {
       "NATAMI": {
@@ -194,36 +110,803 @@
       "Windows-Server-2012": {
         "Code": "WS2012R2"
       }
+    },
+    "Defaults": {
+      "LogGroup": {
+        "RetentionInDays": 1
+      },
+      "Stream": {
+        "ShardCount": 10
+      },
+      "EventSourceMapping": {
+        "BatchSize": 10000
+      }
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Network Configuration"
+          },
+          "Parameters": [
+            "AvailabilityZones",
+            "VPCCIDR",
+            "PrivateSubnet1CIDR",
+            "PublicSubnet1CIDR",
+            "RemoteAccessCIDR"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Amazon EC2 Configuration"
+          },
+          "Parameters": [
+            "KeyPairName"
+          ]
+        }
+      ],
+      "ParameterLabels": {
+        "AvailabilityZones": {
+          "default": "Availability Zones"
+        },
+        "KeyPairName": {
+          "default": "Key Pair Name"
+        },
+        "PrivateSubnetCIDR": {
+          "default": "Private Subnet CIDR"
+        },
+        "PublicSubnetCIDR": {
+          "default": "Public Subnet CIDR"
+        },
+        "RemoteAccessCIDR": {
+          "default": "Allowed Bastion External Access CIDR"
+        },
+        "VPCCIDR": {
+          "default": "VPC CIDR"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "AddFlowLogToVpcCmd": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "**************THIS NO LONGER NEEDS TO BE MANUALLY RUN**************\n",
+            "aws ec2 create-flow-logs --resource-type VPC",
+            " --traffic-type ALL --resource-ids ",
+            {
+              "Ref": "VPC"
+            },
+            " --log-group-name ",
+            {
+              "Ref": "FlowLogs"
+            },
+            " --deliver-logs-permission-arn ",
+            {
+              "Fn::GetAtt": [
+                "FlowLogsToCloudWatch",
+                "Arn"
+              ]
+            }
+          ]
+        ]
+      }
+    },
+    "BastionIp": {
+      "Description": "Elastic IP for Bastion",
+      "Value": {
+        "Ref": "EIP"
+      }
+    },
+    "DeliverLogsPermissionArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "FlowLogsToCloudWatch",
+          "Arn"
+        ]
+      }
+    },
+    "LogGroupName": {
+      "Value": {
+        "Ref": "FlowLogs"
+      }
+    },
+    "RedTeamIp": {
+      "Description": "Local IP for RedTeam Instance",
+      "Value": {
+        "Fn::GetAtt": [
+          "RedTeam",
+          "PrivateIp"
+        ]
+      }
+    },
+    "S3LogLocation": {
+      "Value": {
+        "Ref": "Bucket"
+      }
+    }
+  },
+  "Parameters": {
+    "AvailabilityZones": {
+      "Description": "Availability Zone to use for the subnets in the VPC. You can select many, but we just use 1 (the first).",
+      "Type": "List<AWS::EC2::AvailabilityZone::Name>"
+    },
+    "KeyPairName": {
+      "Description": "Public/private key pairs allow you to securely connect to your instance after it launches",
+      "Type": "AWS::EC2::KeyPair::KeyName"
+    },
+    "PrivateSubnetCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+      "Default": "172.16.0.16/28",
+      "Description": "CIDR block for isolated private subnet.",
+      "Type": "String"
+    },
+    "PublicSubnetCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+      "Default": "172.16.0.0/28",
+      "Description": "CIDR Block for the public DMZ subnet for secure administrative entry",
+      "Type": "String"
+    },
+    "RemoteAccessCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/x",
+      "Default": "0.0.0.0/0",
+      "Description": "CIDR from which access to bastion is to be permitted",
+      "Type": "String"
+    },
+    "VPCCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+      "Default": "172.16.0.0/27",
+      "Description": "CIDR Block for the VPC",
+      "Type": "String"
     }
   },
   "Resources": {
-    "BastionMainLogGroup": {
-      "Type": "AWS::Logs::LogGroup"
-    },
-    "SSHMetricFilter": {
-      "Type": "AWS::Logs::MetricFilter",
+    "BasicLinuxIAMRole": {
+      "Type": "AWS::IAM::Role",
       "Properties": {
-        "LogGroupName": {
-          "Ref": "BastionMainLogGroup"
-        },
-        "FilterPattern": "ON FROM USER PWD",
-        "MetricTransformations": [
-          {
-            "MetricName": "SSHCommandCount",
-            "MetricValue": 1,
-            "MetricNamespace": {
-              "Fn::Join": [
-                "/",
-                [
-                  "AWSQuickStart",
-                  {
-                    "Ref": "AWS::StackName"
-                  }
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
                 ]
+              },
+              "Action": [
+                "sts:AssumeRole"
               ]
+            }
+          ]
+        },
+        "Path": "/",
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+        ]
+      }
+    },
+    "BasicLinuxInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "BasicLinuxIAMRole"
+          }
+        ],
+        "Path": "/"
+      }
+    },
+    "BasicLinuxNetInt": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivateSubnet"
+        },
+        "GroupSet": [
+          {
+            "Ref": "BasicLinuxSecurityGroup"
+          },
+          {
+            "Ref": "WazuhAgentTrafficSecurityGroup"
+          }
+        ],
+        "PrivateIpAddress": "172.16.0.22"
+      }
+    },
+    "BasicLinuxSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enables Admin Access to basic linux hosts",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "5050",
+            "ToPort": "5050",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "icmp",
+            "FromPort": "-1",
+            "ToPort": "-1",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "SourceSecurityGroupId": {
+              "Ref": "BastionSecurityGroup"
             }
           }
         ]
+      }
+    },
+    "BasicLinuxTarget": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "KeyName": {
+          "Ref": "KeyPairName"
+        },
+        "NetworkInterfaces": [
+          {
+            "NetworkInterfaceId": {
+              "Ref": "BasicLinuxNetInt"
+            },
+            "DeviceIndex": "0"
+          }
+        ],
+        "IamInstanceProfile": {
+          "Ref": "BasicLinuxInstanceProfile"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash\n",
+                "export PATH=$PATH:/usr/local/bin\n",
+                "yum update -y\n",
+                "yum install -y httpd24 php70 mysql56-server php70-mysqlnd gcc openssl-devel* nmap\n",
+                "service httpd start\n",
+                "export LOCAL_HOST=`curl http://169.254.169.254/latest/meta-data/local-hostname`\n",
+                "wget -O /home/ec2-user/install https://d1wk0tztpsntt1.cloudfront.net/linux/latest/install\n",
+                "chmod +x /home/ec2-user/install\n",
+                "bash /home/ec2-user/install -u false\n",
+                "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.sh\n",
+                "chmod +x /home/ec2-user/installWazuh\n",
+                "bash /home/ec2-user/installWazuh -u false\n"
+              ]
+            ]
+          }
+        },
+        "InstanceType": "m4.large",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "0",
+            {
+              "Ref": "AvailabilityZones"
+            }
+          ]
+        },
+        "ImageId": {
+          "Fn::FindInMap": [
+            "AWSAMIRegionMap",
+            {
+              "Ref": "AWS::Region"
+            },
+            {
+              "Fn::FindInMap": [
+                "AMINameMap",
+                "Amazon-Linux-HVM",
+                "Code"
+              ]
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BasicLinuxTarget"
+          }
+        ]
+      }
+    },
+    "BasicWindowsIAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "BasicWindowsInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "BasicWindowsIAMRole"
+          }
+        ],
+        "Path": "/"
+      }
+    },
+    "BasicWindowsNetInt": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivateSubnet"
+        },
+        "GroupSet": [
+          {
+            "Ref": "BasicWindowsSecurityGroup"
+          },
+          {
+            "Ref": "WazuhAgentTrafficSecurityGroup"
+          }
+        ],
+        "PrivateIpAddress": "172.16.0.23"
+      }
+    },
+    "BasicWindowsSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enables Admin Access to basic windows hosts",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "icmp",
+            "FromPort": "-1",
+            "ToPort": "-1",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "SourceSecurityGroupId": {
+              "Ref": "BastionSecurityGroup"
+            }
+          }
+        ]
+      }
+    },
+    "BasicWindowsTarget": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "KeyName": {
+          "Ref": "KeyPairName"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "<powershell>\n",
+                "Set-ExecutionPolicy RemoteSigned -Force\n",
+                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
+                "</powershell>\n",
+                "<script>\n",
+                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1",
+                "\n",
+                "</script>\n"
+              ]
+            ]
+          }
+        },
+        "NetworkInterfaces": [
+          {
+            "NetworkInterfaceId": {
+              "Ref": "BasicWindowsNetInt"
+            },
+            "DeviceIndex": "0"
+          }
+        ],
+        "InstanceType": "m4.large",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "0",
+            {
+              "Ref": "AvailabilityZones"
+            }
+          ]
+        },
+        "ImageId": {
+          "Fn::FindInMap": [
+            "AWSAMIRegionMap",
+            {
+              "Ref": "AWS::Region"
+            },
+            {
+              "Fn::FindInMap": [
+                "AMINameMap",
+                "Windows-Server-2012",
+                "Code"
+              ]
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BasicWindowsTarget"
+          }
+        ]
+      }
+    },
+    "BastionAutoScalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "LaunchConfigurationName": {
+          "Ref": "BastionLaunchConfiguration"
+        },
+        "VPCZoneIdentifier": [
+          {
+            "Ref": "PublicSubnet"
+          }
+        ],
+        "MinSize": "1",
+        "MaxSize": "2",
+        "Cooldown": "300",
+        "DesiredCapacity": "1",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxBastion",
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      },
+      "CreationPolicy": {
+        "ResourceSignal": {
+          "Count": "1",
+          "Timeout": "PT30M"
+        }
+      }
+    },
+    "BastionHostProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "BastionHostRole"
+          }
+        ],
+        "Path": "/"
+      }
+    },
+    "BastionHostRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:GetLogEvents",
+                    "logs:PutLogEvents",
+                    "logs:DescribeLogGroups",
+                    "logs:DescribeLogStreams",
+                    "logs:PutRetentionPolicy",
+                    "logs:PutMetricFilter",
+                    "logs:CreateLogGroup"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:${Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${BastionMainLogGroup}:*",
+                      {
+                        "Partition": {
+                          "Fn::If": [
+                            "GovCloudCondition",
+                            "aws-us-gov",
+                            "aws"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "Effect": "Allow"
+                }
+              ]
+            },
+            "PolicyName": "bastion-cloudwatch-logs-policy"
+          },
+          {
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": [
+                    "ec2:AssociateAddress",
+                    "ec2:DescribeAddresses"
+                  ],
+                  "Resource": [
+                    "*"
+                  ],
+                  "Effect": "Allow"
+                }
+              ]
+            },
+            "PolicyName": "bastion-eip-policy"
+          }
+        ],
+        "Path": "/",
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Effect": "Allow"
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      }
+    },
+    "BastionLaunchConfiguration": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata": {
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "b-bootstrap": {
+              "command": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "/tmp/bastion_bootstrap.sh",
+                    " --banner ",
+                    "https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/artifacts/banner_message.txt",
+                    " --enable true",
+                    " --tcp-forwarding true",
+                    " --x11-forwarding false"
+                  ]
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "KeyName": {
+          "Ref": "KeyPairName"
+        },
+        "IamInstanceProfile": {
+          "Ref": "BastionHostProfile"
+        },
+        "ImageId": {
+          "Fn::FindInMap": [
+            "AWSAMIRegionMap",
+            {
+              "Ref": "AWS::Region"
+            },
+            {
+              "Fn::FindInMap": [
+                "AMINameMap",
+                "Amazon-Linux-HVM",
+                "Code"
+              ]
+            }
+          ]
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "BastionSecurityGroup"
+          }
+        ],
+        "InstanceType": "t2.small",
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash\n",
+                "export PATH=$PATH:/usr/local/bin\n",
+                "yum update -y\n",
+                "yum install nmap -y\n",
+                "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
+                "curl -L -o /tmp/bastion_bootstrap.sh https://github.com/awslabs/amazon-guardduty-tester/raw/master/bastion_bootstrap.sh\n",
+                "chown root: /tmp/bastion_bootstrap.sh\n",
+                "chmod +x /tmp/bastion_bootstrap.sh\n",
+                "EIP_LIST=\"",
+                {
+                  "Ref": "EIP"
+                },
+                ",Null,Null,Null",
+                "\"\n",
+                "CLOUDWATCHGROUP=",
+                {
+                  "Ref": "BastionMainLogGroup"
+                },
+                "\n",
+                "/tmp/bastion_bootstrap.sh",
+                " --banner ",
+                "https://raw.githubusercontent.com/awslabs/amazon-guardduty-tester/master/artifacts/banner_message.txt",
+                " --enable true",
+                " --tcp-forwarding true",
+                " --x11-forwarding false",
+                "\n",
+                "/opt/aws/bin/cfn-signal -e $? --stack ",
+                {
+                  "Ref": "AWS::StackName"
+                },
+                " --resource BastionAutoScalingGroup --region ",
+                {
+                  "Ref": "AWS::Region"
+                },
+                "\n"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "BastionMainLogGroup": {
+      "Type": "AWS::Logs::LogGroup"
+    },
+    "BastionSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enables SSH Access to Bastion Hosts",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": {
+              "Ref": "RemoteAccessCIDR"
+            }
+          }
+        ]
+      }
+    },
+    "Bucket": {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Status": "Enabled",
+              "ExpirationInDays": 7
+            }
+          ]
+        }
+      }
+    },
+    "CloudWatchToKinesis": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "logs.",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ".amazonaws.com"
+                    ]
+                  ]
+                }
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      }
+    },
+    "CloudWatchToKinesisPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "kinesis",
+        "Roles": [
+          {
+            "Ref": "CloudWatchToKinesis"
+          }
+        ],
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kinesis:PutRecord"
+              ],
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "LogStream",
+                    "Arn"
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "CloudWatchToKinesis",
+                    "Arn"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     "DHCPOptions": {
@@ -251,34 +934,198 @@
         ]
       }
     },
-    "VPC": {
-      "Type": "AWS::EC2::VPC",
+    "EIP": {
+      "Type": "AWS::EC2::EIP",
       "Properties": {
-        "CidrBlock": {
-          "Ref": "VPCCIDR"
+        "Domain": "vpc"
+      }
+    },
+    "FlowLogFilter": {
+      "DependsOn": [
+        "CloudWatchToKinesisPolicy",
+        "FlowLogUpload"
+      ],
+      "Type": "AWS::Logs::SubscriptionFilter",
+      "Properties": {
+        "DestinationArn": {
+          "Fn::GetAtt": [
+            "LogStream",
+            "Arn"
+          ]
         },
-        "InstanceTenancy": "default",
-        "EnableDnsSupport": "true",
-        "EnableDnsHostnames": "true",
-        "Tags": [
+        "FilterPattern": {
+          "Fn::Join": [
+            "",
+            [
+              "[version, account_id, ",
+              "interface_id, srcaddr, dstaddr, srcport, dstport, protocol, ",
+              "packets, bytes, start, end, action, log_status]"
+            ]
+          ]
+        },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "CloudWatchToKinesis",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "FlowLogUpload": {
+      "DependsOn": [
+        "LambdaPolicy"
+      ],
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": "index.handler",
+        "MemorySize": 256,
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 60,
+        "Code": {
+          "ZipFile": {
+            "Fn::Join": [
+              "",
+              [
+                "console.log('Loading function');\n",
+                "\n",
+                "var bucket = '",
+                {
+                  "Ref": "Bucket"
+                },
+                "';\n",
+                "var path = 'flowlogs';\n",
+                "var zlib = require('zlib');\n",
+                "var AWS = require('aws-sdk');\n",
+                "AWS.config.update({region: '",
+                {
+                  "Ref": "AWS::Region"
+                },
+                "'});\n",
+                "var s3 = new AWS.S3();\n",
+                "\n",
+                "exports.handler = function(event, context) {\n",
+                "    var i = 0;\n",
+                "    var record;\n",
+                "    var data = [];\n",
+                "    var key = path + \"/\" + context.invokeid + \".gz\";\n",
+                "\n",
+                "    //console.log(JSON.stringify(event, null, 2));\n",
+                "    // Serialize Operation\n",
+                "    function iter(err) {\n",
+                "        if (err) {\n",
+                "            context.fail(err);\n",
+                "            return;\n",
+                "        }\n",
+                "        record =  event.Records[i++];\n",
+                "        if (!record) {\n",
+                "            if (data.length === 0) {\n",
+                "                context.succeed(\"No data to upload\");\n",
+                "                return;\n",
+                "            }\n",
+                "            zlib.gzip(data.join(\"\\n\"),function ",
+                "(err, result) {\n",
+                "                if (err) return iter(err);\n",
+                "                var params = {\n",
+                "                    Bucket: bucket,\n",
+                "                    Key: key,\n",
+                "                    Body: result\n",
+                "                };\n",
+                "                s3.putObject(params, function(err, data) {\n",
+                "                    if (err) return iter(err);\n",
+                "                    console.log(\"Successfully uploaded ",
+                "flowlog \" + bucket + \"/\" + key);\n",
+                "                    context.succeed(\"Successfully processed ",
+                "\" + event.Records.length + \" ",
+                "record\");\n",
+                "                    return;\n",
+                "                });\n",
+                "                return;\n",
+                "            });\n",
+                "            return;\n",
+                "        }\n",
+                "        var buffer = new ",
+                "Buffer(record.kinesis.data, 'base64');\n",
+                "        zlib.unzip(buffer, function(err, buffer) {\n",
+                "            if (err) return iter(err);\n",
+                "            var fl = JSON.parse(buffer.toString('ascii'));\n",
+                "            data = data.concat(fl.logEvents.map(",
+                "function(item) {\n",
+                "                return item.message;\n",
+                "            })).filter(function(item) {\n",
+                "                return (item.indexOf('OK') == -1) ",
+                "? false : true;\n",
+                "            });\n",
+                "            iter();\n",
+                "        });\n",
+                "    }\n",
+                "    // Start iterator\n",
+                "    iter();\n",
+                "    return;\n",
+                "};\n"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "FlowLogs": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "RetentionInDays": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "LogGroup",
+            "RetentionInDays"
+          ]
+        }
+      }
+    },
+    "FlowLogsToCloudWatch": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "vpc-flow-logs.amazonaws.com"
+                ]
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
           {
-            "Key": "Name",
-            "Value": {
-              "Ref": "AWS::StackName"
+            "PolicyName": "flowlogs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                    "logs:DescribeLogGroups",
+                    "logs:DescribeLogStreams"
+                  ],
+                  "Resource": "*"
+                }
+              ]
             }
           }
         ]
-      }
-    },
-    "VPCDHCPOptionsAssociation": {
-      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
-      "Properties": {
-        "VpcId": {
-          "Ref": "VPC"
-        },
-        "DhcpOptionsId": {
-          "Ref": "DHCPOptions"
-        }
       }
     },
     "InternetGateway": {
@@ -292,175 +1139,130 @@
         ]
       }
     },
-    "VPCGatewayAttachment": {
-      "Type": "AWS::EC2::VPCGatewayAttachment",
+    "KinesisToLambda": {
+      "Type": "AWS::Lambda::EventSourceMapping",
       "Properties": {
-        "VpcId": {
-          "Ref": "VPC"
-        },
-        "InternetGatewayId": {
-          "Ref": "InternetGateway"
-        }
-      }
-    },
-    "PrivateSubnet": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "VpcId": {
-          "Ref": "VPC"
-        },
-        "CidrBlock": {
-          "Ref": "PrivateSubnetCIDR"
-        },
-        "AvailabilityZone": {
-          "Fn::Select": [
-            "0",
-            {
-              "Ref": "AvailabilityZones"
-            }
+        "BatchSize": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "EventSourceMapping",
+            "BatchSize"
           ]
         },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "Private subnet"
-          },
-          {
-            "Key": "Network",
-            "Value": "Private"
-          }
-        ]
-      }
-    },
-    "PublicSubnet": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "VpcId": {
-          "Ref": "VPC"
-        },
-        "CidrBlock": {
-          "Ref": "PublicSubnetCIDR"
-        },
-        "AvailabilityZone": {
-          "Fn::Select": [
-            "0",
-            {
-              "Ref": "AvailabilityZones"
-            }
+        "Enabled": "True",
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "LogStream",
+            "Arn"
           ]
         },
-        "Tags": [
+        "FunctionName": {
+          "Ref": "FlowLogUpload"
+        },
+        "StartingPosition": "TRIM_HORIZON"
+      }
+    },
+    "LambdaPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "Roles": [
           {
-            "Key": "Name",
-            "Value": "Public subnet"
-          },
-          {
-            "Key": "Network",
-            "Value": "Public"
+            "Ref": "LambdaRole"
           }
         ],
-        "MapPublicIpOnLaunch": true
-      }
-    },
-    "PrivateSubnetRouteTable": {
-      "Type": "AWS::EC2::RouteTable",
-      "Properties": {
-        "VpcId": {
-          "Ref": "VPC"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "Private subnet"
-          },
-          {
-            "Key": "Network",
-            "Value": "Private"
-          }
-        ]
-      }
-    },
-    "PrivateSubnetRoute": {
-      "Type": "AWS::EC2::Route",
-      "Properties": {
-        "RouteTableId": {
-          "Ref": "PrivateSubnetRouteTable"
-        },
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "InstanceId": {
-          "Fn::If": [
-            "NATInstanceCondition",
+        "PolicyName": "lambda",
+        "PolicyDocument": {
+          "Statement": [
             {
-              "Ref": "NATInstance"
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": [
+                "*"
+              ]
             },
             {
-              "Ref": "AWS::NoValue"
-            }
-          ]
-        },
-        "NatGatewayId": {
-          "Fn::If": [
-            "NATGatewayCondition",
-            {
-              "Ref": "NATGateway"
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "Bucket"
+                      },
+                      "/flowlogs/*"
+                    ]
+                  ]
+                }
+              ]
             },
             {
-              "Ref": "AWS::NoValue"
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": [
+                "*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kinesis:GetRecords",
+                "kinesis:GetShardIterator",
+                "kinesis:DescribeStream",
+                "kinesis:ListStreams"
+              ],
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "LogStream",
+                    "Arn"
+                  ]
+                }
+              ]
             }
           ]
         }
       }
     },
-    "PrivateSubnetRouteTableAssociation": {
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
       "Properties": {
-        "SubnetId": {
-          "Ref": "PrivateSubnet"
-        },
-        "RouteTableId": {
-          "Ref": "PrivateSubnetRouteTable"
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
         }
       }
     },
-    "PublicSubnetRouteTable": {
-      "Type": "AWS::EC2::RouteTable",
+    "LogStream": {
+      "Type": "AWS::Kinesis::Stream",
       "Properties": {
-        "VpcId": {
-          "Ref": "VPC"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "Public Subnets"
-          },
-          {
-            "Key": "Network",
-            "Value": "Public"
-          }
-        ]
-      }
-    },
-    "PublicSubnetRoute": {
-      "DependsOn": "VPCGatewayAttachment",
-      "Type": "AWS::EC2::Route",
-      "Properties": {
-        "RouteTableId": {
-          "Ref": "PublicSubnetRouteTable"
-        },
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": {
-          "Ref": "InternetGateway"
-        }
-      }
-    },
-    "PublicSubnetRouteTableAssociation": {
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "PublicSubnet"
-        },
-        "RouteTableId": {
-          "Ref": "PublicSubnetRouteTable"
+        "ShardCount": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "Stream",
+            "ShardCount"
+          ]
         }
       }
     },
@@ -568,362 +1370,165 @@
         ]
       }
     },
-    "BastionHostRole": {
-      "Type": "AWS::IAM::Role",
+    "PrivateSubnet": {
+      "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Action": [
-                    "logs:CreateLogStream",
-                    "logs:GetLogEvents",
-                    "logs:PutLogEvents",
-                    "logs:DescribeLogGroups",
-                    "logs:DescribeLogStreams",
-                    "logs:PutRetentionPolicy",
-                    "logs:PutMetricFilter",
-                    "logs:CreateLogGroup"
-                  ],
-                  "Resource": {
-                    "Fn::Sub": [
-                      "arn:${Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${BastionMainLogGroup}:*",
-                      {
-                        "Partition": {
-                          "Fn::If": [
-                            "GovCloudCondition",
-                            "aws-us-gov",
-                            "aws"
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  "Effect": "Allow"
-                }
-              ]
-            },
-            "PolicyName": "bastion-cloudwatch-logs-policy"
-          },
-          {
-            "PolicyDocument": {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Action": [
-                    "ec2:AssociateAddress",
-                    "ec2:DescribeAddresses"
-                  ],
-                  "Resource": [
-                    "*"
-                  ],
-                  "Effect": "Allow"
-                }
-              ]
-            },
-            "PolicyName": "bastion-eip-policy"
-          }
-        ],
-        "Path": "/",
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "sts:AssumeRole"
-              ],
-              "Principal": {
-                "Service": [
-                  "ec2.amazonaws.com"
-                ]
-              },
-              "Effect": "Allow"
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      }
-    },
-    "BastionHostProfile": {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "BastionHostRole"
-          }
-        ],
-        "Path": "/"
-      }
-    },
-    "EIP": {
-      "Type": "AWS::EC2::EIP",
-      "Properties": {
-        "Domain": "vpc"
-      }
-    },
-    "BastionAutoScalingGroup": {
-      "Type": "AWS::AutoScaling::AutoScalingGroup",
-      "Properties": {
-        "LaunchConfigurationName": {
-          "Ref": "BastionLaunchConfiguration"
+        "VpcId": {
+          "Ref": "VPC"
         },
-        "VPCZoneIdentifier": [
-          {
-            "Ref": "PublicSubnet"
-          }
-        ],
-        "MinSize": "1",
-        "MaxSize": "2",
-        "Cooldown": "300",
-        "DesiredCapacity": "1",
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "LinuxBastion",
-            "PropagateAtLaunch": "true"
-          }
-        ]
-      },
-      "CreationPolicy": {
-        "ResourceSignal": {
-          "Count": "1",
-          "Timeout": "PT30M"
-        }
-      }
-    },
-    "BastionLaunchConfiguration": {
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
-      "Metadata": {
-        "AWS::CloudFormation::Init": {
-          "config": {
-            "b-bootstrap": {
-              "command": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "/tmp/bastion_bootstrap.sh",
-                    " --banner ",
-                    "https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/artifacts/banner_message.txt",
-                    " --enable true",
-                    " --tcp-forwarding true",
-                    " --x11-forwarding false"
-                  ]
-                ]
-              }
-            }
-          }
-        }
-      },
-      "Properties": {
-        "KeyName": {
-          "Ref": "KeyPairName"
+        "CidrBlock": {
+          "Ref": "PrivateSubnetCIDR"
         },
-        "IamInstanceProfile": {
-          "Ref": "BastionHostProfile"
-        },
-        "ImageId": {
-          "Fn::FindInMap": [
-            "AWSAMIRegionMap",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "0",
             {
-              "Ref": "AWS::Region"
-            },
-            {
-              "Fn::FindInMap": [
-                "AMINameMap",
-                "Amazon-Linux-HVM",
-                "Code"
-              ]
+              "Ref": "AvailabilityZones"
             }
           ]
         },
-        "SecurityGroups": [
+        "Tags": [
           {
-            "Ref": "BastionSecurityGroup"
+            "Key": "Name",
+            "Value": "Private subnet"
+          },
+          {
+            "Key": "Network",
+            "Value": "Private"
           }
-        ],
-        "InstanceType": "t2.small",
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash\n",
-                "export PATH=$PATH:/usr/local/bin\n",
-                "yum update -y\n",
-                "yum install nmap -y\n",
-                "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
-                "curl -L -o /tmp/bastion_bootstrap.sh https://github.com/awslabs/amazon-guardduty-tester/raw/master/bastion_bootstrap.sh\n",
-                "chown root: /tmp/bastion_bootstrap.sh\n",
-                "chmod +x /tmp/bastion_bootstrap.sh\n",
-                "EIP_LIST=\"",
-                {
-                  "Ref": "EIP"
-                },
-                ",Null,Null,Null",
-                "\"\n",
-                "CLOUDWATCHGROUP=",
-                {
-                  "Ref": "BastionMainLogGroup"
-                },
-                "\n",
-                "/tmp/bastion_bootstrap.sh",
-                " --banner ",
-                "https://raw.githubusercontent.com/awslabs/amazon-guardduty-tester/master/artifacts/banner_message.txt",
-                " --enable true",
-                " --tcp-forwarding true",
-                " --x11-forwarding false",
-                "\n",
-                "/opt/aws/bin/cfn-signal -e $? --stack ",
-                {
-                  "Ref": "AWS::StackName"
-                },
-                " --resource BastionAutoScalingGroup --region ",
-                {
-                  "Ref": "AWS::Region"
-                },
-                "\n"
-              ]
-            ]
-          }
+        ]
+      }
+    },
+    "PrivateSubnetRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateSubnetRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "InstanceId": {
+          "Fn::If": [
+            "NATInstanceCondition",
+            {
+              "Ref": "NATInstance"
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        },
+        "NatGatewayId": {
+          "Fn::If": [
+            "NATGatewayCondition",
+            {
+              "Ref": "NATGateway"
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
         }
       }
     },
-    "BastionSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
+    "PrivateSubnetRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "GroupDescription": "Enables SSH Access to Bastion Hosts",
         "VpcId": {
           "Ref": "VPC"
         },
-        "SecurityGroupIngress": [
+        "Tags": [
           {
-            "IpProtocol": "tcp",
-            "FromPort": "22",
-            "ToPort": "22",
-            "CidrIp": {
-              "Ref": "RemoteAccessCIDR"
-            }
+            "Key": "Name",
+            "Value": "Private subnet"
+          },
+          {
+            "Key": "Network",
+            "Value": "Private"
           }
         ]
       }
     },
-    "RedTeamSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
+    "PrivateSubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
-        "GroupDescription": "Enables SSH Access to RedTeam Tools Host",
+        "SubnetId": {
+          "Ref": "PrivateSubnet"
+        },
+        "RouteTableId": {
+          "Ref": "PrivateSubnetRouteTable"
+        }
+      }
+    },
+    "PublicSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
         "VpcId": {
           "Ref": "VPC"
         },
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "22",
-            "ToPort": "22",
-            "SourceSecurityGroupId": {
-              "Ref": "BastionSecurityGroup"
-            }
-          }
-        ]
-      }
-    },
-    "RedTeamIAMRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
+        "CidrBlock": {
+          "Ref": "PublicSubnetCIDR"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            "0",
             {
-              "Action": [
-                "sts:AssumeRole"
-              ],
-              "Principal": {
-                "Service": [
-                  "ec2.amazonaws.com"
-                ]
-              },
-              "Effect": "Allow"
+              "Ref": "AvailabilityZones"
             }
-          ],
-          "Version": "2012-10-17"
+          ]
         },
-        "Path": "/",
-        "Policies": []
-      }
-    },
-    "RedTeamInstanceProfile": {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties": {
-        "Roles": [
+        "Tags": [
           {
-            "Ref": "RedTeamIAMRole"
-          }
-        ],
-        "Path": "/"
-      }
-    },
-    "RedTeamNetInt": {
-      "Type": "AWS::EC2::NetworkInterface",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "PrivateSubnet"
-        },
-        "GroupSet": [
-          {
-            "Ref": "RedTeamSecurityGroup"
-          }
-        ],
-        "PrivateIpAddress": "172.16.0.20"
-      }
-    },
-    "BasicLinuxNetInt": {
-      "Type": "AWS::EC2::NetworkInterface",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "PrivateSubnet"
-        },
-        "GroupSet": [
-          {
-            "Ref": "BasicLinuxSecurityGroup"
+            "Key": "Name",
+            "Value": "Public subnet"
           },
           {
-            "Ref": "WazuhAgentTrafficSecurityGroup"
+            "Key": "Network",
+            "Value": "Public"
           }
         ],
-        "PrivateIpAddress": "172.16.0.22"
+        "MapPublicIpOnLaunch": true
       }
     },
-    "BasicWindowsNetInt": {
-      "Type": "AWS::EC2::NetworkInterface",
+    "PublicSubnetRoute": {
+      "DependsOn": "VPCGatewayAttachment",
+      "Type": "AWS::EC2::Route",
       "Properties": {
-        "SubnetId": {
-          "Ref": "PrivateSubnet"
+        "RouteTableId": {
+          "Ref": "PublicSubnetRouteTable"
         },
-        "GroupSet": [
-          {
-            "Ref": "BasicWindowsSecurityGroup"
-          },
-          {
-            "Ref": "WazuhAgentTrafficSecurityGroup"
-          }
-        ],
-        "PrivateIpAddress": "172.16.0.23"
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        }
       }
     },
-    "wazuhNetInt": {
-      "Type": "AWS::EC2::NetworkInterface",
+    "PublicSubnetRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "SubnetId": {
-          "Ref": "PrivateSubnet"
+        "VpcId": {
+          "Ref": "VPC"
         },
-        "GroupSet": [
+        "Tags": [
           {
-            "Ref": "BasicLinuxSecurityGroup"
+            "Key": "Name",
+            "Value": "Public Subnets"
           },
           {
-            "Ref": "WazuhAgentTrafficSecurityGroup"
+            "Key": "Network",
+            "Value": "Public"
           }
-        ],
-        "PrivateIpAddress": "172.16.0.21"
+        ]
+      }
+    },
+    "PublicSubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PublicSubnet"
+        },
+        "RouteTableId": {
+          "Ref": "PublicSubnetRouteTable"
+        }
       }
     },
     "RedTeam": {
@@ -1055,10 +1660,58 @@
         ]
       }
     },
-    "BasicLinuxSecurityGroup": {
+    "RedTeamIAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Effect": "Allow"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Path": "/",
+        "Policies": []
+      }
+    },
+    "RedTeamInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "RedTeamIAMRole"
+          }
+        ],
+        "Path": "/"
+      }
+    },
+    "RedTeamNetInt": {
+      "Type": "AWS::EC2::NetworkInterface",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivateSubnet"
+        },
+        "GroupSet": [
+          {
+            "Ref": "RedTeamSecurityGroup"
+          }
+        ],
+        "PrivateIpAddress": "172.16.0.20"
+      }
+    },
+    "RedTeamSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "Enables Admin Access to basic linux hosts",
+        "GroupDescription": "Enables SSH Access to RedTeam Tools Host",
         "VpcId": {
           "Ref": "VPC"
         },
@@ -1068,42 +1721,77 @@
             "FromPort": "22",
             "ToPort": "22",
             "SourceSecurityGroupId": {
-              "Ref": "RedTeamSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "80",
-            "ToPort": "80",
-            "SourceSecurityGroupId": {
-              "Ref": "RedTeamSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "5050",
-            "ToPort": "5050",
-            "SourceSecurityGroupId": {
-              "Ref": "RedTeamSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "icmp",
-            "FromPort": "-1",
-            "ToPort": "-1",
-            "SourceSecurityGroupId": {
-              "Ref": "RedTeamSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "22",
-            "ToPort": "22",
-            "SourceSecurityGroupId": {
               "Ref": "BastionSecurityGroup"
             }
           }
         ]
+      }
+    },
+    "SSHMetricFilter": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "LogGroupName": {
+          "Ref": "BastionMainLogGroup"
+        },
+        "FilterPattern": "ON FROM USER PWD",
+        "MetricTransformations": [
+          {
+            "MetricName": "SSHCommandCount",
+            "MetricValue": 1,
+            "MetricNamespace": {
+              "Fn::Join": [
+                "/",
+                [
+                  "AWSQuickStart",
+                  {
+                    "Ref": "AWS::StackName"
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": {
+          "Ref": "VPCCIDR"
+        },
+        "InstanceTenancy": "default",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          }
+        ]
+      }
+    },
+    "VPCDHCPOptionsAssociation": {
+      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "DhcpOptionsId": {
+          "Ref": "DHCPOptions"
+        }
+      }
+    },
+    "VPCGatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
       }
     },
     "WazuhAgentTrafficSecurityGroup": {
@@ -1215,111 +1903,6 @@
         ]
       }
     },
-    "BasicLinuxIAMRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "ec2.amazonaws.com"
-                ]
-              },
-              "Action": [
-                "sts:AssumeRole"
-              ]
-            }
-          ]
-        },
-        "Path": "/",
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
-        ]
-      }
-    },
-    "BasicLinuxInstanceProfile": {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "BasicLinuxIAMRole"
-          }
-        ],
-        "Path": "/"
-      }
-    },
-    "BasicLinuxTarget": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "KeyName": {
-          "Ref": "KeyPairName"
-        },
-        "NetworkInterfaces": [
-          {
-            "NetworkInterfaceId": {
-              "Ref": "BasicLinuxNetInt"
-            },
-            "DeviceIndex": "0"
-          }
-        ],
-        "IamInstanceProfile": {
-          "Ref": "BasicLinuxInstanceProfile"
-        },
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash\n",
-                "export PATH=$PATH:/usr/local/bin\n",
-                "yum update -y\n",
-                "yum install -y httpd24 php70 mysql56-server php70-mysqlnd gcc openssl-devel* nmap\n",
-                "service httpd start\n",
-                "export LOCAL_HOST=`curl http://169.254.169.254/latest/meta-data/local-hostname`\n",
-                "wget -O /home/ec2-user/install https://d1wk0tztpsntt1.cloudfront.net/linux/latest/install\n",
-                "chmod +x /home/ec2-user/install\n",
-                "bash /home/ec2-user/install -u false\n",
-                "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.sh\n",
-                "chmod +x /home/ec2-user/installWazuh\n",
-                "bash /home/ec2-user/installWazuh -u false\n"
-              ]
-            ]
-          }
-        },
-        "InstanceType": "m4.large",
-        "AvailabilityZone": {
-          "Fn::Select": [
-            "0",
-            {
-              "Ref": "AvailabilityZones"
-            }
-          ]
-        },
-        "ImageId": {
-          "Fn::FindInMap": [
-            "AWSAMIRegionMap",
-            {
-              "Ref": "AWS::Region"
-            },
-            {
-              "Fn::FindInMap": [
-                "AMINameMap",
-                "Amazon-Linux-HVM",
-                "Code"
-              ]
-            }
-          ]
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "BasicLinuxTarget"
-          }
-        ]
-      }
-    },
     "wazuh": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
@@ -1384,150 +1967,40 @@
         ]
       }
     },
-    "BasicWindowsSecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
+    "wazuhNetInt": {
+      "Type": "AWS::EC2::NetworkInterface",
       "Properties": {
-        "GroupDescription": "Enables Admin Access to basic windows hosts",
-        "VpcId": {
+        "SubnetId": {
+          "Ref": "PrivateSubnet"
+        },
+        "GroupSet": [
+          {
+            "Ref": "BasicLinuxSecurityGroup"
+          },
+          {
+            "Ref": "WazuhAgentTrafficSecurityGroup"
+          }
+        ],
+        "PrivateIpAddress": "172.16.0.21"
+      }
+    },
+    "MyFlowLog": {
+      "Type": "AWS::EC2::FlowLog",
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "FlowLogsToCloudWatch",
+            "Arn"
+          ]
+        },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
+        "ResourceId": {
           "Ref": "VPC"
         },
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "3389",
-            "ToPort": "3389",
-            "SourceSecurityGroupId": {
-              "Ref": "RedTeamSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "icmp",
-            "FromPort": "-1",
-            "ToPort": "-1",
-            "SourceSecurityGroupId": {
-              "Ref": "RedTeamSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "3389",
-            "ToPort": "3389",
-            "SourceSecurityGroupId": {
-              "Ref": "BastionSecurityGroup"
-            }
-          }
-        ]
-      }
-    },
-    "BasicWindowsIAMRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "ec2.amazonaws.com"
-                ]
-              },
-              "Action": [
-                "sts:AssumeRole"
-              ]
-            }
-          ]
-        },
-        "Path": "/"
-      }
-    },
-    "BasicWindowsInstanceProfile": {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "BasicWindowsIAMRole"
-          }
-        ],
-        "Path": "/"
-      }
-    },
-    "BasicWindowsTarget": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "KeyName": {
-          "Ref": "KeyPairName"
-        },
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "<powershell>\n",
-                "Set-ExecutionPolicy RemoteSigned -Force\n",
-                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
-                "</powershell>\n",
-                "<script>\n",
-                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1", "\n", 
-                "</script>\n"
-              ]
-            ]
-          }
-        },
-        "NetworkInterfaces": [
-          {
-            "NetworkInterfaceId": {
-              "Ref": "BasicWindowsNetInt"
-            },
-            "DeviceIndex": "0"
-          }
-        ],
-        "InstanceType": "m4.large",
-        "AvailabilityZone": {
-          "Fn::Select": [
-            "0",
-            {
-              "Ref": "AvailabilityZones"
-            }
-          ]
-        },
-        "ImageId": {
-          "Fn::FindInMap": [
-            "AWSAMIRegionMap",
-            {
-              "Ref": "AWS::Region"
-            },
-            {
-              "Fn::FindInMap": [
-                "AMINameMap",
-                "Windows-Server-2012",
-                "Code"
-              ]
-            }
-          ]
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "BasicWindowsTarget"
-          }
-        ]
-      }
-    }
-  },
-  "Outputs": {
-    "BastionIp": {
-      "Description": "Elastic IP for Bastion",
-      "Value": {
-        "Ref": "EIP"
-      }
-    },
-    "RedTeamIp": {
-      "Description": "Local IP for RedTeam Instance",
-      "Value": {
-        "Fn::GetAtt": [
-          "RedTeam",
-          "PrivateIp"
-        ]
+        "ResourceType": "VPC",
+        "TrafficType": "ALL"
       }
     }
   }
