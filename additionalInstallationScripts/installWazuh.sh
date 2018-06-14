@@ -18,6 +18,7 @@ yum install wazuh-manager -y -q -e 0
 ## check the service status
 #service wazuh-manager status
 chkconfig --add wazuh-manager
+chkconfig wazuh-manager on
 service wazuh-manager start
 #######################################
 # Installing the Wazuh API
@@ -29,11 +30,12 @@ bash setup_6.x
 ## install NodeJS
 yum install nodejs -y -q -e 0
 ## install Python if lower than 2.7
-python --version
+#python --version
 ## Install the Wazuh API
 yum install wazuh-api -y -q -e 0
 ## check the service status
 chkconfig --add wazuh-api
+chkconfig wazuh-api on
 service wazuh-api start
 service wazuh-api status
 #######################################
@@ -61,6 +63,7 @@ EOF
 yum install elasticsearch-6.2.4 -y -q -e 0
 ## Enable and start the Elasticsearch service
 chkconfig --add elasticsearch
+chkconfig elasticsearch on
 service elasticsearch start
 #wait until elasticsearch comes up before continuing 
 ES_URL=${ES_URL:-'http://localhost:9200'}
@@ -94,6 +97,7 @@ sed -i 's/LS_GROUP=logstash/LS_GROUP=ossec/' /etc/logstash/startup.options
 service logstash restart
 ## Enable and start the Logstash service
 chkconfig --add logstash
+chkconfig logstash on
 service logstash start
 #######################################
 # install Kibana
@@ -107,6 +111,7 @@ export NODE_OPTIONS="--max-old-space-size=3072"
 sed -i 's/#server.host: "localhost"/server.host: "0.0.0.0"/' /etc/kibana/kibana.yml
 ## Enable and start the Kibana service
 chkconfig --add kibana
+chkconfig kibana on
 service kibana start
 #######################################
 # Disable the Elasticsearch repository

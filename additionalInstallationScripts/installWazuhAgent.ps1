@@ -1,10 +1,10 @@
 # Download agent
-$url = "https://packages.wazuh.com/3.x/windows/wazuh-agent-3.2.2-1.msi"
-$output = "C:\Users\Administrator\Desktop\wazuh-agent-3.2.2-1.msi"
+$url = "https://packages.wazuh.com/3.x/windows/wazuh-agent-3.3.0-1.msi"
+$output = "C:\Users\Administrator\Desktop\wazuh-agent-3.3.0-1.msi"
 Invoke-WebRequest -Uri $url -OutFile $output
 
 # install agent
-C:\Users\Administrator\Desktop\wazuh-agent-3.2.2-1.msi /q
+C:\Users\Administrator\Desktop\wazuh-agent-3.3.0-1.msi /q
 
 # add firwall rules to allow wazuh agent traffic
 #New-NetFirewallRule -DisplayName "Allow Wazuh Agent Traffic UDP 514" -Direction Outbound -LocalPort 1514 -Protocol UDP -Action Allow
