@@ -2069,6 +2069,52 @@
         }
       }
     },
+    "AWSMacieServiceCustomerSetupRoledetonationlab": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "AWSMacieServiceCustomerSetupRoledetonationlab",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": {
+            "Action": [
+              "sts:AssumeRole"
+            ],
+            "Principal": {
+              "Service": [
+                "macie.amazonaws.com"
+              ]
+            },
+            "Effect": "Allow"
+          }
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AmazonMacieSetupRole"
+        ]
+      }
+    },
+    "AWSMacieServiceCustomerServiceRoledetonationlab": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "AWSMacieServiceCustomerServiceRoledetonationlab",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": {
+            "Action": [
+              "sts:AssumeRole"
+            ],
+            "Principal": {
+              "Service": [
+                "macie.amazonaws.com"
+              ]
+            },
+            "Effect": "Allow"
+          }
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AmazonMacieServiceRole"
+        ]
+      }
+    },
     "detonationLabCloudTrail": {
       "DependsOn": [
         "BucketPolicy"
