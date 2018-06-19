@@ -10,7 +10,7 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
 # todo List (AKA things i still need to automate)
 - add additional sources to kibana
   - cloudtrail
-    - get cloudtrail into wazuh https://documentation.wazuh.com/current/amazon/installation.html
+    - https://documentation.wazuh.com/current/amazon/installation.html
   - Macie
   - guardduty
   - vpcflow
@@ -20,6 +20,9 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
         - https://app.logz.io/#/dashboard/apps
   - route53
   - figure out how to auto setup logging for additional sources
+  - VirusTotal integration
+    - https://documentation.wazuh.com/3.x/user-manual/capabilities/virustotal-scan/index.html
+  
 
 
 # Getting Started
@@ -226,10 +229,6 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
 3. connect client to server manually
    1. Linux: `sudo bash installWazuh`
    2. Windows: `C:\Users\Administrator\Desktop\testConnextion.ps1`
-
-# Setup Logging for Detonation Lab.
-- setup AWS logging sources
-  - https://github.com/sonofagl1tch/AWSDetonationLab/tree/master/Wazuh-configurations/runOnAWSCLIHost
 
 # Getting Logs Into SIEM.
 - setup AWS log ingestion on Wazuh server (ELK)
