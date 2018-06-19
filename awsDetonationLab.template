@@ -170,49 +170,10 @@
     }
   },
   "Outputs": {
-    "AddFlowLogToVpcCmd": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "**************THIS NO LONGER NEEDS TO BE MANUALLY RUN**************\n",
-            "aws ec2 create-flow-logs --resource-type VPC",
-            " --traffic-type ALL --resource-ids ",
-            {
-              "Ref": "VPC"
-            },
-            " --log-group-name ",
-            {
-              "Ref": "FlowLogs"
-            },
-            " --deliver-logs-permission-arn ",
-            {
-              "Fn::GetAtt": [
-                "FlowLogsToCloudWatch",
-                "Arn"
-              ]
-            }
-          ]
-        ]
-      }
-    },
     "BastionIp": {
       "Description": "Elastic IP for Bastion",
       "Value": {
         "Ref": "EIP"
-      }
-    },
-    "DeliverLogsPermissionArn": {
-      "Value": {
-        "Fn::GetAtt": [
-          "FlowLogsToCloudWatch",
-          "Arn"
-        ]
-      }
-    },
-    "LogGroupName": {
-      "Value": {
-        "Ref": "FlowLogs"
       }
     },
     "RedTeamIp": {
@@ -222,11 +183,6 @@
           "RedTeam",
           "PrivateIp"
         ]
-      }
-    },
-    "S3LogLocation": {
-      "Value": {
-        "Ref": "Bucket"
       }
     }
   },
