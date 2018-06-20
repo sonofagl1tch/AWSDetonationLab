@@ -67,6 +67,32 @@ This process will walk you through getting the core detonation lab automatically
     - Put whatever you want here
   - create rule
 
+## Topologies
+### All
+![All](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-All.png "All")
+
+### CloudTrail
+![CloudTrail](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-cloudTrail.png "CloudTrail")
+
+### Macie
+![Macie](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-macie.png "Macie")
+
+### GuardDuty
+![GuardDuty](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-guardduty.png "GuardDuty")
+
+### IAM
+![IAM](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-IAM.png "IAM")
+
+### Inspector
+![Inspector](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-Inspector.png "Inspector")
+
+### VPCFlow
+![VPCFlow](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-vpcflow.png "VPCFlow")
+
+### Wazuh
+![Wazuh](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/Topology/Topology-wazuh.png "Wazuh")
+
+
 ## Create Your Detonation Lab
 
 1. Create a new CloudFormation stack 
