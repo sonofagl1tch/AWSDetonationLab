@@ -16,14 +16,11 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
   - vpcflow
     - get vpcflow into wazuh
       - https://aws.amazon.com/blogs/aws/cloudwatch-logs-subscription-consumer-elasticsearch-kibana-dashboards/
-      - audoload their kibana dashboards
+      - autoload their kibana dashboards
         - https://app.logz.io/#/dashboard/apps
-  - route53
-  - figure out how to auto setup logging for additional sources
-  - VirusTotal integration
-    - https://documentation.wazuh.com/3.x/user-manual/capabilities/virustotal-scan/index.html
+- VirusTotal integration
+  - https://documentation.wazuh.com/3.x/user-manual/capabilities/virustotal-scan/index.html
   
-
 
 # Getting Started
 
