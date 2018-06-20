@@ -2020,6 +2020,16 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {}
     },
+    "S3BucketIAM": {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "Properties": {}
+    },
+    "S3BucketInspector": {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "Properties": {}
+    },
     "S3BucketPolicyCloudTrail": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
@@ -2240,6 +2250,56 @@
         }
       }
     },
+    "firehostdeliveryRoleIAM": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehostdeliveryRoleInspector": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
     "firehostdeliveryRoleMacie": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -2313,6 +2373,110 @@
         "Roles": [
           {
             "Ref": "firehostdeliveryRoleGuardDuty"
+          }
+        ]
+      }
+    },
+    "firehosedeliveryPolicyIAM": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "firehose_delivery_policy_IAM",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:AbortMultipartUpload",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutObject"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketIAM"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketIAM"
+                      },
+                      "*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "firehostdeliveryRoleIAM"
+          }
+        ]
+      }
+    },
+    "firehosedeliveryPolicyInspector": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "firehose_delivery_policy_Inspector",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:AbortMultipartUpload",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutObject"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketInspector"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketInspector"
+                      },
+                      "*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "firehostdeliveryRoleInspector"
           }
         ]
       }
@@ -2396,6 +2560,78 @@
           "RoleARN": {
             "Fn::GetAtt": [
               "firehostdeliveryRoleGuardDuty",
+              "Arn"
+            ]
+          },
+          "ProcessingConfiguration": {
+            "Enabled": "false"
+          }
+        }
+      }
+    },
+    "FirehosedeliverystreamIAM": {
+      "DependsOn": [
+        "firehosedeliveryPolicyIAM"
+      ],
+      "Type": "AWS::KinesisFirehose::DeliveryStream",
+      "Properties": {
+        "ExtendedS3DestinationConfiguration": {
+          "BucketARN": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:s3:::",
+                {
+                  "Ref": "S3BucketIAM"
+                }
+              ]
+            ]
+          },
+          "BufferingHints": {
+            "IntervalInSeconds": "60",
+            "SizeInMBs": "1"
+          },
+          "CompressionFormat": "UNCOMPRESSED",
+          "Prefix": "firehose/",
+          "RoleARN": {
+            "Fn::GetAtt": [
+              "firehostdeliveryRoleIAM",
+              "Arn"
+            ]
+          },
+          "ProcessingConfiguration": {
+            "Enabled": "false"
+          }
+        }
+      }
+    },
+    "FirehosedeliverystreamInspector": {
+      "DependsOn": [
+        "firehosedeliveryPolicyInspector"
+      ],
+      "Type": "AWS::KinesisFirehose::DeliveryStream",
+      "Properties": {
+        "ExtendedS3DestinationConfiguration": {
+          "BucketARN": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:s3:::",
+                {
+                  "Ref": "S3BucketInspector"
+                }
+              ]
+            ]
+          },
+          "BufferingHints": {
+            "IntervalInSeconds": "60",
+            "SizeInMBs": "1"
+          },
+          "CompressionFormat": "UNCOMPRESSED",
+          "Prefix": "firehose/",
+          "RoleARN": {
+            "Fn::GetAtt": [
+              "firehostdeliveryRoleInspector",
               "Arn"
             ]
           },
