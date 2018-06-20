@@ -13,6 +13,8 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
     - https://documentation.wazuh.com/current/amazon/installation.html
   - Macie
   - guardduty
+  - IAM
+  - Inspector
   - vpcflow
     - get vpcflow into wazuh
       - https://aws.amazon.com/blogs/aws/cloudwatch-logs-subscription-consumer-elasticsearch-kibana-dashboards/
@@ -21,16 +23,49 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
 - VirusTotal integration
   - https://documentation.wazuh.com/3.x/user-manual/capabilities/virustotal-scan/index.html
   
+# Things that cannot go into the cloudformation template and why
+- cloudwatch event Rules
+  - cloudformation does not support this feature currently
+- route53 DNS
+  - currently requires a public domain to be registered to be used so i cut it for cost reasons
 
 # Getting Started
-
 This process will walk you through getting the core detonation lab automatically configured and additional processes for setting up each item
 
 ## Prerequisites
 
-- Setup AWS logging sources: 
-  - https://github.com/sonofagl1tch/AWSDetonationLab/tree/master/AWS-Logging
-
+- Setup and enable AWS logging sources: 
+  - enable guardDuty 
+    - https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_settingup.html
+  - enable Macie
+    - https://docs.aws.amazon.com/macie/latest/userguide/macie-setting-up.html
+  - enable IAM 
+    - on by default. just needs cloudwatch event rule to forward them.
+  - enable Inspector
+    - https://docs.aws.amazon.com/inspector/latest/userguide/inspector_settingup.html 
+- Setup cloudwatch event rules to forward service events to firehose for GuardDuty, Macie, IAM, Inspector
+  - https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#rules
+  - create rule
+  - Event Source
+    - Event pattern
+    - Service Name
+      - GuardDuty
+    - Event Type
+      - All
+  - Targets
+    - Add Target
+      - Kinesis Stream
+        - "awsDetonationLab-v72-FirehosedeliverystreamGuardDu-15YBFKIAFRMHU"
+      - Configure input
+        - Matched Event
+      - Create a new role for this specific resource
+        - keep default name, just add "GuardDuty" to the end of it
+  - configure details
+  - Name
+    - awsDetonationLab-v72-CloudWatchToKinesis-GuardDuty
+  - Description
+    - Put whatever you want here
+  - create rule
 
 ## Create Your Detonation Lab
 
