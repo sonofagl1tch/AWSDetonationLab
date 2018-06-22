@@ -2555,7 +2555,7 @@
             "IntervalInSeconds": "60",
             "SizeInMBs": "1"
           },
-          "CompressionFormat": "UNCOMPRESSED",
+          "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
@@ -2591,7 +2591,7 @@
             "IntervalInSeconds": "60",
             "SizeInMBs": "1"
           },
-          "CompressionFormat": "UNCOMPRESSED",
+          "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
@@ -2627,7 +2627,7 @@
             "IntervalInSeconds": "60",
             "SizeInMBs": "1"
           },
-          "CompressionFormat": "UNCOMPRESSED",
+          "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
@@ -2663,7 +2663,7 @@
             "IntervalInSeconds": "60",
             "SizeInMBs": "1"
           },
-          "CompressionFormat": "UNCOMPRESSED",
+          "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
