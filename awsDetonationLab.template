@@ -1557,52 +1557,6 @@
         "PrivateIpAddress": "172.16.0.21"
       }
     },
-    "AWSMacieServiceCustomerSetupRoledetonationlab": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "RoleName": "AWSMacieServiceCustomerSetupRoledetonationlab",
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": {
-            "Action": [
-              "sts:AssumeRole"
-            ],
-            "Principal": {
-              "Service": [
-                "macie.amazonaws.com"
-              ]
-            },
-            "Effect": "Allow"
-          }
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/service-role/AmazonMacieSetupRole"
-        ]
-      }
-    },
-    "AWSMacieServiceCustomerServiceRoledetonationlab": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "RoleName": "AWSMacieServiceCustomerServiceRoledetonationlab",
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": {
-            "Action": [
-              "sts:AssumeRole"
-            ],
-            "Principal": {
-              "Service": [
-                "macie.amazonaws.com"
-              ]
-            },
-            "Effect": "Allow"
-          }
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/service-role/AmazonMacieServiceRole"
-        ]
-      }
-    },
     "LogStream": {
       "Type": "AWS::Kinesis::Stream",
       "Properties": {
@@ -2675,6 +2629,98 @@
             "Enabled": "false"
           }
         }
+      }
+    },
+    "IamPolicyWazuhAccessS3": {
+      "Type": "AWS::IAM::Policy",
+      "DependsOn": "wazuhUser",
+      "Properties": {
+        "Users": [
+          "wazuh"
+        ],
+        "PolicyName": "wazuh-read-detlab-s3buckets",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:DeleteObject"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketGuardDuty"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketCloudTrail"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketMacie"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketIAM"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketInspector"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "wazuhUser": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "Path": "/",
+        "UserName": "wazuh"
       }
     }
   }
