@@ -77,7 +77,8 @@ function req($method, $resource, $params){
 $base_url = "http://172.16.0.21:55000"
 $username = "wazuh"
 $password = "wazuh"
-$agent_name = $env:computername
+#$agent_name = $env:computername
+$agent_name = "windowsVictim"
 $path = "C:\Program Files (x86)\ossec-agent\"
 $config = "C:\Program Files (x86)\ossec-agent\ossec.conf"
 $wazuh_manager = "172.16.0.21"

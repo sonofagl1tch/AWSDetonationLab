@@ -38,7 +38,8 @@ USER="wazuh"
 PASSWORD="wazuh"
 
 if [ "$#" = "0" ]; then
-  AGENT_NAME=$(hostname)
+  #AGENT_NAME=$(hostname)
+  AGENT_NAME="linuxVictim"
 else
   AGENT_NAME=$1
 fi
