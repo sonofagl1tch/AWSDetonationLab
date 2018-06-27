@@ -330,6 +330,7 @@
     },
     "BasicLinuxTarget": {
       "Type": "AWS::EC2::Instance",
+      "DependsOn": "wazuh",
       "Properties": {
         "KeyName": {
           "Ref": "KeyPairName"
@@ -359,6 +360,7 @@
                 "wget -O /home/ec2-user/install https://d1wk0tztpsntt1.cloudfront.net/linux/latest/install\n",
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n",
+                "sleep 300\n",
                 "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.sh\n",
                 "chmod +x /home/ec2-user/installWazuh\n",
                 "bash /home/ec2-user/installWazuh -u false\n"
@@ -483,6 +485,7 @@
       }
     },
     "BasicWindowsTarget": {
+      "DependsOn": "wazuh",
       "Type": "AWS::EC2::Instance",
       "Properties": {
         "KeyName": {
@@ -496,10 +499,12 @@
                 "<powershell>\n",
                 "Set-ExecutionPolicy RemoteSigned -Force\n",
                 "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
+                "Start-Sleep -s 300\n",
                 "</powershell>\n",
                 "<script>\n",
-                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-                "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1",
+                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe\n",
+                "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
+                "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
                 "\n",
                 "</script>\n"
               ]
