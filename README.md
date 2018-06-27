@@ -22,12 +22,23 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
         - https://app.logz.io/#/dashboard/apps
 - VirusTotal integration
   - https://documentation.wazuh.com/3.x/user-manual/capabilities/virustotal-scan/index.html
-  
+
 # Things that cannot go into the cloudformation template and why
 - cloudwatch event Rules
   - cloudformation does not support this feature currently
 - route53 DNS
   - currently requires a public domain to be registered to be used so i cut it for cost reasons
+  
+# additional considerations
+creating an AMI with encrypted volumes. I do this and modify the cloudformation template included in this repo to point to my private AMI versions for usage so all systems have full disk encryption.
+1. In the source account, create an EBS-backed custom AMI starting from a public AWS AMI in the source region.
+2. Add your encrypted EBS snapshots to the custom AMI, and give the target account access to the KMS encryption keys.
+3. Share your encrypted snapshots with the target account.
+4. Copy the snapshots to the target region and reencrypt them using the target account’s KMS encryption keys in the target region.
+5. Have the target account create an AMI using the encrypted EBS snapshots in the target region. 
+
+  `aws ec2 copy-image --source-region us-east-1 --source-image-id ami-123abc456 --region us-east-1 --name "windows2k16-encrypted" --encrypted`
+  
 
 # Getting Started
 This process will walk you through getting the core detonation lab automatically configured and additional processes for setting up each item
@@ -43,29 +54,6 @@ This process will walk you through getting the core detonation lab automatically
     - on by default. just needs cloudwatch event rule to forward them.
   - enable Inspector
     - https://docs.aws.amazon.com/inspector/latest/userguide/inspector_settingup.html 
-- Setup cloudwatch event rules to forward service events to firehose for GuardDuty, Macie, IAM, Inspector
-  - https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#rules
-  - create rule
-  - Event Source
-    - Event pattern
-    - Service Name
-      - GuardDuty
-    - Event Type
-      - All
-  - Targets
-    - Add Target
-      - Kinesis Stream
-        - "awsDetonationLab-v72-FirehosedeliverystreamGuardDu-15YBFKIAFRMHU"
-      - Configure input
-        - Matched Event
-      - Create a new role for this specific resource
-        - keep default name, just add "GuardDuty" to the end of it
-  - configure details
-  - Name
-    - awsDetonationLab-v72-CloudWatchToKinesis-GuardDuty
-  - Description
-    - Put whatever you want here
-  - create rule
 
 ## Topologies
 ### All
@@ -157,6 +145,31 @@ Host windows
 
 For more details on configuring and connecting through bastion hosts you can check out [this article](https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/).
 
+## Setup cloud watch event rules
+- Setup cloudwatch event rules to forward service events to firehose for GuardDuty, Macie, IAM, Inspector
+  - https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#rules
+  - create rule
+  - Event Source
+    - Event pattern
+    - Service Name
+      - GuardDuty
+    - Event Type
+      - All
+  - Targets
+    - Add Target
+      - Kinesis Stream
+        - "awsDetonationLab-v72-FirehosedeliverystreamGuardDu-15YBFKIAFRMHU"
+      - Configure input
+        - Matched Event
+      - Create a new role for this specific resource
+        - keep default name, just add "GuardDuty" to the end of it
+  - configure details
+  - Name
+    - awsDetonationLab-v72-CloudWatchToKinesis-GuardDuty
+  - Description
+    - Put whatever you want here
+  - create rule
+
 Setup RoyalTSX or your preferred client to use the bastion host as a secure gateway to tunnel RDP through SSH. 
 
 Select **File > New Document**
@@ -214,17 +227,17 @@ This will initiate interaction between your redTeam and target EC2 instances, si
 
 ![GuardDutyFindings Example](https://github.com/sonofagl1tch/AWSDetonationLab/blob/master/images/guardDutyFindings-example.png "guardDutyFindings-example")
 
-## EDR Logs
+# EDR Logs
 For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source host-based intrusion detection system. It performs log analysis, integrity checking, Windows registry monitoring, rootkit detection, time-based alerting, and active response." you can find more information about them at https://documentation.wazuh.com/current/index.html
-### forward kibana console
+## forward kibana console
 `ssh -L 8080:localhost:5601 wazuh -N`
 
-### what do I do if the clients have not automatically joined the server?
+## what do I do if the clients have not automatically joined the server?
 1. Test to see if the server is running. Both clients have service checks built into them and can be stuck waiting for the server to come up.
    1. `ssh wazuh`
-   2. `sudo service elasticsearch start`
-   3. `sudo service logstash start`
-   4. `sudo service kibana start`
+   2. `sudo service elasticsearch restart`
+   3. `sudo service logstash restart`
+   4. `sudo service kibana restart`
    5. `curl -XGET http://172.16.0.21:9200`
      1. if this comes back with something like the following then you're good to go on the server side
     ```
@@ -287,17 +300,3 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
 3. connect client to server manually
    1. Linux: `sudo bash installWazuh`
    2. Windows: `C:\Users\Administrator\Desktop\testConnextion.ps1`
-
-# Getting Logs Into SIEM.
-- setup AWS log ingestion on Wazuh server (ELK)
-  - https://github.com/sonofagl1tch/AWSDetonationLab/tree/master/Wazuh-configurations/runOnWazuh
-
-# additional considerations
-creating an AMI with encrypted volumes. I do this and modify the cloudformation template included in this repo to point to my private AMI versions for usage so all systems have full disk encryption.
-1. In the source account, create an EBS-backed custom AMI starting from a public AWS AMI in the source region.
-2. Add your encrypted EBS snapshots to the custom AMI, and give the target account access to the KMS encryption keys.
-3. Share your encrypted snapshots with the target account.
-4. Copy the snapshots to the target region and reencrypt them using the target account’s KMS encryption keys in the target region.
-5. Have the target account create an AMI using the encrypted EBS snapshots in the target region. 
-
-`aws ec2 copy-image --source-region us-east-1 --source-image-id ami-123abc456 --region us-east-1 --name "windows2k16-encrypted" --encrypted`
