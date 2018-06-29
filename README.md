@@ -38,7 +38,20 @@ creating an AMI with encrypted volumes. I do this and modify the cloudformation 
 5. Have the target account create an AMI using the encrypted EBS snapshots in the target region. 
 
   `aws ec2 copy-image --source-region us-east-1 --source-image-id ami-123abc456 --region us-east-1 --name "windows2k16-encrypted" --encrypted`
-  
+ 
+# What does the cloudformation Template do?
+| Section       | Item Created | Description/Notes |
+| ------------- | :-----------:| :-----------------|
+| AWSTemplateFormatVersion | versioning | 2010-09-09 |
+| Conditions | GovCloudCondition | AWS::Region | 
+| Conditions | NATInstanceCondition | AWS::Region | 
+| Conditions | NATGatewayCondition | AWS::Region | 
+| Conditions | NVirginiaRegionCondition | AWS::Region | 
+| Description | Description of template - high level | This template creates the basic VPC infrastructure for an isolated testing environment. It will deploy a bastion host into the public subnet for a single Availability Zone so we have a protected point of entry. It will then create a linux instance with some red team scripts & tools that operate against common applications that are created in the same private subnet. **WARNING** This template creates Amazon EC2 instance and related resources. You will be billed for the AWS resources used if you create a stack from this template. |
+| Mappings | AWSAMIRegionMap | <ul><li>NATAMI</li><li>us-gov-west-1</li><li>AMI</li><li>ap-northeast-1</li><li>ap-northeast-2</li><li>ap-south-1</li><li>ap-southeast-1</li><li>ap-southeast-2</li><li>ca-central-1</li><li>eu-central-1</li><li>eu-west-1</li><li>eu-west-2</li><li>sa-east-1</li><li>us-east-1</li><li>us-east-2</li><li>us-west-1</li><li>us-west-2</li></ul> |
+| Mappings | AMINameMap | <ul><li>Amazon-Linux-HVM</li><li>Windows-Server-2012</li></ul> |
+| Mappings | Defaults | <ul><li>LogGroup - RetentionInDays - 1</li><li>Stream - ShardCount - 10</li><li>EventSourceMapping - BatchSize - 10000</li></ul> |
+
 
 # Getting Started
 This process will walk you through getting the core detonation lab automatically configured and additional processes for setting up each item
