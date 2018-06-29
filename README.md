@@ -61,7 +61,7 @@ creating an AMI with encrypted volumes. I do this and modify the cloudformation 
 | Parameters | PublicSubnetCIDR | AllowedPattern | CIDR block parameter must be in the form x.x.x.x/16-28. CIDR Block for the public DMZ subnet for secure administrative entry |
 | Parameters | RemoteAccessCIDR | AllowedPattern | CIDR block parameter must be in the form x.x.x.x/x. CIDR from which access to bastion is to be permitted |
 | Parameters | VPCCIDR | AllowedPattern | CIDR block parameter must be in the form x.x.x.x/16-28. CIDR Block for the VPC. |
-| Resources | <ul><li>BasicLinuxIAMRole</li><li>BasicWindowsIAMRole</li><li>BastionHostRole</li><li>RedTeamIAMRole</li><li>LambdaRole</li><li>CloudWatchToKinesis</li>li>FlowLogsToCloudWatch</li></ul> | AWS::IAM::Role | Creates an AWS Identity and Access Management (IAM) role. Use an IAM role to enable applications running on an EC2 instance to securely access your AWS resources. | 
+| Resources | <ul><li>BasicLinuxIAMRole</li><li>BasicWindowsIAMRole</li><li>BastionHostRole</li><li>RedTeamIAMRole</li><li>LambdaRole</li><li>CloudWatchToKinesis</li><li>FlowLogsToCloudWatch</li><li>firehostdeliveryRoleGuardDuty</li><li>firehostdeliveryRoleIAM</li><li>firehostdeliveryRoleInspector</li><li>firehostdeliveryRoleMacie</li></ul> | AWS::IAM::Role | Creates an AWS Identity and Access Management (IAM) role. Use an IAM role to enable applications running on an EC2 instance to securely access your AWS resources. | 
 | Resources | <ul><li>BasicLinuxInstanceProfile</li><li>BasicWindowsInstanceProfile</li><li>BastionHostProfile</li><li>RedTeamInstanceProfile</li></ul> | AWS::IAM::InstanceProfile | The AWS::IAM::InstanceProfile resource creates an AWS Identity and Access Management (IAM) instance profile that can be used with IAM roles for EC2 instances. | 
 | Resources | <ul><li>BasicLinuxNetInt</li><li>BasicWindowsNetInt</li><li>RedTeamNetInt</li><li>wazuhNetInt</li></ul> | AWS::EC2::NetworkInterface | Describes a network interface in an Elastic Compute Cloud (EC2) instance for AWS CloudFormation. This is provided in a list in the NetworkInterfaces property of AWS::EC2::Instance.| 
 | Resources | <ul><li>BasicLinuxSecurityGroup</li><li>BasicWindowsSecurityGroup</li><li>BastionSecurityGroup</li><li>NATInstanceSecurityGroup</li><li>RedTeamSecurityGroup</li><li>WazuhAgentTrafficSecurityGroup</li></ul> | AWS::EC2::SecurityGroup | Creates an Amazon EC2 security group. | 
@@ -83,21 +83,15 @@ creating an AMI with encrypted volumes. I do this and modify the cloudformation 
 | Resources | VPCDHCPOptionsAssociation | AWS::EC2::VPCDHCPOptionsAssociation | | 
 | Resources | VPCGatewayAttachment | AWS::EC2::VPCGatewayAttachment | | 
 | Resources | LogStream | AWS::Kinesis::Stream | | 
-| Resources | <ul><li>LambdaPolicy</li><li>CloudWatchToKinesisPolicy</li></ul> | AWS::IAM::Policy | | 
+| Resources | <ul><li>LambdaPolicy</li><li>CloudWatchToKinesisPolicy</li><li>firehosedeliveryPolicyGuardDuty</li><li>firehosedeliveryPolicyIAM</li><li>firehosedeliveryPolicyInspector</li><li>firehosedeliveryPolicyMacie</li><li>IamPolicyWazuhAccessS3</li></ul> | AWS::IAM::Policy | | 
 | Resources | KinesisToLambda | AWS::Lambda::EventSourceMapping | | 
 | Resources | MyFlowLog | AWS::EC2::FlowLog | | 
 | Resources | FlowLogFilter | AWS::Logs::SubscriptionFilter | | 
 | Resources | FlowLogUpload | AWS::Lambda::Function | | 
 | Resources | <ul><li>S3BucketPolicyCloudTrail</li><li>S3BucketPolicyGuardDuty</li><li>S3BucketPolicyMacie</li></ul> | AWS::S3::BucketPolicy | | 
 | Resources | detonationLabCloudTrail | AWS::CloudTrail::Trail | | 
-| Resources | | | | 
-| Resources | | | | 
-| Resources | | | | 
-| Resources | | | | 
-| Resources | | | | 
-| Resources | | | | 
-
-
+| Resources | <ul><li>FirehosedeliverystreamGuardDuty</li><li>FirehosedeliverystreamIAM</li><li>FirehosedeliverystreamInspector</li><li>FirehosedeliverystreamMacie</li></ul>| AWS::KinesisFirehose::DeliveryStream | | 
+| Resources | wazuhUser | AWS::IAM::User | | 
 
 # Getting Started
 This process will walk you through getting the core detonation lab automatically configured and additional processes for setting up each item
