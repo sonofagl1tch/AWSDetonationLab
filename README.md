@@ -61,7 +61,42 @@ creating an AMI with encrypted volumes. I do this and modify the cloudformation 
 | Parameters | PublicSubnetCIDR | AllowedPattern ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$ | CIDR block parameter must be in the form x.x.x.x/16-28. CIDR Block for the public DMZ subnet for secure administrative entry |
 | Parameters | RemoteAccessCIDR | AllowedPattern ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$ | CIDR block parameter must be in the form x.x.x.x/x. CIDR from which access to bastion is to be permitted |
 | Parameters | VPCCIDR | AllowedPattern ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$ | CIDR block parameter must be in the form x.x.x.x/16-28. CIDR Block for the VPC. |
-| Resources | | | |
+| Resources | <ul><li>BasicLinuxIAMRole</li><li>BasicWindowsIAMRole</li><li>BastionHostRole</li><li>RedTeamIAMRole</li><li>LambdaRole</li><li>CloudWatchToKinesis</li>li>FlowLogsToCloudWatch</li></ul> | AWS::IAM::Role | Creates an AWS Identity and Access Management (IAM) role. Use an IAM role to enable applications running on an EC2 instance to securely access your AWS resources. | 
+| Resources | <ul><li>BasicLinuxInstanceProfile</li><li>BasicWindowsInstanceProfile</li><li>BastionHostProfile</li><li>RedTeamInstanceProfile</li></ul> | AWS::IAM::InstanceProfile | The AWS::IAM::InstanceProfile resource creates an AWS Identity and Access Management (IAM) instance profile that can be used with IAM roles for EC2 instances. | 
+| Resources | <ul><li>BasicLinuxNetInt</li><li>BasicWindowsNetInt</li><li>RedTeamNetInt</li><li>wazuhNetInt</li></ul> | AWS::EC2::NetworkInterface | Describes a network interface in an Elastic Compute Cloud (EC2) instance for AWS CloudFormation. This is provided in a list in the NetworkInterfaces property of AWS::EC2::Instance.| 
+| Resources | <ul><li>BasicLinuxSecurityGroup</li><li>BasicWindowsSecurityGroup</li><li>BastionSecurityGroup</li><li>NATInstanceSecurityGroup</li><li>RedTeamSecurityGroup</li><li>WazuhAgentTrafficSecurityGroup</li></ul> | AWS::EC2::SecurityGroup | Creates an Amazon EC2 security group. | 
+| Resources | <ul><li>BasicLinuxTarget</li><li>BasicWindowsTarget</li><li>NATInstance</li><li>RedTeam</li><li>wazuh</li></ul> | AWS::EC2::Instance | The AWS::EC2::Instance resource creates an EC2 instance. | 
+| Resources | BastionAutoScalingGroup | AWS::AutoScaling::AutoScalingGroup | | 
+| Resources | BastionLaunchConfiguration | AWS::AutoScaling::LaunchConfiguration | | 
+| Resources | <ul><li>BastionMainLogGroup</li><li>FlowLogs</li></ul> | AWS::Logs::LogGroup | | 
+| Resources | <ul><li>S3BucketVPCflow</li><li>S3BucketCloudTrail</li><li>S3BucketGuardDuty</li><li>S3BucketMacie</li><li>S3BucketIAM</li><li>S3BucketInspector</li></ul> | AWS::S3::Bucket | | 
+| Resources | DHCPOptions | AWS::EC2::DHCPOptions | | 
+| Resources | <ul><li>EIP</li><li>NATEIP</li></ul> | AWS::EC2::EIP | | 
+| Resources | InternetGateway | AWS::EC2::InternetGateway | | 
+| Resources | NATGateway | AWS::EC2::NatGateway | | 
+| Resources | <ul><li>PrivateSubnet</li><li>PublicSubnet</li></ul> | AWS::EC2::Subnet | | 
+| Resources | <ul><li>PrivateSubnetRoute</li><li>PublicSubnetRoute</li></ul> | AWS::EC2::Route | | 
+| Resources | <ul><li>PrivateSubnetRouteTable</li><li>PublicSubnetRouteTable</li></ul> | AWS::EC2::RouteTable | | 
+| Resources | <ul><li>PrivateSubnetRouteTableAssociation</li><li>PublicSubnetRouteTableAssociation</li></ul> | AWS::EC2::SubnetRouteTableAssociation | | 
+| Resources | SSHMetricFilter | AWS::Logs::MetricFilter | | 
+| Resources | VPC | AWS::EC2::VPC | | 
+| Resources | VPCDHCPOptionsAssociation | AWS::EC2::VPCDHCPOptionsAssociation | | 
+| Resources | VPCGatewayAttachment | AWS::EC2::VPCGatewayAttachment | | 
+| Resources | LogStream | AWS::Kinesis::Stream | | 
+| Resources | <ul><li>LambdaPolicy</li><li>CloudWatchToKinesisPolicy</li></ul> | AWS::IAM::Policy | | 
+| Resources | KinesisToLambda | AWS::Lambda::EventSourceMapping | | 
+| Resources | MyFlowLog | AWS::EC2::FlowLog | | 
+| Resources | FlowLogFilter | AWS::Logs::SubscriptionFilter | | 
+| Resources | FlowLogUpload | AWS::Lambda::Function | | 
+| Resources | <ul><li>S3BucketPolicyCloudTrail</li><li>S3BucketPolicyGuardDuty</li><li>S3BucketPolicyMacie</li></ul> | AWS::S3::BucketPolicy | | 
+| Resources | detonationLabCloudTrail | AWS::CloudTrail::Trail | | 
+| Resources | | | | 
+| Resources | | | | 
+| Resources | | | | 
+| Resources | | | | 
+| Resources | | | | 
+| Resources | | | | 
+
 
 
 # Getting Started
