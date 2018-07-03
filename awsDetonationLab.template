@@ -2334,7 +2334,7 @@
         ]
       }
     },
-    "cloudwatch-log-write": {
+    "cloudwatchLogWrite": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2361,13 +2361,13 @@
         }
       }
     },
-    "cloudwatch-log-write-policy": {
+    "cloudwatchLogWritePolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "cloudwatch-log-write",
+        "PolicyName": "cloudwatchLogWrite",
         "Roles": [
           {
-            "Ref": "cloudwatch-log-write"
+            "Ref": "cloudwatchLogWrite"
           }
         ],
         "PolicyDocument": {
@@ -2380,19 +2380,13 @@
                 "logs:PutLogEvents",
                 "logs:DescribeLogStreams"
               ],
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "arn:aws:logs:*:*:*"
-                  ]
-                }
-              ]
+              "Resource": ["arn:aws:logs:*:*:*"]
             }
           ]
         }
       }
     },
-    "cloudwatchLogGroup-detonationLab-linux": {
+    "cloudwatchLogGroupDetonationLabLinux": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
         "RetentionInDays": 7,
