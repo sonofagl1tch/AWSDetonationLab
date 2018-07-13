@@ -107,6 +107,13 @@ echo
 echo "Calling a well known fake domain that is used to generate a known finding"
 dig GuardDutyC2ActivityB.com any
 echo
+echo '***********************************************************************'
+echo '* Test #7 - scan webserver for vulnerabilities                        *'
+echo '* This will be used to find a vulnerable server for php attack        *'
+echo '***********************************************************************'
+echo
+echo "scan webserver for vulnerabilities"
+nikto -h $BASIC_LINUX_TARGET >> /home/ec2-user/guardduty_tester.sh\n
 echo '*****************************************************************************************************'
 echo 'Expected GuardDuty Findings'
 echo
