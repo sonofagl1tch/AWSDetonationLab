@@ -366,7 +366,11 @@
                 "sleep 300\n",
                 "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.sh\n",
                 "chmod +x /home/ec2-user/installWazuh\n",
-                "bash /home/ec2-user/installWazuh -u false\n"
+                "bash /home/ec2-user/installWazuh -u false\n",
+                "sleep 300\n",
+                "wget -O /home/ec2-user/setupVunlerableWebServer https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/setupVunlerableWebServer.sh\n",
+                "chmod +x /home/ec2-user/setupVunlerableWebServer\n",
+                "bash /home/ec2-user/setupVunlerableWebServer -u false\n"
               ]
             ]
           }
@@ -502,9 +506,9 @@
                 "<powershell>\n",
                 "Set-ExecutionPolicy RemoteSigned -Force\n",
                 "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
-                "Start-Sleep -s 300\n",                
+                "Start-Sleep -s 300\n",
                 "Set-Content -Path C:\\Users\\Administrator\\Desktop\\cloudwatchAgentLogs.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/cloudwatchAgentLogs.ps1', 'C:\\Users\\Administrator\\Desktop\\cloudwatchAgentLogs.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\cloudwatchAgentLogs.ps1\"\n",
-                "Start-Sleep -s 300\n",        
+                "Start-Sleep -s 300\n",
                 "</powershell>\n",
                 "<script>\n",
                 "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe\n",
@@ -2380,7 +2384,9 @@
                 "logs:PutLogEvents",
                 "logs:DescribeLogStreams"
               ],
-              "Resource": ["arn:aws:logs:*:*:*"]
+              "Resource": [
+                "arn:aws:logs:*:*:*"
+              ]
             }
           ]
         }
