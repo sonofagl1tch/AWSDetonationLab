@@ -2392,11 +2392,16 @@
         }
       }
     },
-    "cloudwatchLogGroupDetonationLabLinux": {
+    "detonationLabLinux": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "RetentionInDays": 7,
-        "LogGroupName": "detonationLab-linux"
+        "RetentionInDays": 7
+      }
+    },
+    "detonationLabWindows": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "RetentionInDays": 7
       }
     },
     "detonationLabCloudTrail": {
