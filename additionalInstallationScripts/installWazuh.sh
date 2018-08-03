@@ -101,7 +101,7 @@ chkconfig logstash on
 service logstash start
 #######################################
 # install Kibana
-yum install kibana-6.2.4 -y -q -e 0
+yum install kibana-6.3.2 -y -q -e 0
 ## Install the Wazuh App plugin for Kibana
 ## Increase the default Node.js heap memory limit to prevent out of memory errors when installing the Wazuh App. Set the limit as follows
 export NODE_OPTIONS="--max-old-space-size=3072"
