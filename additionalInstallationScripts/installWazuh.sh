@@ -75,7 +75,7 @@ until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
 done
 >&2 echo "Elastic is up - executing commands"
 ## Load the Wazuh template for Elasticsearch:
-curl https://raw.githubusercontent.com/wazuh/wazuh/3.3/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
+curl https://raw.githubusercontent.com/wazuh/wazuh/3.4/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 service elasticsearch restart
 sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
 #######################################
@@ -83,7 +83,7 @@ sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/' /etc/elasticsearch/
 yum install logstash-6.2.4 -y -q -e 0
 ## Download the Wazuh configuration file for Logstash
 ## Local configuration (only in a single-host architecture)
-curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/3.3/extensions/logstash/01-wazuh-local.conf
+curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/3.4/extensions/logstash/01-wazuh-local.conf
 ## Because the Logstash user needs to read the alerts.json file, please add it to OSSEC group by running
 usermod -a -G ossec logstash
 ## Follow the next steps if you use CentOS-6/RHEL-6 or Amazon AMI (logstash uses Upstart like a service manager and needs to be fixed, see this bug):
@@ -106,7 +106,7 @@ yum install kibana-6.2.4 -y -q -e 0
 ## Increase the default Node.js heap memory limit to prevent out of memory errors when installing the Wazuh App. Set the limit as follows
 export NODE_OPTIONS="--max-old-space-size=3072"
 ## Install the Wazuh App
-/usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-3.3.0_6.2.4.zip
+/usr/share/kibana/bin/kibana-plugin install wazuhapp-3.4.0_6.3.2.zip
 ##  Kibana will only listen on the loopback interface (localhost) by default. To set up Kibana to listen on all interfaces, edit the file /etc/kibana/kibana.yml uncommenting the setting server.host. Change the value to:
 sed -i 's/#server.host: "localhost"/server.host: "0.0.0.0"/' /etc/kibana/kibana.yml
 ## Enable and start the Kibana service

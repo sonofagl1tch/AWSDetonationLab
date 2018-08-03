@@ -920,8 +920,8 @@
             ]
           },
           "BufferingHints": {
-            "IntervalInSeconds": "60",
-            "SizeInMBs": "1"
+            "IntervalInSeconds": "300",
+            "SizeInMBs": "5"
           },
           "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
@@ -956,8 +956,8 @@
             ]
           },
           "BufferingHints": {
-            "IntervalInSeconds": "60",
-            "SizeInMBs": "1"
+            "IntervalInSeconds": "300",
+            "SizeInMBs": "5"
           },
           "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
@@ -992,8 +992,8 @@
             ]
           },
           "BufferingHints": {
-            "IntervalInSeconds": "60",
-            "SizeInMBs": "1"
+            "IntervalInSeconds": "300",
+            "SizeInMBs": "5"
           },
           "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
@@ -1028,8 +1028,8 @@
             ]
           },
           "BufferingHints": {
-            "IntervalInSeconds": "60",
-            "SizeInMBs": "1"
+            "IntervalInSeconds": "300",
+            "SizeInMBs": "5"
           },
           "CompressionFormat": "GZIP",
           "Prefix": "firehose/",
@@ -1295,6 +1295,18 @@
                       "arn:aws:s3:::",
                       {
                         "Ref": "S3BucketIAM"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketVPCflow"
                       },
                       "/*"
                     ]
@@ -2700,6 +2712,31 @@
       }
     },
     "firehostdeliveryRoleMacie": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehostdeliveryRoleVPC": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
