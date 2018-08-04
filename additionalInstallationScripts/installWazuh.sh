@@ -25,8 +25,9 @@ service wazuh-manager start
 ## NodeJS >= 4.6.1 is required in order to run the Wazuh API.
 ## add the official NodeJS repository
 #curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -
-wget https://rpm.nodesource.com/setup_6.x
-bash setup_6.x
+#wget https://rpm.nodesource.com/setup_6.x
+#bash setup_6.x
+curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
 ## install NodeJS
 yum install nodejs -y -q -e 0
 ## install Python if lower than 2.7
@@ -37,7 +38,6 @@ yum install wazuh-api -y -q -e 0
 chkconfig --add wazuh-api
 chkconfig wazuh-api on
 service wazuh-api start
-service wazuh-api status
 #######################################
 # Installing Filebeat
 # In a single-host architecture (where Wazuh server and Elastic Stack are installed in the same system), the installation of Filebeat is not needed since Logstash will be able to read the event/alert data directly from the local filesystem without the assistance of a forwarder.
@@ -76,7 +76,7 @@ done
 >&2 echo "Elastic is up - executing commands"
 ## Load the Wazuh template for Elasticsearch:
 curl https://raw.githubusercontent.com/wazuh/wazuh/3.4/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
-service elasticsearch restart
+#service elasticsearch restart
 sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
 #######################################
 # Install the Logstash package
@@ -106,7 +106,7 @@ yum install kibana-6.3.2 -y -q -e 0
 ## Increase the default Node.js heap memory limit to prevent out of memory errors when installing the Wazuh App. Set the limit as follows
 export NODE_OPTIONS="--max-old-space-size=3072"
 ## Install the Wazuh App
-/usr/share/kibana/bin/kibana-plugin install wazuhapp-3.4.0_6.3.2.zip
+/usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-3.4.0_6.3.2.zip
 ##  Kibana will only listen on the loopback interface (localhost) by default. To set up Kibana to listen on all interfaces, edit the file /etc/kibana/kibana.yml uncommenting the setting server.host. Change the value to:
 sed -i 's/#server.host: "localhost"/server.host: "0.0.0.0"/' /etc/kibana/kibana.yml
 ## Enable and start the Kibana service
@@ -140,7 +140,7 @@ until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
   sleep 5
 done
 >&2 echo "Elastic is up - executing commands"
-sleep 5
+# sleep 5
 echo -e "\nSetting Wazuh API credentials into the Wazuh Kibana application"
 # The Wazuh Kibana application configuration is the document with the ID 1513629884013, don't change that!
 curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuration/1513629884013" -H 'Content-Type: application/json' -H "Accept: application/json" -d'
