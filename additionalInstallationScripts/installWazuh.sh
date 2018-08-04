@@ -60,7 +60,7 @@ autorefresh=1
 type=rpm-md
 EOF
 ## Install the Elasticsearch package
-yum install elasticsearch-6.2.4 -y -q -e 0
+yum install elasticsearch-6.3.2 -y -q -e 0
 ## Enable and start the Elasticsearch service
 chkconfig --add elasticsearch
 chkconfig elasticsearch on
@@ -80,7 +80,7 @@ service elasticsearch restart
 sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
 #######################################
 # Install the Logstash package
-yum install logstash-6.2.4 -y -q -e 0
+yum install logstash-6.3.2 -y -q -e 0
 ## Download the Wazuh configuration file for Logstash
 ## Local configuration (only in a single-host architecture)
 curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/3.4/extensions/logstash/01-wazuh-local.conf
