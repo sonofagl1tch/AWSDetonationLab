@@ -360,14 +360,9 @@
                 "wget -O /home/ec2-user/install https://d1wk0tztpsntt1.cloudfront.net/linux/latest/install\n",
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n",
-                "wget -O /home/ec2-user/installCloudWatch https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/cloudwatchAgentLogs.sh\n",
-                "chmod +x /home/ec2-user/installCloudWatch\n",
-                "bash /home/ec2-user/installCloudWatch -u false\n",
-                "sleep 300\n",
                 "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.sh\n",
                 "chmod +x /home/ec2-user/installWazuh\n",
                 "bash /home/ec2-user/installWazuh -u false\n",
-                "sleep 300\n",
                 "wget -O /home/ec2-user/setupVunlerableWebServer https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/setupVunlerableWebServer.sh\n",
                 "chmod +x /home/ec2-user/setupVunlerableWebServer\n",
                 "bash /home/ec2-user/setupVunlerableWebServer -u false\n"
@@ -507,12 +502,8 @@
                 "Set-ExecutionPolicy RemoteSigned -Force\n",
                 "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
                 "Start-Sleep -s 300\n",
-                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\cloudwatchAgentLogs.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/cloudwatchAgentLogs.ps1', 'C:\\Users\\Administrator\\Desktop\\cloudwatchAgentLogs.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\cloudwatchAgentLogs.ps1\"\n",
-                "Start-Sleep -s 300\n",
                 "</powershell>\n",
                 "<script>\n",
-                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe\n",
-                "C:\\Users\\Administrator\\Desktop\\cloudwatchAgentLogs.ps1\n",
                 "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe\n",
                 "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
                 "\n",
@@ -769,10 +760,6 @@
                 {
                   "Ref": "AWS::Region"
                 },
-                "\n",
-                "wget -O /home/ec2-user/installCloudWatch https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/cloudwatchAgentLogs.sh\n",
-                "chmod +x /home/ec2-user/installCloudWatch\n",
-                "bash /home/ec2-user/installCloudWatch -u false\n",
                 "\n"
               ]
             ]
@@ -2785,9 +2772,6 @@
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
                 "yum update -y\n",
-                "wget -O /home/ec2-user/installCloudWatch https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/cloudwatchAgentLogs.sh\n",
-                "chmod +x /home/ec2-user/installCloudWatch\n",
-                "bash /home/ec2-user/installCloudWatch -u false\n",
                 "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n"
