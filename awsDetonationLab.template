@@ -1234,8 +1234,7 @@
             {
               "Effect": "Allow",
               "Action": [
-                "s3:GetObject",
-                "s3:ListBucket"
+                "s3:*"
               ],
               "Resource": [
                 {
@@ -1247,6 +1246,17 @@
                         "Ref": "S3BucketGuardDuty"
                       },
                       "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketGuardDuty"
+                      }
                     ]
                   ]
                 },
@@ -1268,9 +1278,31 @@
                     [
                       "arn:aws:s3:::",
                       {
+                        "Ref": "S3BucketCloudTrail"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
                         "Ref": "S3BucketMacie"
                       },
                       "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketMacie"
+                      }
                     ]
                   ]
                 },
@@ -1292,6 +1324,17 @@
                     [
                       "arn:aws:s3:::",
                       {
+                        "Ref": "S3BucketIAM"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
                         "Ref": "S3BucketVPCflow"
                       },
                       "/*"
@@ -1304,9 +1347,31 @@
                     [
                       "arn:aws:s3:::",
                       {
+                        "Ref": "S3BucketVPCflow"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
                         "Ref": "S3BucketInspector"
                       },
                       "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        "Ref": "S3BucketInspector"
+                      }
                     ]
                   ]
                 }
