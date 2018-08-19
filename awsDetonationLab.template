@@ -910,7 +910,7 @@
             "IntervalInSeconds": "300",
             "SizeInMBs": "5"
           },
-          "CompressionFormat": "GZIP",
+          "CompressionFormat": "UNCOMPRESSED",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
@@ -946,7 +946,7 @@
             "IntervalInSeconds": "300",
             "SizeInMBs": "5"
           },
-          "CompressionFormat": "GZIP",
+          "CompressionFormat": "UNCOMPRESSED",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
@@ -982,7 +982,7 @@
             "IntervalInSeconds": "300",
             "SizeInMBs": "5"
           },
-          "CompressionFormat": "GZIP",
+          "CompressionFormat": "UNCOMPRESSED",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
@@ -1018,7 +1018,7 @@
             "IntervalInSeconds": "300",
             "SizeInMBs": "5"
           },
-          "CompressionFormat": "GZIP",
+          "CompressionFormat": "UNCOMPRESSED",
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
@@ -1123,7 +1123,7 @@
                 "                context.succeed(\"No data to upload\");\n",
                 "                return;\n",
                 "            }\n",
-                "            zlib.gzip(data.join(\"\\n\"),function ",
+                "            zlib.UNCOMPRESSED(data.join(\"\\n\"),function ",
                 "(err, result) {\n",
                 "                if (err) return iter(err);\n",
                 "                var params = {\n",
