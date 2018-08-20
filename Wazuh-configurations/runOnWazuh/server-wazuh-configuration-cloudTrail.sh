@@ -93,24 +93,87 @@ cat <<EOF > /var/ossec/etc/ossec.conf
     <ciscat_path>wodles/ciscat</ciscat_path>
   </wodle>
 
+  <!-- Osquery integration -->
+  <wodle name="osquery">
+    <disabled>yes</disabled>
+    <run_daemon>yes</run_daemon>
+    <log_path>/var/log/osquery/osqueryd.results.log</log_path>
+    <config_path>/etc/osquery/osquery.conf</config_path>
+    <add_labels>yes</add_labels>
+  </wodle>
+
+  <!-- System inventory -->
+  <wodle name="syscollector">
+    <disabled>no</disabled>
+    <interval>1h</interval>
+    <scan_on_start>yes</scan_on_start>
+    <hardware>yes</hardware>
+    <os>yes</os>
+    <network>yes</network>
+    <packages>yes</packages>
+    <ports all="no">yes</ports>
+    <processes>yes</processes>
+  </wodle>
+
   <wodle name="vulnerability-detector">
     <disabled>yes</disabled>
-    <interval>1d</interval>
+    <interval>1m</interval>
     <run_on_start>yes</run_on_start>
-    <update_ubuntu_oval interval="60m" version="16,14">yes</update_ubuntu_oval>
-    <update_redhat_oval interval="60m" version="7,6">yes</update_redhat_oval>
+    <feed name="ubuntu-18">
+      <disabled>yes</disabled>
+      <update_interval>1h</update_interval>
+    </feed>
+    <feed name="redhat-7">
+      <disabled>yes</disabled>
+      <update_interval>1h</update_interval>
+    </feed>
+    <feed name="debian-9">
+      <disabled>yes</disabled>
+      <update_interval>1h</update_interval>
+    </feed>
   </wodle>
 
-  <wodle name="aws-cloudtrail">
-    <disabled>no</disabled>
-    <bucket>awsdetonationlab</bucket>
-    <access_key>$insert_access_key</access_key>
-    <secret_key>$insert_secret_key</secret_key>
-    <remove_from_bucket>no</remove_from_bucket>
-    <interval>10m</interval>
-    <run_on_start>no</run_on_start>
-  </wodle>
-
+ <wodle name="aws-s3">
+  <disabled>no</disabled>
+  <interval>10m</interval>
+  <run_on_start>yes</run_on_start>
+  <skip_on_error>yes</skip_on_error>
+  <bucket type="cloudtrail">
+   <name>detonationlab-v2-s3bucketcloudtrail-19gq8w59m8lcg</name>
+   <access_key>$insert_access_key</access_key>
+   <secret_key>$insert_secret_key</secret_key>
+  </bucket>
+  <bucket type="custom">
+   <name>detonationlab-v2-s3bucketguardduty-1kn21uv4spg29</name>
+   <path>firehose</path>
+   <access_key>$insert_access_key</access_key>
+   <secret_key>$insert_secret_key</secret_key>
+  </bucket>
+  <bucket type="custom">
+   <name>detonationlab-v2-s3bucketiam-14shn3d2p31tq</name>
+   <path>firehose</path>
+   <access_key>$insert_access_key</access_key>
+   <secret_key>$insert_secret_key</secret_key>
+  </bucket>
+  <bucket type="custom">
+   <name>detonationlab-v2-s3bucketinspector-1mfadvaua8n96</name>
+   <path>firehose</path>
+   <access_key>$insert_access_key</access_key>
+   <secret_key>$insert_secret_key</secret_key>
+  </bucket>
+  <bucket type="custom">
+   <name>detonationlab-v2-s3bucketmacie-wzujsedp8ht6</name>
+   <path>firehose</path>
+   <access_key>$insert_access_key</access_key>
+   <secret_key>$insert_secret_key</secret_key>
+  </bucket>
+  <bucket type="custom">
+   <name>detonationlab-v2-s3bucketvpcflow-35q548dsiuoe</name>
+   <path>flowlogs</path>
+   <access_key>$insert_access_key</access_key>
+   <secret_key>$insert_secret_key</secret_key>
+  </bucket>
+ </wodle>
 
   <!-- File integrity monitoring -->
   <syscheck>
@@ -124,8 +187,8 @@ cat <<EOF > /var/ossec/etc/ossec.conf
     <!-- Generate alert when new file detected -->
     <alert_new_files>yes</alert_new_files>
 
-    <!-- Don't ignore files that change more than 3 times -->
-    <auto_ignore>no</auto_ignore>
+    <!-- Don't ignore files that change more than 'frequency' times -->
+    <auto_ignore frequency="10" timeframe="3600">no</auto_ignore>
 
     <!-- Directories to check  (perform all possible verifications) -->
     <directories check_all="yes">/etc,/usr/bin,/usr/sbin</directories>
@@ -144,11 +207,19 @@ cat <<EOF > /var/ossec/etc/ossec.conf
     <ignore>/etc/cups/certs</ignore>
     <ignore>/etc/dumpdates</ignore>
     <ignore>/etc/svc/volatile</ignore>
+    <ignore>/sys/kernel/security</ignore>
+    <ignore>/sys/kernel/debug</ignore>
 
     <!-- Check the file, but never compute the diff -->
     <nodiff>/etc/ssl/private.key</nodiff>
 
     <skip_nfs>yes</skip_nfs>
+
+    <!-- Remove not monitored files -->
+    <remove_old_diff>yes</remove_old_diff>
+
+    <!-- Allow the system to restart Auditd after installing the plugin -->
+    <restart_audit>yes</restart_audit>
   </syscheck>
 
   <!-- Active response -->
@@ -246,10 +317,10 @@ cat <<EOF > /var/ossec/etc/ossec.conf
   <auth>
     <disabled>no</disabled>
     <port>1515</port>
-    <use_source_ip>no</use_source_ip>
-    <force_insert>no</force_insert>
+    <use_source_ip>yes</use_source_ip>
+    <force_insert>yes</force_insert>
     <force_time>0</force_time>
-    <purge>no</purge>
+    <purge>yes</purge>
     <use_password>no</use_password>
     <limit_maxagents>yes</limit_maxagents>
     <ciphers>HIGH:!ADH:!EXP:!MD5:!RC4:!3DES:!CAMELLIA:@STRENGTH</ciphers>
@@ -300,95 +371,6 @@ cat <<EOF > /var/ossec/etc/ossec.conf
   <localfile>
     <log_format>syslog</log_format>
     <location>/var/log/maillog</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/auth.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/boot.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/dmesg</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/kern.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/faillog</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/cron</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/yum.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/mail.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/httpd</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/mysqld.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/mysql.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/btmp</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/daemon.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/lastlog</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/user.log</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/wtmp</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/utmp</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/audit</location>
-  </localfile>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/sssd</location>
-  </localfile>
-  
-  <localfile>
-    <location>Security</location>
-    <log_format>eventlog</log_format>
-  </localfile>
-  <localfile>
-      <location>application</location>
-      <log_format>eventlog</log_format>
-  </localfile>
-  <localfile>
-      <location>System</location>
-      <log_format>eventlog</log_format>
   </localfile>
 
 </ossec_config>
