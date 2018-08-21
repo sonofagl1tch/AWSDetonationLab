@@ -68,14 +68,14 @@ chkconfig --add elasticsearch
 chkconfig elasticsearch on
 service elasticsearch start
 #wait until elasticsearch comes up before continuing 
-ES_URL=${ES_URL:-'http://localhost:9200'}
-ES_USER=${ES_USER:-kibana}
-ES_PASSWORD=${ES_PASSWORD:-changeme}
-until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
-  >&2 echo "Elastic is unavailable - sleeping for 5 seconds"
-  sleep 5
-done
->&2 echo "Elastic is up - executing commands"
+# ES_URL=${ES_URL:-'http://172.16.0.21:9200'}
+# ES_USER=${ES_USER:-kibana}
+# ES_PASSWORD=${ES_PASSWORD:-changeme}
+# until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
+#   >&2 echo "Elastic is unavailable - sleeping for 5 seconds"
+#   sleep 5
+# done
+# >&2 echo "Elastic is up - executing commands"
 ## Load the Wazuh template for Elasticsearch:
 #curl https://raw.githubusercontent.com/wazuh/wazuh/3.5/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 curl https://raw.githubusercontent.com/wazuh/wazuh/dev-aws-integration/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
@@ -168,7 +168,7 @@ curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuratio
 '
 #######################################
 #wait until elasticsearch comes up before continuing 
-ES_URL=${ES_URL:-'http://172.16.0.1:9200'}
+ES_URL=${ES_URL:-'http://172.16.0.21:9200'}
 ES_USER=${ES_USER:-kibana}
 ES_PASSWORD=${ES_PASSWORD:-changeme}
 until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
