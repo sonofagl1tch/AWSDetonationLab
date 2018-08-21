@@ -87,7 +87,7 @@
         "WS2012R2": "ami-d6c785ba"
       },
       "us-east-1": {
-        "AMZNLINUXHVM": "ami-428aa838",
+        "AMZNLINUXHVM": "ami-04681a1dbd79675a5",
         "WS2012R2": "ami-013e197b"
       },
       "us-east-2": {
@@ -240,14 +240,6 @@
               "Action": [
                 "sts:AssumeRole"
               ]
-            },
-            {
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::deathtosmootchie",
-                "arn:aws:s3:::deathtosmootchie/*"
-              ],
-              "Action": "s3:*"
             }
           ]
         },
@@ -1131,7 +1123,7 @@
                 "                context.succeed(\"No data to upload\");\n",
                 "                return;\n",
                 "            }\n",
-                "            zlib.UNCOMPRESSED(data.join(\"\\n\"),function ",
+                "            zlib.gzip(data.join(\"\\n\"),function ",
                 "(err, result) {\n",
                 "                if (err) return iter(err);\n",
                 "                var params = {\n",
