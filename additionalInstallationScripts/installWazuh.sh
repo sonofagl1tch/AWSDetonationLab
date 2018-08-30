@@ -2,6 +2,9 @@
 # install wazuh server
 # Wazuh documentation - https://documentation.wazuh.com/current/installation-guide/installing-wazuh-server/index.html
 #######################################
+# Versions to install
+ELASTIC_VERSION=6.4.0
+WAZUH_VERSION=3.6
 # Install Wazuh server on CentOS/RHEL/Fedora.
 ## set up the repository
 cat > /etc/yum.repos.d/wazuh.repo <<\EOF
@@ -24,9 +27,6 @@ service wazuh-manager start
 # Installing the Wazuh API
 ## NodeJS >= 4.6.1 is required in order to run the Wazuh API.
 ## add the official NodeJS repository
-#curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -
-#wget https://rpm.nodesource.com/setup_6.x
-#bash setup_6.x
 curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
 ## install NodeJS
 yum install nodejs -y -q -e 0
@@ -60,7 +60,7 @@ autorefresh=1
 type=rpm-md
 EOF
 ## Install the Elasticsearch package
-yum install elasticsearch-6.3.2 -y -q -e 0
+yum install elasticsearch-$ELASTIC_VERSION -y -q -e 0
 #service elasticsearch restart
 sed -i 's/#network.host: 192.168.0.1/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
 ## Enable and start the Elasticsearch service
@@ -81,10 +81,10 @@ service elasticsearch start
 curl https://raw.githubusercontent.com/wazuh/wazuh/dev-aws-integration/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 #######################################
 # Install the Logstash package
-yum install logstash-6.3.2 -y -q -e 0
+yum install logstash-$ELASTIC_VERSION -y -q -e 0
 ## Download the Wazuh configuration file for Logstash
 ## Local configuration (only in a single-host architecture)
-curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/3.5/extensions/logstash/01-wazuh-local.conf
+curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/$WAZUH_VERSION/extensions/logstash/01-wazuh-local.conf
 ## Because the Logstash user needs to read the alerts.json file, please add it to OSSEC group by running
 usermod -a -G ossec logstash
 ## Follow the next steps if you use CentOS-6/RHEL-6 or Amazon AMI (logstash uses Upstart like a service manager and needs to be fixed, see this bug):
@@ -102,12 +102,12 @@ chkconfig logstash on
 service logstash start
 #######################################
 # install Kibana
-yum install kibana-6.3.2 -y -q -e 0
+yum install kibana-$ELASTIC_VERSION -y -q -e 0
 ## Install the Wazuh App plugin for Kibana
 ## Increase the default Node.js heap memory limit to prevent out of memory errors when installing the Wazuh App. Set the limit as follows
 export NODE_OPTIONS="--max-old-space-size=3072"
 ## Install the Wazuh App
-/usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-3.5.0_6.3.2.zip
+/usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-$WAZUH_VERSION.0_$ELASTIC_VERSION.zip
 ##  Kibana will only listen on the loopback interface (localhost) by default. To set up Kibana to listen on all interfaces, edit the file /etc/kibana/kibana.yml uncommenting the setting server.host. Change the value to:
 sed -i 's/#server.host: "localhost"/server.host: "0.0.0.0"/' /etc/kibana/kibana.yml
 ## Enable and start the Kibana service
