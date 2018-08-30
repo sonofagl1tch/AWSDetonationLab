@@ -76,7 +76,8 @@ apt-get update -y
 #curl -X POST "localhost:9200/.wazuh/wazuh-configuration" -H 'Content-Type: application/json' -d' {"took":0,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":1,"max_score":1.0,"hits":[{"_index":".wazuh","_type":"wazuh-configuration","_score":1.0,"_source":{"api_user":"wazuh","api_password":"d2F6dWg=","url":"http://172.16.0.21","api_port":"55000","insecure":"true","component":"API","cluster_info":{"manager":"ip-172-16-0-21.ec2.internal","cluster":"Disabled","status":"disabled"},"extensions":{"audit":true,"pci":true,"oscap":true,"aws":false,"virustotal":false}}}]}}'
 API_PROTOCOL=${API_PROTOCOL:-http}
 HOSTNAME=${HOSTNAME:-"$(hostname -f)"}
-API_SERVER=${API_SERVER:-"$(hostname -i)"}
+API_SERVER=${API_SERVER:-"localhost"}
+API_URL=${API_PROTOCOL}://${API_SERVER}
 API_PORT=${API_PORT:-55000}
 API_USER=${API_USER:-wazuh}
 API_PASS=${API_PASS:-wazuh}
@@ -96,21 +97,24 @@ curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuratio
 {
     "api_user": "'${API_USER}'",
     "api_password": "'${API_PASS_BASE64}'",
-    "url": "'${API_PROTOCOL}'://'${API_SERVER}'",
+    "url": "'${API_URL}'",
     "api_port": "'${API_PORT}'",
-    "insecure": "true",
-    "component": "API",
-    "active": true,
-    "extensions": {
-        "oscap": true,
-        "audit": true,
-        "pci": true
+    "insecure" : "true",
+    "component" : "API",
+    "cluster_info" : {
+        "manager" : "'${HOSTNAME}'",
+        "cluster" : "Disabled",
+        "status" : "disabled",
+        "node" : "node01"
     },
-    "cluster_info": {
-        "node": "wazuh-manager-master",
-        "cluster": "wazuh",
-        "manager": "'${HOSTNAME}'",
-        "status": "enabled"
+    "extensions" : {
+        "audit" : true,
+        "pci" : true,
+        "gdpr" : true,
+        "oscap" : true,
+        "ciscat" : false,
+        "aws" : false,
+        "virustotal" : false
     }
 }
 '
