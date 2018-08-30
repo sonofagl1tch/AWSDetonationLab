@@ -372,6 +372,7 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
 </wodle>
 ```
 alternative authentication options: https://documentation.wazuh.com/current/amazon/installation.html#authenticating-options
+
 5. /var/ossec/bin/ossec-control restart
 6. confirm logs are being ingested
   - grep -i aws /var/ossec/logs/ossec.log
