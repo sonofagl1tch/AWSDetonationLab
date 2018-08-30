@@ -8,18 +8,6 @@ This cloudformation template and guard duty alert generation scripts are based o
 Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guardduty-tester/blob/master/guardduty_tester.sh) that starts interaction between the redTeam EC2 instance and the target Windows EC2 instance and the target Linux EC2 instance to simulate five types of common attacks that GuardDuty is built to detect and notify you about with generated findings.
 
 # todo List (AKA things i still need to automate)
-- add additional sources to kibana
-  - cloudtrail
-    - https://documentation.wazuh.com/current/amazon/installation.html
-  - Macie
-  - guardduty
-  - IAM
-  - Inspector
-  - vpcflow
-    - get vpcflow into wazuh
-      - https://aws.amazon.com/blogs/aws/cloudwatch-logs-subscription-consumer-elasticsearch-kibana-dashboards/
-      - autoload their kibana dashboards
-        - https://app.logz.io/#/dashboard/apps
 - VirusTotal integration
   - https://documentation.wazuh.com/3.x/user-manual/capabilities/virustotal-scan/index.html
 
@@ -28,6 +16,8 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
   - cloudformation does not support this feature currently
 - route53 DNS
   - currently requires a public domain to be registered to be used so i cut it for cost reasons
+- VPCFlow without lambda function
+  - cloudformation does not support this feature currently
   
 # additional considerations
 creating an AMI with encrypted volumes. I do this and modify the cloudformation template included in this repo to point to my private AMI versions for usage so all systems have full disk encryption.
@@ -107,6 +97,8 @@ This process will walk you through getting the core detonation lab automatically
     - on by default. just needs cloudwatch event rule to forward them.
   - enable Inspector
     - https://docs.aws.amazon.com/inspector/latest/userguide/inspector_settingup.html 
+  - enable vpcflow
+    - https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html
 
 ## Topologies
 ### All
@@ -222,6 +214,7 @@ For more details on configuring and connecting through bastion hosts you can che
   - Description
     - Put whatever you want here
   - create rule
+reference: https://documentation.wazuh.com/current/amazon/installation.html
 
 Setup RoyalTSX or your preferred client to use the bastion host as a secure gateway to tunnel RDP through SSH. 
 
@@ -284,6 +277,12 @@ This will initiate interaction between your redTeam and target EC2 instances, si
 For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source host-based intrusion detection system. It performs log analysis, integrity checking, Windows registry monitoring, rootkit detection, time-based alerting, and active response." you can find more information about them at https://documentation.wazuh.com/current/index.html
 ## forward kibana console
 `ssh -L 8080:localhost:5601 wazuh -N`
+- go to http://localhost:8080 in your browser
+- set default index
+  1. Management
+  2. index patterns
+  3. select index i want to make default
+  4. click star icon in top right of screen
 
 ## what do I do if the clients have not automatically joined the server?
 1. Test to see if the server is running. Both clients have service checks built into them and can be stuck waiting for the server to come up.
@@ -353,3 +352,38 @@ For EDR I am using Wazuh which is based on OSSEC. "Wazuh is a free, open-source 
 3. connect client to server manually
    1. Linux: `sudo bash installWazuh`
    2. Windows: `C:\Users\Administrator\Desktop\testConnextion.ps1`
+
+# ingest AWS logs into wazuh
+1. ssh wazuh
+2. sudo yum install python-pip -y
+3. Sudo pip install boto3
+4. vim /var/ossec/etc/ossec.conf
+```
+<wodle name="aws-s3">
+  <disabled>no</disabled>
+  <interval>10m</interval>
+  <run_on_start>no</run_on_start>
+  <skip_on_error>no</skip_on_error>
+  <bucket type="cloudtrail">
+    <name>wazuh-cloudtrail</name>
+    <access_key>insert_access_key</access_key>
+    <secret_key>insert_secret_key</secret_key>
+  </bucket>
+</wodle>
+```
+alternative authentication options: https://documentation.wazuh.com/current/amazon/installation.html#authenticating-options
+5. /var/ossec/bin/ossec-control restart
+6. confirm logs are being ingested
+  - grep -i aws /var/ossec/logs/ossec.log
+
+# Kibana dashboards
+- go to http://localhost:8080 in your browser
+- import visualizations then dashboard
+  1. Management
+  2. saved objects
+  3. click import link in top right of screen
+  4. select "Kibana-Visualizations.json" from your computer
+  5. select "Kibana-Dashboard.json" from your computer
+  6. test dashboard
+    - go to http://localhost:8080 in your browser
+    - click dashboard link on left pane of console
