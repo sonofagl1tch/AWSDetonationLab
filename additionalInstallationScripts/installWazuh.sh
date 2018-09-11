@@ -4,7 +4,7 @@
 #######################################
 # Versions to install
 ELASTIC_VERSION=6.4.0
-WAZUH_VERSION=3.6
+WAZUH_VERSION=3.6.1
 # Install Wazuh server on CentOS/RHEL/Fedora.
 ## set up the repository
 cat > /etc/yum.repos.d/wazuh.repo <<\EOF

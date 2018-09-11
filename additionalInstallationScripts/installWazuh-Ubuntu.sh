@@ -33,7 +33,7 @@ curl -s https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-6.x.list
 apt-get update -y
 #Install the Elasticsearch package
-apt-get install elasticsearch=6.3.2 -y
+apt-get install elasticsearch=6.4.0 -y
 systemctl daemon-reload
 systemctl enable elasticsearch.service
 systemctl start elasticsearch.service
@@ -49,20 +49,20 @@ systemctl start elasticsearch.service
 # >&2 echo "Elastic is up - executing commands"
 ##########################
 #Load the Wazuh template for Elasticsearch
-curl https://raw.githubusercontent.com/wazuh/wazuh/3.5/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
+curl https://raw.githubusercontent.com/wazuh/wazuh/3.6.1/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 ##########################
 #Install the logstash
-apt-get install logstash=1:6.3.2-1 -y
-curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/3.5/extensions/logstash/01-wazuh-local.conf
+apt-get install logstash=1:6.4.0-1 -y
+curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/3.6.1/extensions/logstash/01-wazuh-local.conf
 usermod -a -G ossec logstash
 systemctl daemon-reload
 systemctl enable logstash.service
 systemctl start logstash.service
 ##########################
 #Install the Kibana
-apt-get install kibana=6.3.2 -y
+apt-get install kibana=6.4.0 -y
 export NODE_OPTIONS="--max-old-space-size=3072"
-/usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-3.5.0_6.3.2.zip
+/usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-3.6.1.0_6.4.0.zip
 ##  Kibana will only listen on the loopback interface (localhost) by default. To set up Kibana to listen on all interfaces, edit the file /etc/kibana/kibana.yml uncommenting the setting server.host. Change the value to:
 sed -i 's/#server.host: "localhost"/server.host: "0.0.0.0"/' /etc/kibana/kibana.yml
 systemctl daemon-reload
