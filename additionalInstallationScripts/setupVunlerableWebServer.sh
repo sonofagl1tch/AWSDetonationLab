@@ -2,12 +2,14 @@
 
 # install apps for attack
 sudo yum install ncat -y -q -e 0
+sudo yum install nc -y -q -e 0
 
 # Install Apache
 sudo yum install httpd -y -q -e 0
 sudo service httpd start
 
 # Install MySQL
+sudo rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 sudo yum install mysql-server -y -q -e 0
 sudo service mysqld start
 
