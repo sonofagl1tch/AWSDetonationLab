@@ -133,7 +133,7 @@ This process will walk you through getting the core detonation lab automatically
   
   * **NOTE:** If the upload fails for some reason, copy/paste the contents into a text editor like SublimeText, Save As **awsDetonationLab.template** and try again.
 
-  * Before you run **awsDetonationLab.template** you need to modify it with values for the following parameters: 
+  * When you run **awsDetonationLab.template** you need to populate the values for the following parameters: 
       * Stack Name to identify your new stack.
       * Availability Zone where you want to run the stack.
       * Key Pair that you can use to launch the EC2 instances. Then you can use the corresponding private key to SSH into the EC2 instances.
