@@ -12,8 +12,6 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
   - https://documentation.wazuh.com/3.x/user-manual/capabilities/virustotal-scan/index.html
 
 # Things that cannot go into the cloudformation template and why
-- cloudwatch event Rules
-  - cloudformation does not support this feature currently
 - route53 DNS
   - currently requires a public domain to be registered to be used so i cut it for cost reasons
 - VPCFlow without lambda function
