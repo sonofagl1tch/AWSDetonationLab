@@ -1,229 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Conditions": {
-    "GovCloudCondition": {
-      "Fn::Equals": [
-        {
-          "Ref": "AWS::Region"
-        },
-        "us-gov-west-1"
-      ]
-    },
-    "NATInstanceCondition": {
-      "Fn::Equals": [
-        {
-          "Ref": "AWS::Region"
-        },
-        "us-gov-west-1"
-      ]
-    },
-    "NATGatewayCondition": {
-      "Fn::Not": [
-        {
-          "Condition": "GovCloudCondition"
-        }
-      ]
-    },
-    "NVirginiaRegionCondition": {
-      "Fn::Equals": [
-        {
-          "Ref": "AWS::Region"
-        },
-        "us-east-1"
-      ]
-    }
-  },
   "Description": "This template creates the basic VPC infrastructure for an isolated testing environment. It will deploy a bastion host into the public subnet for a single Availability Zone so we have a protected point of entry. It will then create a linux instance with some red team scripts & tools that operate against common applications that are created in the same private subnet. **WARNING** This template creates Amazon EC2 instance and related resources. You will be billed for the AWS resources used if you create a stack from this template.",
-  "Mappings": {
-    "AWSAMIRegionMap": {
-      "NATAMI": {
-        "AWSNATHVM": "amzn-ami-vpc-nat-hvm-2017.03.0.20170401-x86_64-ebs"
-      },
-      "us-gov-west-1": {
-        "AWSNATHVM": "ami-3f0a8f5e"
-      },
-      "AMI": {
-        "AMZNLINUXHVM": "amzn-ami-hvm-2017.12.0.20171223-x86_64-gp2",
-        "WS2012R2": "Windows_Server-2012-R2_RTM-English-64Bit-Base-2017.10.13"
-      },
-      "ap-northeast-1": {
-        "AMZNLINUXHVM": "ami-c2680fa4",
-        "WS2012R2": "ami-1a7ee47c"
-      },
-      "ap-northeast-2": {
-        "AMZNLINUXHVM": "ami-3e04a450",
-        "WS2012R2": "ami-0b4eee65"
-      },
-      "ap-south-1": {
-        "AMZNLINUXHVM": "ami-3b2f7954",
-        "WS2012R2": "ami-c488dfab"
-      },
-      "ap-southeast-1": {
-        "AMZNLINUXHVM": "ami-4f89f533",
-        "WS2012R2": "ami-c83944b4"
-      },
-      "ap-southeast-2": {
-        "AMZNLINUXHVM": "ami-38708c5a",
-        "WS2012R2": "ami-30a55952"
-      },
-      "ca-central-1": {
-        "AMZNLINUXHVM": "ami-7549cc11",
-        "WS2012R2": "ami-b9b431dd"
-      },
-      "eu-central-1": {
-        "AMZNLINUXHVM": "ami-1b2bb774",
-        "WS2012R2": "ami-3204995d"
-      },
-      "eu-west-1": {
-        "AMZNLINUXHVM": "ami-db1688a2",
-        "WS2012R2": "ami-cc821eb5"
-      },
-      "eu-west-2": {
-        "AMZNLINUXHVM": "ami-6d263d09",
-        "WS2012R2": "ami-9f677cfb"
-      },
-      "sa-east-1": {
-        "AMZNLINUXHVM": "ami-f1337e9d",
-        "WS2012R2": "ami-d6c785ba"
-      },
-      "us-east-1": {
-        "AMZNLINUXHVM": "ami-04681a1dbd79675a5",
-        "WS2012R2": "ami-013e197b"
-      },
-      "us-east-2": {
-        "AMZNLINUXHVM": "ami-710e2414",
-        "WS2012R2": "ami-02446e67"
-      },
-      "us-west-1": {
-        "AMZNLINUXHVM": "ami-4a787a2a",
-        "WS2012R2": "ami-92fefdf2"
-      },
-      "us-west-2": {
-        "AMZNLINUXHVM": "ami-7f43f307",
-        "WS2012R2": "ami-afe051d7"
-      }
-    },
-    "AMINameMap": {
-      "Amazon-Linux-HVM": {
-        "Code": "AMZNLINUXHVM"
-      },
-      "Windows-Server-2012": {
-        "Code": "WS2012R2"
-      }
-    },
-    "Defaults": {
-      "LogGroup": {
-        "RetentionInDays": 1
-      },
-      "Stream": {
-        "ShardCount": 10
-      },
-      "EventSourceMapping": {
-        "BatchSize": 10000
-      }
-    }
-  },
-  "Metadata": {
-    "AWS::CloudFormation::Interface": {
-      "ParameterGroups": [
-        {
-          "Label": {
-            "default": "Network Configuration"
-          },
-          "Parameters": [
-            "AvailabilityZones",
-            "VPCCIDR",
-            "PrivateSubnet1CIDR",
-            "PublicSubnet1CIDR",
-            "RemoteAccessCIDR"
-          ]
-        },
-        {
-          "Label": {
-            "default": "Amazon EC2 Configuration"
-          },
-          "Parameters": [
-            "KeyPairName"
-          ]
-        }
-      ],
-      "ParameterLabels": {
-        "AvailabilityZones": {
-          "default": "Availability Zones"
-        },
-        "KeyPairName": {
-          "default": "Key Pair Name"
-        },
-        "PrivateSubnetCIDR": {
-          "default": "Private Subnet CIDR"
-        },
-        "PublicSubnetCIDR": {
-          "default": "Public Subnet CIDR"
-        },
-        "RemoteAccessCIDR": {
-          "default": "Allowed Bastion External Access CIDR"
-        },
-        "VPCCIDR": {
-          "default": "VPC CIDR"
-        }
-      }
-    }
-  },
-  "Outputs": {
-    "BastionIp": {
-      "Description": "Elastic IP for Bastion",
-      "Value": {
-        "Ref": "EIP"
-      }
-    },
-    "RedTeamIp": {
-      "Description": "Local IP for RedTeam Instance",
-      "Value": {
-        "Fn::GetAtt": [
-          "RedTeam",
-          "PrivateIp"
-        ]
-      }
-    }
-  },
-  "Parameters": {
-    "AvailabilityZones": {
-      "Description": "Availability Zone to use for the subnets in the VPC. You can select many, but we just use 1 (the first).",
-      "Type": "List<AWS::EC2::AvailabilityZone::Name>"
-    },
-    "KeyPairName": {
-      "Description": "Public/private key pairs allow you to securely connect to your instance after it launches",
-      "Type": "AWS::EC2::KeyPair::KeyName"
-    },
-    "PrivateSubnetCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.16/28",
-      "Description": "CIDR block for isolated private subnet.",
-      "Type": "String"
-    },
-    "PublicSubnetCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.0/28",
-      "Description": "CIDR Block for the public DMZ subnet for secure administrative entry",
-      "Type": "String"
-    },
-    "RemoteAccessCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/x",
-      "Default": "0.0.0.0/0",
-      "Description": "CIDR from which access to bastion is to be permitted",
-      "Type": "String"
-    },
-    "VPCCIDR": {
-      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
-      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
-      "Default": "172.16.0.0/27",
-      "Description": "CIDR Block for the VPC",
-      "Type": "String"
-    }
-  },
   "Resources": {
     "BasicLinuxIAMRole": {
       "Type": "AWS::IAM::Role",
@@ -2899,6 +2676,515 @@
         "Path": "/",
         "UserName": "wazuh"
       }
+    },
+    "CloudwatchEventRuleGuardduty": {
+      "DependsOn": [
+        "cloudwatchEventsInvokeKinesisTargetRole"
+      ],
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Events Rule with KinesisParameters",
+        "EventPattern": {
+          "source": [
+            "aws.guardduty"
+          ]
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "cloudwatchEventsInvokeKinesisTargetRole",
+            "Arn"
+          ]
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Id": "Id123",
+            "Arn": {
+              "Fn::GetAtt": [
+                "FirehosedeliverystreamGuardDuty",
+                "Arn"
+              ]
+            },
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "cloudwatchEventsInvokeKinesisTargetRole",
+                "Arn"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CloudwatchEventRuleIam": {
+      "DependsOn": [
+        "cloudwatchEventsInvokeKinesisTargetRole"
+      ],
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Events Rule with KinesisParameters",
+        "EventPattern": {
+          "source": [
+            "aws.iam"
+          ]
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "cloudwatchEventsInvokeKinesisTargetRole",
+            "Arn"
+          ]
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Id": "Id123",
+            "Arn": {
+              "Fn::GetAtt": [
+                "FirehosedeliverystreamIAM",
+                "Arn"
+              ]
+            },
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "cloudwatchEventsInvokeKinesisTargetRole",
+                "Arn"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CloudwatchEventRuleMacie": {
+      "DependsOn": [
+        "cloudwatchEventsInvokeKinesisTargetRole"
+      ],
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Events Rule with KinesisParameters",
+        "EventPattern": {
+          "source": [
+            "aws.macie"
+          ]
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "cloudwatchEventsInvokeKinesisTargetRole",
+            "Arn"
+          ]
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Id": "Id123",
+            "Arn": {
+              "Fn::GetAtt": [
+                "FirehosedeliverystreamMacie",
+                "Arn"
+              ]
+            },
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "cloudwatchEventsInvokeKinesisTargetRole",
+                "Arn"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CloudwatchEventRuleInspector": {
+      "DependsOn": [
+        "cloudwatchEventsInvokeKinesisTargetRole"
+      ],
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Description": "Events Rule with KinesisParameters",
+        "EventPattern": {
+          "source": [
+            "aws.inspector"
+          ]
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "cloudwatchEventsInvokeKinesisTargetRole",
+            "Arn"
+          ]
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Id": "Id123",
+            "Arn": {
+              "Fn::GetAtt": [
+                "FirehosedeliverystreamInspector",
+                "Arn"
+              ]
+            },
+            "RoleArn": {
+              "Fn::GetAtt": [
+                "cloudwatchEventsInvokeKinesisTargetRole",
+                "Arn"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "cloudwatchEventsInvokeKinesisTargetRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "events.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      }
+    },
+    "cloudwatchEventsInvokeKinesisTargetPolicyGuardDuty": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "firehose_delivery_policy_EventsInvoke-guardduty",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "firehose:PutRecord",
+                "firehose:PutRecordBatch"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FirehosedeliverystreamGuardDuty",
+                  "Arn"
+                ]
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "cloudwatchEventsInvokeKinesisTargetRole"
+          }
+        ]
+      }
+    },
+    "cloudwatchEventsInvokeKinesisTargetPolicyMacie": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "firehose_delivery_policy_EventsInvoke-macie",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "firehose:PutRecord",
+                "firehose:PutRecordBatch"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FirehosedeliverystreamMacie",
+                  "Arn"
+                ]
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "cloudwatchEventsInvokeKinesisTargetRole"
+          }
+        ]
+      }
+    },
+    "cloudwatchEventsInvokeKinesisTargetPolicyInspector": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "firehose_delivery_policy_EventsInvoke-inspector",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "firehose:PutRecord",
+                "firehose:PutRecordBatch"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FirehosedeliverystreamInspector",
+                  "Arn"
+                ]
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "cloudwatchEventsInvokeKinesisTargetRole"
+          }
+        ]
+      }
+    },
+    "cloudwatchEventsInvokeKinesisTargetPolicyIAM": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "firehose_delivery_policy_EventsInvoke-iam",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "firehose:PutRecord",
+                "firehose:PutRecordBatch"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FirehosedeliverystreamIAM",
+                  "Arn"
+                ]
+              }
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "cloudwatchEventsInvokeKinesisTargetRole"
+          }
+        ]
+      }
+    }
+  },
+  "Conditions": {
+    "GovCloudCondition": {
+      "Fn::Equals": [
+        {
+          "Ref": "AWS::Region"
+        },
+        "us-gov-west-1"
+      ]
+    },
+    "NATInstanceCondition": {
+      "Fn::Equals": [
+        {
+          "Ref": "AWS::Region"
+        },
+        "us-gov-west-1"
+      ]
+    },
+    "NATGatewayCondition": {
+      "Fn::Not": [
+        {
+          "Condition": "GovCloudCondition"
+        }
+      ]
+    },
+    "NVirginiaRegionCondition": {
+      "Fn::Equals": [
+        {
+          "Ref": "AWS::Region"
+        },
+        "us-east-1"
+      ]
+    }
+  },
+  "Mappings": {
+    "AWSAMIRegionMap": {
+      "NATAMI": {
+        "AWSNATHVM": "amzn-ami-vpc-nat-hvm-2017.03.0.20170401-x86_64-ebs"
+      },
+      "us-gov-west-1": {
+        "AWSNATHVM": "ami-3f0a8f5e"
+      },
+      "AMI": {
+        "AMZNLINUXHVM": "amzn-ami-hvm-2017.12.0.20171223-x86_64-gp2",
+        "WS2012R2": "Windows_Server-2012-R2_RTM-English-64Bit-Base-2017.10.13"
+      },
+      "ap-northeast-1": {
+        "AMZNLINUXHVM": "ami-c2680fa4",
+        "WS2012R2": "ami-1a7ee47c"
+      },
+      "ap-northeast-2": {
+        "AMZNLINUXHVM": "ami-3e04a450",
+        "WS2012R2": "ami-0b4eee65"
+      },
+      "ap-south-1": {
+        "AMZNLINUXHVM": "ami-3b2f7954",
+        "WS2012R2": "ami-c488dfab"
+      },
+      "ap-southeast-1": {
+        "AMZNLINUXHVM": "ami-4f89f533",
+        "WS2012R2": "ami-c83944b4"
+      },
+      "ap-southeast-2": {
+        "AMZNLINUXHVM": "ami-38708c5a",
+        "WS2012R2": "ami-30a55952"
+      },
+      "ca-central-1": {
+        "AMZNLINUXHVM": "ami-7549cc11",
+        "WS2012R2": "ami-b9b431dd"
+      },
+      "eu-central-1": {
+        "AMZNLINUXHVM": "ami-1b2bb774",
+        "WS2012R2": "ami-3204995d"
+      },
+      "eu-west-1": {
+        "AMZNLINUXHVM": "ami-db1688a2",
+        "WS2012R2": "ami-cc821eb5"
+      },
+      "eu-west-2": {
+        "AMZNLINUXHVM": "ami-6d263d09",
+        "WS2012R2": "ami-9f677cfb"
+      },
+      "sa-east-1": {
+        "AMZNLINUXHVM": "ami-f1337e9d",
+        "WS2012R2": "ami-d6c785ba"
+      },
+      "us-east-1": {
+        "AMZNLINUXHVM": "ami-04681a1dbd79675a5",
+        "WS2012R2": "ami-013e197b"
+      },
+      "us-east-2": {
+        "AMZNLINUXHVM": "ami-710e2414",
+        "WS2012R2": "ami-02446e67"
+      },
+      "us-west-1": {
+        "AMZNLINUXHVM": "ami-4a787a2a",
+        "WS2012R2": "ami-92fefdf2"
+      },
+      "us-west-2": {
+        "AMZNLINUXHVM": "ami-7f43f307",
+        "WS2012R2": "ami-afe051d7"
+      }
+    },
+    "AMINameMap": {
+      "Amazon-Linux-HVM": {
+        "Code": "AMZNLINUXHVM"
+      },
+      "Windows-Server-2012": {
+        "Code": "WS2012R2"
+      }
+    },
+    "Defaults": {
+      "LogGroup": {
+        "RetentionInDays": 1
+      },
+      "Stream": {
+        "ShardCount": 10
+      },
+      "EventSourceMapping": {
+        "BatchSize": 10000
+      }
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Network Configuration"
+          },
+          "Parameters": [
+            "AvailabilityZones",
+            "VPCCIDR",
+            "PrivateSubnet1CIDR",
+            "PublicSubnet1CIDR",
+            "RemoteAccessCIDR"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Amazon EC2 Configuration"
+          },
+          "Parameters": [
+            "KeyPairName"
+          ]
+        }
+      ],
+      "ParameterLabels": {
+        "AvailabilityZones": {
+          "default": "Availability Zones"
+        },
+        "KeyPairName": {
+          "default": "Key Pair Name"
+        },
+        "PrivateSubnetCIDR": {
+          "default": "Private Subnet CIDR"
+        },
+        "PublicSubnetCIDR": {
+          "default": "Public Subnet CIDR"
+        },
+        "RemoteAccessCIDR": {
+          "default": "Allowed Bastion External Access CIDR"
+        },
+        "VPCCIDR": {
+          "default": "VPC CIDR"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "BastionIp": {
+      "Description": "Elastic IP for Bastion",
+      "Value": {
+        "Ref": "EIP"
+      }
+    },
+    "RedTeamIp": {
+      "Description": "Local IP for RedTeam Instance",
+      "Value": {
+        "Fn::GetAtt": [
+          "RedTeam",
+          "PrivateIp"
+        ]
+      }
+    }
+  },
+  "Parameters": {
+    "AvailabilityZones": {
+      "Description": "Availability Zone to use for the subnets in the VPC. You can select many, but we just use 1 (the first).",
+      "Type": "List<AWS::EC2::AvailabilityZone::Name>"
+    },
+    "KeyPairName": {
+      "Description": "Public/private key pairs allow you to securely connect to your instance after it launches",
+      "Type": "AWS::EC2::KeyPair::KeyName"
+    },
+    "PrivateSubnetCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+      "Default": "172.16.0.16/28",
+      "Description": "CIDR block for isolated private subnet.",
+      "Type": "String"
+    },
+    "PublicSubnetCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+      "Default": "172.16.0.0/28",
+      "Description": "CIDR Block for the public DMZ subnet for secure administrative entry",
+      "Type": "String"
+    },
+    "RemoteAccessCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/x",
+      "Default": "0.0.0.0/0",
+      "Description": "CIDR from which access to bastion is to be permitted",
+      "Type": "String"
+    },
+    "VPCCIDR": {
+      "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+      "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+      "Default": "172.16.0.0/27",
+      "Description": "CIDR Block for the VPC",
+      "Type": "String"
     }
   }
 }
