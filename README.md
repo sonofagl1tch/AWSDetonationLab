@@ -7,4 +7,4 @@ This cloudformation template and guard duty alert generation scripts are based o
 
 Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guardduty-tester/blob/master/guardduty_tester.sh) that starts interaction between the redTeam EC2 instance and the target Windows EC2 instance and the target Linux EC2 instance to simulate five types of common attacks that GuardDuty is built to detect and notify you about with generated findings.
 
- For more information please refer to the [wiki] (https://github.com/sonofagl1tch/AWSDetonationLab/wiki/Kibana-dashboards) 
+ For more information please refer to the [wiki](https://github.com/sonofagl1tch/AWSDetonationLab/wiki/Kibana-dashboards) 
