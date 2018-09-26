@@ -4,7 +4,8 @@
 #######################################
 # Versions to install
 ELASTIC_VERSION=6.4.0
-WAZUH_VERSION=3.6.1
+WAZUH_VERSION=3.6
+WAZUH_PATCH=1
 # Install Wazuh server on CentOS/RHEL/Fedora.
 ## set up the repository
 cat > /etc/yum.repos.d/wazuh.repo <<\EOF
@@ -83,7 +84,7 @@ curl https://raw.githubusercontent.com/wazuh/wazuh/$WAZUH_VERSION/extensions/ela
 yum install logstash-$ELASTIC_VERSION -y -q -e 0
 ## Download the Wazuh configuration file for Logstash
 ## Local configuration (only in a single-host architecture)
-curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/$WAZUH_VERSION/extensions/logstash/01-wazuh-local.conf
+curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/$WAZUH_VERSION.$WAZUH_PATCH/extensions/logstash/01-wazuh-local.conf
 ## Because the Logstash user needs to read the alerts.json file, please add it to OSSEC group by running
 usermod -a -G ossec logstash
 ## Follow the next steps if you use CentOS-6/RHEL-6 or Amazon AMI (logstash uses Upstart like a service manager and needs to be fixed, see this bug):
