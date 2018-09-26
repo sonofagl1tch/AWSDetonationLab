@@ -155,7 +155,7 @@ This process will walk you through getting the core detonation lab automatically
 Host bastion
     HostName <EXTERNAL IP FOR BASTION HOST>
     User ec2-user
-    IdentityFile <SSH KEY>
+    IdentityFile ~/.ssh/<SSH KEY>
 Host redTeam
     ForwardAgent yes
     HostName 172.16.0.20
