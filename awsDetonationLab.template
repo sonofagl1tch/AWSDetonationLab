@@ -2616,7 +2616,14 @@
                 "yum update -y\n",
                 "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
-                "bash /home/ec2-user/install -u false\n"
+                "bash /home/ec2-user/install -u false\n",
+                "yum install python-pip -y\n",
+                "pip install boto3\n",
+                "sed -i 's/\\<name\\>cloudtrail\\<\\/name\\>/\\<name\\>",
+                {
+                  "Ref": "S3BucketCloudTrail"
+                },
+                "\\<\\/name\\>/' /var/ossec/etc/ossec.conf\n"
               ]
             ]
           }
@@ -2962,6 +2969,15 @@
           }
         ]
       }
+    },
+    "wazuhUserAccessKey": {
+      "Type": "AWS::IAM::AccessKey",
+      "Properties": {
+        "Status": "Active",
+        "UserName": {
+          "Ref": "wazuhUser"
+        }
+      }
     }
   },
   "Conditions": {
@@ -3145,6 +3161,21 @@
         "Fn::GetAtt": [
           "RedTeam",
           "PrivateIp"
+        ]
+      }
+    },
+    "getWazuhAccessKey": {
+      "Description": "get wazuh access key",
+      "Value": {
+        "Ref": "wazuhUserAccessKey"
+      }
+    },
+    "getWazuhsecretKey": {
+      "Description": "get wazuh access key",
+      "Value": {
+        "Fn::GetAtt": [
+          "wazuhUserAccessKey",
+          "SecretAccessKey"
         ]
       }
     }

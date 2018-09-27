@@ -311,35 +311,58 @@ cat > /var/ossec/etc/ossec.conf <<\EOF
   <skip_on_error>yes</skip_on_error>
   <bucket type="cloudtrail">
    <name>cloudtraillogging</name>
+=======
+   <name>cloudtrail</name>
+>>>>>>> 3fe28a0efdfe8fd524bb945a83ff92ab94ab9c13
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
+<<<<<<< HEAD
    <name>guarddutylogging</name>
+=======
+   <name>guardduty</name>
+>>>>>>> 3fe28a0efdfe8fd524bb945a83ff92ab94ab9c13
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
+<<<<<<< HEAD
    <name>iamlogging</name>
+=======
+   <name>iam</name>
+>>>>>>> 3fe28a0efdfe8fd524bb945a83ff92ab94ab9c13
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
+<<<<<<< HEAD
    <name>inspectorlogging</name>
+=======
+   <name>inspector</name>
+>>>>>>> 3fe28a0efdfe8fd524bb945a83ff92ab94ab9c13
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
+<<<<<<< HEAD
    <name>macielogging</name>
+=======
+   <name>macie</name>
+>>>>>>> 3fe28a0efdfe8fd524bb945a83ff92ab94ab9c13
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
+<<<<<<< HEAD
    <name>vpcflowlogging</name>
+=======
+   <name>vpcflow</name>
+>>>>>>> 3fe28a0efdfe8fd524bb945a83ff92ab94ab9c13
    <path>flowlogs</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
