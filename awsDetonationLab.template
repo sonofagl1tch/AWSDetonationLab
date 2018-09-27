@@ -2619,11 +2619,50 @@
                 "bash /home/ec2-user/install -u false\n",
                 "yum install python-pip -y\n",
                 "pip install boto3\n",
-                "sed -i 's/\\<name\\>cloudtrail\\<\\/name\\>/\\<name\\>",
+                "sed -i 's/cloudtraillogging/",
                 {
                   "Ref": "S3BucketCloudTrail"
                 },
-                "\\<\\/name\\>/' /var/ossec/etc/ossec.conf\n"
+                "/' /var/ossec/etc/ossec.conf\n",
+                "sed -i 's/guarddutylogging/",
+                {
+                  "Ref": "S3BucketGuardDuty"
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
+                "sed -i 's/iamlogging/",
+                {
+                  "Ref": "S3BucketIAM"
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
+                "sed -i 's/inspectorlogging/",
+                {
+                  "Ref": "S3BucketInspector"
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
+                "sed -i 's/macielogging/",
+                {
+                  "Ref": "S3BucketMacie"
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
+                "sed -i 's/vpcflowlogging/",
+                {
+                  "Ref": "S3BucketVPCflow"
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
+                "sed -i 's/insert_access_key/",
+                {
+                  "Ref": "wazuhUserAccessKey"
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
+                "sed -i 's/insert_secret_key/",
+                {
+                  "Fn::GetAtt": [
+                    "wazuhUserAccessKey",
+                    "SecretAccessKey"
+                  ]
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
+                "/var/ossec/bin/ossec-control restart\n"
               ]
             ]
           }
