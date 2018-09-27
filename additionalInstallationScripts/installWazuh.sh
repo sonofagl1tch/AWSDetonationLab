@@ -310,36 +310,36 @@ cat > /var/ossec/etc/ossec.conf <<\EOF
   <run_on_start>yes</run_on_start>
   <skip_on_error>yes</skip_on_error>
   <bucket type="cloudtrail">
-   <name>cloudtrail</name>
+   <name>cloudtraillogging</name>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
-   <name>guardduty</name>
+   <name>guarddutylogging</name>
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
-   <name>iam</name>
+   <name>iamlogging</name>
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
-   <name>inspector</name>
+   <name>inspectorlogging</name>
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
-   <name>macie</name>
+   <name>macielogging</name>
    <path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
-   <name>vpcflow</name>
+   <name>vpcflowlogging</name>
    <path>flowlogs</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
