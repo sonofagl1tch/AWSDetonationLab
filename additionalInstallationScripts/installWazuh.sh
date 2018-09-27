@@ -185,7 +185,7 @@ done
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
 
-cat > some <<\EOF 
+cat > /var/ossec/etc/ossec.conf <<\EOF 
 <!--
   Wazuh - Manager - Default configuration for amzn 2
   More info at: https://documentation.wazuh.com
