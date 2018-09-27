@@ -310,6 +310,7 @@ cat > /var/ossec/etc/ossec.conf <<\EOF
   <run_on_start>yes</run_on_start>
   <skip_on_error>yes</skip_on_error>
   <bucket type="cloudtrail">
+<<<<<<< HEAD
    <name>cloudtraillogging</name>
 =======
    <name>cloudtrail</name>
