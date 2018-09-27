@@ -316,31 +316,31 @@ cat > /var/ossec/etc/ossec.conf <<\EOF
   </bucket>
   <bucket type="custom">
    <name>guarddutylogging</name>
-   <path>firehose</path>
+<path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
    <name>iamlogging</name>
-   <path>firehose</path>
+<path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
    <name>inspectorlogging</name>
-   <path>firehose</path>
+<path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
    <name>macielogging</name>
-   <path>firehose</path>
+<path>firehose</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
   <bucket type="custom">
    <name>vpcflowlogging</name>
-   <path>flowlogs</path>
+<path>flowlogs</path>
    <access_key>insert_access_key</access_key>
    <secret_key>insert_secret_key</secret_key>
   </bucket>
