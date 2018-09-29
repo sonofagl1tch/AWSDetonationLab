@@ -2095,6 +2095,22 @@
           },
           {
             "IpProtocol": "tcp",
+            "ToPort": "1515",
+            "FromPort": "1515",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "ToPort": "1515",
+            "FromPort": "1515",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
             "FromPort": "55000",
             "ToPort": "55000",
             "SourceSecurityGroupId": {
@@ -2149,6 +2165,22 @@
             "ToPort": "55000",
             "DestinationSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "ToPort": "1515",
+            "FromPort": "1515",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "ToPort": "1515",
+            "FromPort": "1515",
+            "SourceSecurityGroupId": {
+              "Ref": "BasicWindowsSecurityGroup"
             }
           },
           {
