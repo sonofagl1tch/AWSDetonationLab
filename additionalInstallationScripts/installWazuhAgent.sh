@@ -18,62 +18,17 @@ EOF
 # Installing Wazuh agent
 yum install wazuh-agent -y -q -e 0
 
-#wait until elasticsearch comes up before continuing 
-ES_URL=${ES_URL:-'http://172.16.0.21:9200'}
-ES_USER=${ES_USER:-kibana}
-ES_PASSWORD=${ES_PASSWORD:-changeme}
-until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
-  >&2 echo "Elastic is unavailable - sleeping for 5 seconds"
+# register agent
+MANAGER_IP="172.16.0.21"
+
+until /var/ossec/bin/agent-auth -m $MANAGER_IP -A "linuxVictim"; do
+  echo "Wazuh manager is unavailable - sleeping for 5 seconds"
   sleep 5
 done
->&2 echo "Elastic is up - executing commands"
 
-# register agent
-# https://raw.githubusercontent.com/wazuh/wazuh-api/3.2/examples/api-register-agent.sh
-# Connection variables
-API_IP="172.16.0.21"
-API_PORT="55000"
-PROTOCOL="http"
-USER="wazuh"
-PASSWORD="wazuh"
+# set up manager ip in the ossec.conf file before restarting
+sed -i "s/MANAGER_IP/$MANAGER_IP/" /var/ossec/etc/ossec.conf
 
-if [ "$#" = "0" ]; then
-  #AGENT_NAME=$(hostname)
-  AGENT_NAME="linuxVictim"
-else
-  AGENT_NAME=$1
-fi
+systemctl restart wazuh-agent
 
-# Adding agent and getting Id from manager
-echo ""
-echo "Adding agent:"
-echo "curl -s -u $USER:**** -k -X POST -d 'name=$AGENT_NAME' $PROTOCOL://$API_IP:$API_PORT/agents"
-API_RESULT=$(curl -s -u $USER:"$PASSWORD" -k -X POST -d 'name='$AGENT_NAME $PROTOCOL://$API_IP:$API_PORT/agents)
-echo -e $API_RESULT | grep -q "\"error\":0" 2>&1
-
-if [ "$?" != "0" ]; then
-  echo -e $API_RESULT | sed -rn 's/.*"message":"(.+)".*/\1/p'
-  exit 1
-fi
-# Get agent id and agent key
-AGENT_ID=$(echo $API_RESULT | cut -d':' -f 4 | cut -d ',' -f 1)
-AGENT_KEY=$(echo $API_RESULT | cut -d':' -f 5 | cut -d '}' -f 1)
-
-echo "Agent '$AGENT_NAME' with ID '$AGENT_ID' added."
-echo "Key for agent '$AGENT_ID' received."
-
-# Importing key
-echo ""
-echo "Importing authentication key:"
-echo "y" | /var/ossec/bin/manage_agents -i $AGENT_KEY
-
-# fix bad ossec config
-sed -i "s/MANAGER_IP/172.16.0.21/" /var/ossec/etc/ossec.conf
-
-# Restarting agent
-echo ""
-echo "Restarting:"
-echo ""
-/var/ossec/bin/ossec-control restart
-
-exit 0
+echo "Agent sucessfully registered"
