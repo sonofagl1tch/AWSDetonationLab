@@ -816,6 +816,9 @@
       ],
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
         "DestinationArn": {
           "Fn::GetAtt": [
             "LogStream",
@@ -832,9 +835,6 @@
             ]
           ]
         },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
         "RoleArn": {
           "Fn::GetAtt": [
             "CloudWatchToKinesis",
@@ -844,106 +844,26 @@
       }
     },
     "FlowLogUpload": {
-      "DependsOn": [
-        "LambdaPolicy"
-      ],
-      "Type": "AWS::Lambda::Function",
+      "Type": "AWS::EC2::FlowLog",
       "Properties": {
-        "Handler": "index.handler",
-        "MemorySize": 256,
-        "Role": {
+        "DeliverLogsPermissionArn": {
           "Fn::GetAtt": [
-            "LambdaRole",
+            "FlowLogsToCloudWatch",
             "Arn"
           ]
         },
-        "Runtime": "nodejs6.10",
-        "Timeout": 60,
-        "Code": {
-          "ZipFile": {
-            "Fn::Join": [
-              "",
-              [
-                "console.log('Loading function');\n",
-                "\n",
-                "var bucket = '",
-                {
-                  "Ref": "S3BucketVPCflow"
-                },
-                "';\n",
-                "var path = 'flowlogs';\n",
-                "var zlib = require('zlib');\n",
-                "var AWS = require('aws-sdk');\n",
-                "AWS.config.update({region: '",
-                {
-                  "Ref": "AWS::Region"
-                },
-                "'});\n",
-                "var s3 = new AWS.S3();\n",
-                "\n",
-                "exports.handler = function(event, context) {\n",
-                "    var i = 0;\n",
-                "    var record;\n",
-                "    var data = [];\n",
-                "    var key = path + \"/\" + context.invokeid + \".gz\";\n",
-                "\n",
-                "    //console.log(JSON.stringify(event, null, 2));\n",
-                "    // Serialize Operation\n",
-                "    function iter(err) {\n",
-                "        if (err) {\n",
-                "            context.fail(err);\n",
-                "            return;\n",
-                "        }\n",
-                "        record =  event.Records[i++];\n",
-                "        if (!record) {\n",
-                "            if (data.length === 0) {\n",
-                "                context.succeed(\"No data to upload\");\n",
-                "                return;\n",
-                "            }\n",
-                "            zlib.gzip(data.join(\"\\n\"),function ",
-                "(err, result) {\n",
-                "                if (err) return iter(err);\n",
-                "                var params = {\n",
-                "                    Bucket: bucket,\n",
-                "                    Key: key,\n",
-                "                    Body: result\n",
-                "                };\n",
-                "                s3.putObject(params, function(err, data) {\n",
-                "                    if (err) return iter(err);\n",
-                "                    console.log(\"Successfully uploaded ",
-                "flowlog \" + bucket + \"/\" + key);\n",
-                "                    context.succeed(\"Successfully processed ",
-                "\" + event.Records.length + \" ",
-                "record\");\n",
-                "                    return;\n",
-                "                });\n",
-                "                return;\n",
-                "            });\n",
-                "            return;\n",
-                "        }\n",
-                "        var buffer = new ",
-                "Buffer(record.kinesis.data, 'base64');\n",
-                "        zlib.unzip(buffer, function(err, buffer) {\n",
-                "            if (err) return iter(err);\n",
-                "            var fl = JSON.parse(buffer.toString('ascii'));\n",
-                "            data = data.concat(fl.logEvents.map(",
-                "function(item) {\n",
-                "                return item.message;\n",
-                "            })).filter(function(item) {\n",
-                "                return (item.indexOf('OK') == -1) ",
-                "? false : true;\n",
-                "            });\n",
-                "            iter();\n",
-                "        });\n",
-                "    }\n",
-                "    // Start iterator\n",
-                "    iter();\n",
-                "    return;\n",
-                "};\n"
-              ]
-            ]
-          }
-        }
+        "LogDestination": {
+          "Fn::GetAtt": [
+            "S3BucketVPCflow",
+            "Arn"
+          ]
+        },
+        "LogDestinationType": "s3",
+        "ResourceId": {
+          "Ref": "VPC"
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL"
       }
     },
     "FlowLogs": {
@@ -1169,29 +1089,6 @@
         ]
       }
     },
-    "KinesisToLambda": {
-      "Type": "AWS::Lambda::EventSourceMapping",
-      "Properties": {
-        "BatchSize": {
-          "Fn::FindInMap": [
-            "Defaults",
-            "EventSourceMapping",
-            "BatchSize"
-          ]
-        },
-        "Enabled": "True",
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "LogStream",
-            "Arn"
-          ]
-        },
-        "FunctionName": {
-          "Ref": "FlowLogUpload"
-        },
-        "StartingPosition": "TRIM_HORIZON"
-      }
-    },
     "LambdaPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -1294,25 +1191,6 @@
             "ShardCount"
           ]
         }
-      }
-    },
-    "MyFlowLog": {
-      "Type": "AWS::EC2::FlowLog",
-      "Properties": {
-        "DeliverLogsPermissionArn": {
-          "Fn::GetAtt": [
-            "FlowLogsToCloudWatch",
-            "Arn"
-          ]
-        },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
-        "ResourceId": {
-          "Ref": "VPC"
-        },
-        "ResourceType": "VPC",
-        "TrafficType": "ALL"
       }
     },
     "NATEIP": {
@@ -2095,16 +1973,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2169,16 +2047,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
