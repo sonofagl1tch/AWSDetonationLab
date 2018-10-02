@@ -204,5 +204,8 @@ EOF
 #make upload directory
 mkdir -p /var/www/html/uploads
 
+#add apache to wheel because we want bad things to happen
+usermod -aG wheel apache
+
 # restart web service
 sudo service httpd restart
