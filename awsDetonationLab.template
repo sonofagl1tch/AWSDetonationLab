@@ -147,7 +147,9 @@
             ]
           }
         },
-        "InstanceType": "m4.large",
+        "InstanceType": {
+"Ref": "InstanceTypeParameterlinux"
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -297,7 +299,11 @@
             "DeviceIndex": "0"
           }
         ],
-        "InstanceType": "m4.large",
+        "InstanceType": {
+
+              "Ref": "InstanceTypeParameterwindows"
+
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -497,7 +503,9 @@
             "Ref": "BastionSecurityGroup"
           }
         ],
-        "InstanceType": "t2.small",
+        "InstanceType": {
+"Ref": "InstanceTypeParameterlinux"
+        },
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -1681,7 +1689,9 @@
             ]
           }
         },
-        "InstanceType": "m4.large",
+        "InstanceType": {
+"Ref": "InstanceTypeParameterlinux"
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -2699,7 +2709,9 @@
             ]
           }
         },
-        "InstanceType": "m4.2xlarge",
+        "InstanceType": {
+   "Ref": "InstanceTypeParameterlinux"
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -3287,6 +3299,26 @@
       "Default": "172.16.0.0/27",
       "Description": "CIDR Block for the VPC",
       "Type": "String"
+    },
+    "InstanceTypeParameterlinux": {
+      "Type": "String",
+      "Default": "t2.micro",
+      "AllowedValues": [
+        "t2.micro",
+        "t2.large",
+        "t2.2xlarge"
+      ],
+      "Description": "choose Linux instance Type. Default is t2.micro."
+    },
+    "InstanceTypeParameterwindows": {
+      "Type": "String",
+      "Default": "t2.large",
+      "AllowedValues": [
+        "t2.micro",
+        "t2.large",
+        "t2.2xlarge"
+      ],
+      "Description": "choose Windows instance Type. Default is t2.large."
     }
   }
 }
