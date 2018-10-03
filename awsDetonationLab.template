@@ -148,7 +148,7 @@
           }
         },
         "InstanceType": {
-"Ref": "InstanceTypeParameterlinux"
+          "Ref": "InstanceTypeParameterlinux"
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -300,9 +300,7 @@
           }
         ],
         "InstanceType": {
-
-              "Ref": "InstanceTypeParameterwindows"
-
+          "Ref": "InstanceTypeParameterwindows"
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -504,7 +502,7 @@
           }
         ],
         "InstanceType": {
-"Ref": "InstanceTypeParameterlinux"
+          "Ref": "InstanceTypeParameterlinux"
         },
         "UserData": {
           "Fn::Base64": {
@@ -824,6 +822,9 @@
       ],
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
         "DestinationArn": {
           "Fn::GetAtt": [
             "LogStream",
@@ -840,9 +841,6 @@
             ]
           ]
         },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
         "RoleArn": {
           "Fn::GetAtt": [
             "CloudWatchToKinesis",
@@ -852,9 +850,6 @@
       }
     },
     "FlowLogUpload": {
-      "DependsOn": [
-        "LambdaPolicy"
-      ],
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Handler": "index.handler",
@@ -952,7 +947,10 @@
             ]
           }
         }
-      }
+      },
+      "DependsOn": [
+        "LambdaPolicy"
+      ]
     },
     "FlowLogs": {
       "Type": "AWS::Logs::LogGroup",
@@ -1177,29 +1175,6 @@
         ]
       }
     },
-    "KinesisToLambda": {
-      "Type": "AWS::Lambda::EventSourceMapping",
-      "Properties": {
-        "BatchSize": {
-          "Fn::FindInMap": [
-            "Defaults",
-            "EventSourceMapping",
-            "BatchSize"
-          ]
-        },
-        "Enabled": "True",
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "LogStream",
-            "Arn"
-          ]
-        },
-        "FunctionName": {
-          "Ref": "FlowLogUpload"
-        },
-        "StartingPosition": "TRIM_HORIZON"
-      }
-    },
     "LambdaPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -1304,25 +1279,6 @@
         }
       }
     },
-    "MyFlowLog": {
-      "Type": "AWS::EC2::FlowLog",
-      "Properties": {
-        "DeliverLogsPermissionArn": {
-          "Fn::GetAtt": [
-            "FlowLogsToCloudWatch",
-            "Arn"
-          ]
-        },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
-        "ResourceId": {
-          "Ref": "VPC"
-        },
-        "ResourceType": "VPC",
-        "TrafficType": "ALL"
-      }
-    },
     "NATEIP": {
       "DependsOn": "VPCGatewayAttachment",
       "Type": "AWS::EC2::EIP",
@@ -1371,7 +1327,9 @@
             "AWSNATHVM"
           ]
         },
-        "InstanceType": "t2.micro",
+        "InstanceType": {
+          "Ref": "InstanceTypeParameterlinux"
+        },
         "Tags": [
           {
             "Key": "Name",
@@ -1690,7 +1648,7 @@
           }
         },
         "InstanceType": {
-"Ref": "InstanceTypeParameterlinux"
+          "Ref": "InstanceTypeParameterlinux"
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -2105,16 +2063,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2179,16 +2137,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2710,7 +2668,7 @@
           }
         },
         "InstanceType": {
-   "Ref": "InstanceTypeParameterlinux"
+          "Ref": "InstanceTypeParameterWazuh"
         },
         "AvailabilityZone": {
           "Fn::Select": [
@@ -3061,6 +3019,48 @@
           "Ref": "wazuhUser"
         }
       }
+    },
+    "KinesisToLambda": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "EventSourceMapping",
+            "BatchSize"
+          ]
+        },
+        "Enabled": "True",
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "LogStream",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "FlowLogUpload"
+        },
+        "StartingPosition": "TRIM_HORIZON"
+      }
+    },
+    "MyFlowLog": {
+      "Type": "AWS::EC2::FlowLog",
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "FlowLogsToCloudWatch",
+            "Arn"
+          ]
+        },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
+        "ResourceId": {
+          "Ref": "VPC"
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL"
+      }
     }
   },
   "Conditions": {
@@ -3305,20 +3305,33 @@
       "Default": "t2.micro",
       "AllowedValues": [
         "t2.micro",
+        "t2.medium",
         "t2.large",
         "t2.2xlarge"
       ],
-      "Description": "choose Linux instance Type. Default is t2.micro."
+      "Description": "choose amazon Linux instance Type. Default is t2.micro."
+    },
+    "InstanceTypeParameterWazuh": {
+      "Type": "String",
+      "Default": "t2.medium",
+      "AllowedValues": [
+        "t2.micro",
+        "t2.medium",
+        "t2.large",
+        "t2.2xlarge"
+      ],
+      "Description": "choose Wazuh Server amazon linux instance Type. Default is t2.medium."
     },
     "InstanceTypeParameterwindows": {
       "Type": "String",
-      "Default": "t2.large",
+      "Default": "t2.micro",
       "AllowedValues": [
         "t2.micro",
+        "t2.medium",
         "t2.large",
         "t2.2xlarge"
       ],
-      "Description": "choose Windows instance Type. Default is t2.large."
+      "Description": "choose Windows server 2016 instance Type. Default is t2.micro."
     }
   }
 }
