@@ -191,7 +191,7 @@ done
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
 
-cat >> /var/ossec/etc/ossec.conf <<\EOF
+cat <<EOF >> /var/ossec/etc/ossec.conf
 <ossec_config>
   <wodle name="aws-s3">
     <disabled>no</disabled>
