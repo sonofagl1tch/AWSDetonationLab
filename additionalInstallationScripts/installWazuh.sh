@@ -178,7 +178,7 @@ curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuratio
 }
 '
 #######################################
-cat >> /var/ossec/etc/ossec.conf <<EOF
+cat << 'EOF' >> /var/ossec/etc/ossec.conf 
 <ossec_config>
   <wodle name="aws-s3">
     <disabled>no</disabled>
