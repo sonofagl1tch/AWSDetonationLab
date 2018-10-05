@@ -3313,7 +3313,7 @@
     },
     "InstanceTypeParameterWazuh": {
       "Type": "String",
-      "Default": "t2.medium",
+      "Default": "t2.2xlarge",
       "AllowedValues": [
         "t2.micro",
         "t2.medium",
