@@ -178,19 +178,6 @@ curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuratio
 }
 '
 #######################################
-#wait until elasticsearch comes up before continuing 
-ES_URL=${ES_URL:-'http://localhost:9200'}
-ES_USER=${ES_USER:-kibana}
-ES_PASSWORD=${ES_PASSWORD:-changeme}
-until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
-  service elasticsearch restart
-  sleep 5
-done
->&2 echo "Elastic is up - executing commands"
-#######################################
-# next steps is to configure wazuh
-## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
-
 cat <<EOF >> /var/ossec/etc/ossec.conf
 <ossec_config>
   <wodle name="aws-s3">
@@ -236,3 +223,17 @@ cat <<EOF >> /var/ossec/etc/ossec.conf
   </wodle>
 </ossec_config>
 EOF
+/var/ossec/bin/ossec-control restart
+#######################################
+#wait until elasticsearch comes up before continuing 
+ES_URL=${ES_URL:-'http://localhost:9200'}
+ES_USER=${ES_USER:-kibana}
+ES_PASSWORD=${ES_PASSWORD:-changeme}
+until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
+  service elasticsearch restart
+  sleep 5
+done
+>&2 echo "Elastic is up - executing commands"
+#######################################
+# next steps is to configure wazuh
+## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
