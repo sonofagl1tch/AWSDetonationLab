@@ -46,7 +46,7 @@ chkconfig --add wazuh-api
 chkconfig wazuh-api on
 service wazuh-api start
 #######################################
-cat > /var/ossec/etc/ossec.conf <<\EOF
+cat >> /var/ossec/etc/ossec.conf <<\EOF
 <ossec_config>
   <wodle name="aws-s3">
     <disabled>no</disabled>
