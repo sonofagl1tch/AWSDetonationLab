@@ -501,9 +501,7 @@
             "Ref": "BastionSecurityGroup"
           }
         ],
-        "InstanceType": {
-          "Ref": "InstanceTypeParameterlinux"
-        },
+        "InstanceType": "t2.small",
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -822,6 +820,9 @@
       ],
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
         "DestinationArn": {
           "Fn::GetAtt": [
             "LogStream",
@@ -838,9 +839,6 @@
             ]
           ]
         },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
         "RoleArn": {
           "Fn::GetAtt": [
             "CloudWatchToKinesis",
@@ -850,9 +848,6 @@
       }
     },
     "FlowLogUpload": {
-      "DependsOn": [
-        "LambdaPolicy"
-      ],
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Handler": "index.handler",
@@ -950,7 +945,10 @@
             ]
           }
         }
-      }
+      },
+      "DependsOn": [
+        "LambdaPolicy"
+      ]
     },
     "FlowLogs": {
       "Type": "AWS::Logs::LogGroup",
@@ -1175,29 +1173,6 @@
         ]
       }
     },
-    "KinesisToLambda": {
-      "Type": "AWS::Lambda::EventSourceMapping",
-      "Properties": {
-        "BatchSize": {
-          "Fn::FindInMap": [
-            "Defaults",
-            "EventSourceMapping",
-            "BatchSize"
-          ]
-        },
-        "Enabled": "True",
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "LogStream",
-            "Arn"
-          ]
-        },
-        "FunctionName": {
-          "Ref": "FlowLogUpload"
-        },
-        "StartingPosition": "TRIM_HORIZON"
-      }
-    },
     "LambdaPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -1300,25 +1275,6 @@
             "ShardCount"
           ]
         }
-      }
-    },
-    "MyFlowLog": {
-      "Type": "AWS::EC2::FlowLog",
-      "Properties": {
-        "DeliverLogsPermissionArn": {
-          "Fn::GetAtt": [
-            "FlowLogsToCloudWatch",
-            "Arn"
-          ]
-        },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
-        "ResourceId": {
-          "Ref": "VPC"
-        },
-        "ResourceType": "VPC",
-        "TrafficType": "ALL"
       }
     },
     "NATEIP": {
@@ -2105,16 +2061,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2179,16 +2135,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -3061,6 +3017,48 @@
           "Ref": "wazuhUser"
         }
       }
+    },
+    "KinesisToLambda": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "EventSourceMapping",
+            "BatchSize"
+          ]
+        },
+        "Enabled": "True",
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "LogStream",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "FlowLogUpload"
+        },
+        "StartingPosition": "TRIM_HORIZON"
+      }
+    },
+    "MyFlowLog": {
+      "Type": "AWS::EC2::FlowLog",
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "FlowLogsToCloudWatch",
+            "Arn"
+          ]
+        },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
+        "ResourceId": {
+          "Ref": "VPC"
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL"
+      }
     }
   },
   "Conditions": {
@@ -3266,6 +3264,7 @@
   "Parameters": {
     "AvailabilityZones": {
       "Description": "Availability Zone to use for the subnets in the VPC. You can select many, but we just use 1 (the first).",
+      "Default": "us-east-1",
       "Type": "List<AWS::EC2::AvailabilityZone::Name>"
     },
     "KeyPairName": {
