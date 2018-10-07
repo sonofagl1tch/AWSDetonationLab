@@ -46,6 +46,52 @@ chkconfig --add wazuh-api
 chkconfig wazuh-api on
 service wazuh-api start
 #######################################
+cat >> /var/ossec/etc/ossec.conf <<\EOF
+<ossec_config>
+  <wodle name="aws-s3">
+    <disabled>no</disabled>
+    <interval>10m</interval>
+    <run_on_start>yes</run_on_start>
+    <skip_on_error>yes</skip_on_error>
+    <bucket type="cloudtrail">
+    <name>cloudtraillogging</name>
+    <access_key>insert_access_key</access_key>
+    <secret_key>insert_secret_key</secret_key>
+    </bucket>
+    <bucket type="custom">
+      <name>guarddutylogging</name>
+      <path>firehose</path>
+      <access_key>insert_access_key</access_key>
+      <secret_key>insert_secret_key</secret_key>
+    </bucket>
+    <bucket type="custom">
+      <name>iamlogging</name>
+      <path>firehose</path>
+      <access_key>insert_access_key</access_key>
+      <secret_key>insert_secret_key</secret_key>
+    </bucket>
+    <bucket type="custom">
+      <name>inspectorlogging</name>
+      <path>firehose</path>
+      <access_key>insert_access_key</access_key>
+      <secret_key>insert_secret_key</secret_key>
+    </bucket>
+    <bucket type="custom">
+      <name>macielogging</name>
+      <path>firehose</path>
+      <access_key>insert_access_key</access_key>
+      <secret_key>insert_secret_key</secret_key>
+    </bucket>
+    <bucket type="custom">
+      <name>vpcflowlogging</name>
+      <path>flowlogs</path>
+      <access_key>insert_access_key</access_key>
+      <secret_key>insert_secret_key</secret_key>
+    </bucket>
+  </wodle>
+</ossec_config>
+EOF
+#######################################
 # Installing Filebeat
 # In a single-host architecture (where Wazuh server and Elastic Stack are installed in the same system), the installation of Filebeat is not needed since Logstash will be able to read the event/alert data directly from the local filesystem without the assistance of a forwarder.
 #######################################
@@ -190,49 +236,3 @@ done
 #######################################
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
-
-cat >> /var/ossec/etc/ossec.conf <<\EOF
-<ossec_config>
-  <wodle name="aws-s3">
-    <disabled>no</disabled>
-    <interval>10m</interval>
-    <run_on_start>yes</run_on_start>
-    <skip_on_error>yes</skip_on_error>
-    <bucket type="cloudtrail">
-    <name>cloudtraillogging</name>
-    <access_key>insert_access_key</access_key>
-    <secret_key>insert_secret_key</secret_key>
-    </bucket>
-    <bucket type="custom">
-      <name>guarddutylogging</name>
-      <path>firehose</path>
-      <access_key>insert_access_key</access_key>
-      <secret_key>insert_secret_key</secret_key>
-    </bucket>
-    <bucket type="custom">
-      <name>iamlogging</name>
-      <path>firehose</path>
-      <access_key>insert_access_key</access_key>
-      <secret_key>insert_secret_key</secret_key>
-    </bucket>
-    <bucket type="custom">
-      <name>inspectorlogging</name>
-      <path>firehose</path>
-      <access_key>insert_access_key</access_key>
-      <secret_key>insert_secret_key</secret_key>
-    </bucket>
-    <bucket type="custom">
-      <name>macielogging</name>
-      <path>firehose</path>
-      <access_key>insert_access_key</access_key>
-      <secret_key>insert_secret_key</secret_key>
-    </bucket>
-    <bucket type="custom">
-      <name>vpcflowlogging</name>
-      <path>flowlogs</path>
-      <access_key>insert_access_key</access_key>
-      <secret_key>insert_secret_key</secret_key>
-    </bucket>
-  </wodle>
-</ossec_config>
-EOF
