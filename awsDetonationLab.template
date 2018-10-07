@@ -1008,7 +1008,9 @@
       "DependsOn": "wazuhUser",
       "Properties": {
         "Users": [
-          "wazuh"
+          {
+            "Ref": "wazuhUser"
+          }
         ],
         "PolicyName": "wazuh-read-detlab-s3buckets",
         "PolicyDocument": {
@@ -2763,8 +2765,7 @@
     "wazuhUser": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "Path": "/",
-        "UserName": "wazuh"
+        "Path": "/"
       }
     },
     "CloudwatchEventRuleGuardduty": {
