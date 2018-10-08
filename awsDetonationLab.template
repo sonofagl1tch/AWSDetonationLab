@@ -697,7 +697,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleGuardDuty",
+              "firehosedeliveryRoleGuardDuty",
               "Arn"
             ]
           },
@@ -733,7 +733,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleIAM",
+              "firehosedeliveryRoleIAM",
               "Arn"
             ]
           },
@@ -769,7 +769,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleInspector",
+              "firehosedeliveryRoleInspector",
               "Arn"
             ]
           },
@@ -805,7 +805,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleMacie",
+              "firehosedeliveryRoleMacie",
               "Arn"
             ]
           },
@@ -2347,7 +2347,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleGuardDuty"
+            "Ref": "firehosedeliveryRoleGuardDuty"
           }
         ]
       }
@@ -2399,7 +2399,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleIAM"
+            "Ref": "firehosedeliveryRoleIAM"
           }
         ]
       }
@@ -2451,7 +2451,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleInspector"
+            "Ref": "firehosedeliveryRoleInspector"
           }
         ]
       }
@@ -2503,12 +2503,12 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleMacie"
+            "Ref": "firehosedeliveryRoleMacie"
           }
         ]
       }
     },
-    "firehostdeliveryRoleGuardDuty": {
+    "firehosedeliveryRoleGuardDuty": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2533,7 +2533,7 @@
         }
       }
     },
-    "firehostdeliveryRoleIAM": {
+    "firehosedeliveryRoleIAM": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2558,7 +2558,7 @@
         }
       }
     },
-    "firehostdeliveryRoleInspector": {
+    "firehosedeliveryRoleInspector": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2583,7 +2583,7 @@
         }
       }
     },
-    "firehostdeliveryRoleMacie": {
+    "firehosedeliveryRoleMacie": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2608,7 +2608,7 @@
         }
       }
     },
-    "firehostdeliveryRoleVPC": {
+    "firehosedeliveryRoleVPC": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
