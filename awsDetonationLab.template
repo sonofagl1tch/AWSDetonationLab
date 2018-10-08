@@ -501,7 +501,9 @@
             "Ref": "BastionSecurityGroup"
           }
         ],
-        "InstanceType": "t2.small",
+        "InstanceType": {
+          "Ref": "InstanceTypeParameterlinux"
+        },
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -1006,7 +1008,9 @@
       "DependsOn": "wazuhUser",
       "Properties": {
         "Users": [
-          "wazuh"
+          {
+            "Ref": "wazuhUser"
+          }
         ],
         "PolicyName": "wazuh-read-detlab-s3buckets",
         "PolicyDocument": {
@@ -2719,8 +2723,7 @@
     "wazuhUser": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "Path": "/",
-        "UserName": "wazuh"
+        "Path": "/"
       }
     },
     "CloudwatchEventRuleGuardduty": {
@@ -3312,7 +3315,7 @@
     },
     "InstanceTypeParameterWazuh": {
       "Type": "String",
-      "Default": "t2.medium",
+      "Default": "t2.2xlarge",
       "AllowedValues": [
         "t2.micro",
         "t2.medium",
