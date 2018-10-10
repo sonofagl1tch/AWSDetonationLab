@@ -14,4 +14,6 @@ Do {
 Write-Output "Wazuh manager has port 1515 opened. Connecting..."
 
 # install agent and register agent
+#Start-Process "msiexec.exe" -ArgumentList "/i C:\Users\Administrator\Desktop\wazuh-agent-3.6.1-1.msi /quiet /qn /norestart ADDRESS=$wazuh_manager AUTHD_SERVER=$wazuh_manager AGENT_NAME='windowsVictim'" -NoNewWindow 
+
 C:\Users\Administrator\Desktop\wazuh-agent-3.6.1-1.msi /q ADDRESS=$wazuh_manager AUTHD_SERVER=$wazuh_manager AGENT_NAME="windowsVictim"
