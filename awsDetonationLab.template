@@ -278,15 +278,13 @@
               "",
               [
                 "<powershell>\n",
-                "$url = 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1'\n",
-                "$outpath = \"$PSScriptRoot/installWazuhAgent.ps1\"\n",
-                "Invoke-WebRequest -Uri $url -OutFile $outpath\n",
-                "$wc = New-Object System.Net.WebClient\n",
-                "$wc.DownloadFile($url, $outpath)\n",
-                "& \"$outpath\"\n",
+                "Set-ExecutionPolicy RemoteSigned -Force\n",
+                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
+                "Start-Sleep -s 300\n",
                 "</powershell>\n",
                 "<script>\n",
-                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
+                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe\n",
+                "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
                 "\n",
                 "</script>\n"
               ]
@@ -699,7 +697,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleGuardDuty",
+              "firehosedeliveryRoleGuardDuty",
               "Arn"
             ]
           },
@@ -735,7 +733,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleIAM",
+              "firehosedeliveryRoleIAM",
               "Arn"
             ]
           },
@@ -771,7 +769,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleInspector",
+              "firehosedeliveryRoleInspector",
               "Arn"
             ]
           },
@@ -807,7 +805,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleMacie",
+              "firehosedeliveryRoleMacie",
               "Arn"
             ]
           },
@@ -824,9 +822,6 @@
       ],
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
         "DestinationArn": {
           "Fn::GetAtt": [
             "LogStream",
@@ -843,6 +838,9 @@
             ]
           ]
         },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
         "RoleArn": {
           "Fn::GetAtt": [
             "CloudWatchToKinesis",
@@ -852,6 +850,9 @@
       }
     },
     "FlowLogUpload": {
+      "DependsOn": [
+        "LambdaPolicy"
+      ],
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Handler": "index.handler",
@@ -949,10 +950,7 @@
             ]
           }
         }
-      },
-      "DependsOn": [
-        "LambdaPolicy"
-      ]
+      }
     },
     "FlowLogs": {
       "Type": "AWS::Logs::LogGroup",
@@ -1010,7 +1008,9 @@
       "DependsOn": "wazuhUser",
       "Properties": {
         "Users": [
-          "wazuh"
+          {
+            "Ref": "wazuhUser"
+          }
         ],
         "PolicyName": "wazuh-read-detlab-s3buckets",
         "PolicyDocument": {
@@ -1177,6 +1177,29 @@
         ]
       }
     },
+    "KinesisToLambda": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "EventSourceMapping",
+            "BatchSize"
+          ]
+        },
+        "Enabled": "True",
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "LogStream",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "FlowLogUpload"
+        },
+        "StartingPosition": "TRIM_HORIZON"
+      }
+    },
     "LambdaPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -1279,6 +1302,25 @@
             "ShardCount"
           ]
         }
+      }
+    },
+    "MyFlowLog": {
+      "Type": "AWS::EC2::FlowLog",
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "FlowLogsToCloudWatch",
+            "Arn"
+          ]
+        },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
+        "ResourceId": {
+          "Ref": "VPC"
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL"
       }
     },
     "NATEIP": {
@@ -2065,16 +2107,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "FromPort": "1515",
             "ToPort": "1515",
+            "FromPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "FromPort": "1515",
             "ToPort": "1515",
+            "FromPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2139,16 +2181,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "FromPort": "1515",
             "ToPort": "1515",
+            "FromPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "FromPort": "1515",
             "ToPort": "1515",
+            "FromPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2305,7 +2347,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleGuardDuty"
+            "Ref": "firehosedeliveryRoleGuardDuty"
           }
         ]
       }
@@ -2357,7 +2399,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleIAM"
+            "Ref": "firehosedeliveryRoleIAM"
           }
         ]
       }
@@ -2409,7 +2451,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleInspector"
+            "Ref": "firehosedeliveryRoleInspector"
           }
         ]
       }
@@ -2461,12 +2503,12 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleMacie"
+            "Ref": "firehosedeliveryRoleMacie"
           }
         ]
       }
     },
-    "firehostdeliveryRoleGuardDuty": {
+    "firehosedeliveryRoleGuardDuty": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2491,7 +2533,7 @@
         }
       }
     },
-    "firehostdeliveryRoleIAM": {
+    "firehosedeliveryRoleIAM": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2516,7 +2558,7 @@
         }
       }
     },
-    "firehostdeliveryRoleInspector": {
+    "firehosedeliveryRoleInspector": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2541,7 +2583,7 @@
         }
       }
     },
-    "firehostdeliveryRoleMacie": {
+    "firehosedeliveryRoleMacie": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2566,7 +2608,7 @@
         }
       }
     },
-    "firehostdeliveryRoleVPC": {
+    "firehosedeliveryRoleVPC": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -2723,8 +2765,7 @@
     "wazuhUser": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "Path": "/",
-        "UserName": "wazuh"
+        "Path": "/"
       }
     },
     "CloudwatchEventRuleGuardduty": {
@@ -3021,48 +3062,6 @@
           "Ref": "wazuhUser"
         }
       }
-    },
-    "KinesisToLambda": {
-      "Type": "AWS::Lambda::EventSourceMapping",
-      "Properties": {
-        "BatchSize": {
-          "Fn::FindInMap": [
-            "Defaults",
-            "EventSourceMapping",
-            "BatchSize"
-          ]
-        },
-        "Enabled": "True",
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "LogStream",
-            "Arn"
-          ]
-        },
-        "FunctionName": {
-          "Ref": "FlowLogUpload"
-        },
-        "StartingPosition": "TRIM_HORIZON"
-      }
-    },
-    "MyFlowLog": {
-      "Type": "AWS::EC2::FlowLog",
-      "Properties": {
-        "DeliverLogsPermissionArn": {
-          "Fn::GetAtt": [
-            "FlowLogsToCloudWatch",
-            "Arn"
-          ]
-        },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
-        "ResourceId": {
-          "Ref": "VPC"
-        },
-        "ResourceType": "VPC",
-        "TrafficType": "ALL"
-      }
     }
   },
   "Conditions": {
@@ -3315,7 +3314,7 @@
     },
     "InstanceTypeParameterWazuh": {
       "Type": "String",
-      "Default": "t2.medium",
+      "Default": "t2.2xlarge",
       "AllowedValues": [
         "t2.micro",
         "t2.medium",
