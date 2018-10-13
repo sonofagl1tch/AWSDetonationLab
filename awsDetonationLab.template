@@ -278,9 +278,9 @@
               "",
               [
                 "<powershell>\n",
-                "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1\" ".\installWazuhAgent.ps1\"",
+                "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1\" \".\\installWazuhAgent.ps1\"",
                 "Set-ExecutionPolicy -ExecutionPolicy Bypass # see comments",
-                ".\installWazuhAgent.ps1\"",
+                ".\\installWazuhAgent.ps1\"",
                 "</powershell>"
               ]
             ]
