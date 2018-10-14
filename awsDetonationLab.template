@@ -278,15 +278,10 @@
               "",
               [
                 "<powershell>\n",
-                "Set-ExecutionPolicy RemoteSigned -Force\n",
-                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
-                "Start-Sleep -s 300\n",
-                "</powershell>\n",
-                "<script>\n",
-                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe\n",
+                "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1\" -OutFile \"C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
+                "Set-ExecutionPolicy -ExecutionPolicy Bypass # see comments\n",
                 "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
-                "\n",
-                "</script>\n"
+                "</powershell>"
               ]
             ]
           }
@@ -822,6 +817,9 @@
       ],
       "Type": "AWS::Logs::SubscriptionFilter",
       "Properties": {
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
         "DestinationArn": {
           "Fn::GetAtt": [
             "LogStream",
@@ -838,9 +836,6 @@
             ]
           ]
         },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
         "RoleArn": {
           "Fn::GetAtt": [
             "CloudWatchToKinesis",
@@ -850,9 +845,6 @@
       }
     },
     "FlowLogUpload": {
-      "DependsOn": [
-        "LambdaPolicy"
-      ],
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Handler": "index.handler",
@@ -950,7 +942,10 @@
             ]
           }
         }
-      }
+      },
+      "DependsOn": [
+        "LambdaPolicy"
+      ]
     },
     "FlowLogs": {
       "Type": "AWS::Logs::LogGroup",
@@ -1177,29 +1172,6 @@
         ]
       }
     },
-    "KinesisToLambda": {
-      "Type": "AWS::Lambda::EventSourceMapping",
-      "Properties": {
-        "BatchSize": {
-          "Fn::FindInMap": [
-            "Defaults",
-            "EventSourceMapping",
-            "BatchSize"
-          ]
-        },
-        "Enabled": "True",
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "LogStream",
-            "Arn"
-          ]
-        },
-        "FunctionName": {
-          "Ref": "FlowLogUpload"
-        },
-        "StartingPosition": "TRIM_HORIZON"
-      }
-    },
     "LambdaPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -1302,25 +1274,6 @@
             "ShardCount"
           ]
         }
-      }
-    },
-    "MyFlowLog": {
-      "Type": "AWS::EC2::FlowLog",
-      "Properties": {
-        "DeliverLogsPermissionArn": {
-          "Fn::GetAtt": [
-            "FlowLogsToCloudWatch",
-            "Arn"
-          ]
-        },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
-        "ResourceId": {
-          "Ref": "VPC"
-        },
-        "ResourceType": "VPC",
-        "TrafficType": "ALL"
       }
     },
     "NATEIP": {
@@ -2107,16 +2060,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2181,16 +2134,16 @@
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
             "IpProtocol": "tcp",
-            "ToPort": "1515",
             "FromPort": "1515",
+            "ToPort": "1515",
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
@@ -2506,131 +2459,6 @@
             "Ref": "firehosedeliveryRoleMacie"
           }
         ]
-      }
-    },
-    "firehosedeliveryRoleGuardDuty": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehosedeliveryRoleIAM": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehosedeliveryRoleInspector": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehosedeliveryRoleMacie": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehosedeliveryRoleVPC": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
       }
     },
     "wazuh": {
@@ -3060,6 +2888,173 @@
         "Status": "Active",
         "UserName": {
           "Ref": "wazuhUser"
+        }
+      }
+    },
+    "KinesisToLambda": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "EventSourceMapping",
+            "BatchSize"
+          ]
+        },
+        "Enabled": "True",
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "LogStream",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "FlowLogUpload"
+        },
+        "StartingPosition": "TRIM_HORIZON"
+      }
+    },
+    "MyFlowLog": {
+      "Type": "AWS::EC2::FlowLog",
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "FlowLogsToCloudWatch",
+            "Arn"
+          ]
+        },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
+        "ResourceId": {
+          "Ref": "VPC"
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL"
+      }
+    },
+    "firehosedeliveryRoleGuardDuty": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleIAM": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleInspector": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleMacie": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleVPC": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     }
