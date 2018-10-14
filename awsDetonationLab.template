@@ -2105,22 +2105,6 @@
             "SourceSecurityGroupId": {
               "Ref": "BasicWindowsSecurityGroup"
             }
-          },
-          {
-            "IpProtocol": "icmp",
-            "FromPort": "8",
-            "ToPort": "-1",
-            "SourceSecurityGroupId": {
-              "Ref": "BasicWindowsSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "icmp",
-            "FromPort": "8",
-            "ToPort": "-1",
-            "SourceSecurityGroupId": {
-              "Ref": "BasicLinuxSecurityGroup"
-            }
           }
         ],
         "SecurityGroupEgress": [
