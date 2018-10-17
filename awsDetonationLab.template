@@ -147,7 +147,9 @@
             ]
           }
         },
-        "InstanceType": "m4.large",
+        "InstanceType": {
+          "Ref": "InstanceTypeParameterlinux"
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -276,15 +278,10 @@
               "",
               [
                 "<powershell>\n",
-                "Set-ExecutionPolicy RemoteSigned -Force\n",
-                "Set-Content -Path C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1 -Value \"(New-Object System.Net.WebClient).DownloadFile( 'https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1', 'C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1' )`r`n& C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
-                "Start-Sleep -s 300\n",
-                "</powershell>\n",
-                "<script>\n",
-                "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe\n",
+                "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1\" -OutFile \"C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
+                "Set-ExecutionPolicy -ExecutionPolicy Bypass # see comments\n",
                 "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
-                "\n",
-                "</script>\n"
+                "</powershell>"
               ]
             ]
           }
@@ -297,7 +294,9 @@
             "DeviceIndex": "0"
           }
         ],
-        "InstanceType": "m4.large",
+        "InstanceType": {
+          "Ref": "InstanceTypeParameterwindows"
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -691,7 +690,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleGuardDuty",
+              "firehosedeliveryRoleGuardDuty",
               "Arn"
             ]
           },
@@ -727,7 +726,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleIAM",
+              "firehosedeliveryRoleIAM",
               "Arn"
             ]
           },
@@ -763,7 +762,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleInspector",
+              "firehosedeliveryRoleInspector",
               "Arn"
             ]
           },
@@ -799,7 +798,7 @@
           "Prefix": "firehose/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehostdeliveryRoleMacie",
+              "firehosedeliveryRoleMacie",
               "Arn"
             ]
           },
@@ -922,7 +921,9 @@
       "DependsOn": "wazuhUser",
       "Properties": {
         "Users": [
-          "wazuh"
+          {
+            "Ref": "wazuhUser"
+          }
         ],
         "PolicyName": "wazuh-read-detlab-s3buckets",
         "PolicyDocument": {
@@ -1241,7 +1242,9 @@
             "AWSNATHVM"
           ]
         },
-        "InstanceType": "t2.micro",
+        "InstanceType": {
+          "Ref": "InstanceTypeParameterlinux"
+        },
         "Tags": [
           {
             "Key": "Name",
@@ -1559,7 +1562,9 @@
             ]
           }
         },
-        "InstanceType": "m4.large",
+        "InstanceType": {
+          "Ref": "InstanceTypeParameterlinux"
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -2213,7 +2218,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleGuardDuty"
+            "Ref": "firehosedeliveryRoleGuardDuty"
           }
         ]
       }
@@ -2265,7 +2270,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleIAM"
+            "Ref": "firehosedeliveryRoleIAM"
           }
         ]
       }
@@ -2317,7 +2322,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleInspector"
+            "Ref": "firehosedeliveryRoleInspector"
           }
         ]
       }
@@ -2369,134 +2374,9 @@
         },
         "Roles": [
           {
-            "Ref": "firehostdeliveryRoleMacie"
+            "Ref": "firehosedeliveryRoleMacie"
           }
         ]
-      }
-    },
-    "firehostdeliveryRoleGuardDuty": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehostdeliveryRoleIAM": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehostdeliveryRoleInspector": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehostdeliveryRoleMacie": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehostdeliveryRoleVPC": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
       }
     },
     "wazuh": {
@@ -2577,7 +2457,9 @@
             ]
           }
         },
-        "InstanceType": "m4.2xlarge",
+        "InstanceType": {
+          "Ref": "InstanceTypeParameterWazuh"
+        },
         "AvailabilityZone": {
           "Fn::Select": [
             "0",
@@ -2629,8 +2511,7 @@
     "wazuhUser": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "Path": "/",
-        "UserName": "wazuh"
+        "Path": "/"
       }
     },
     "CloudwatchEventRuleGuardduty": {
@@ -2927,6 +2808,173 @@
           "Ref": "wazuhUser"
         }
       }
+    },
+    "KinesisToLambda": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": {
+          "Fn::FindInMap": [
+            "Defaults",
+            "EventSourceMapping",
+            "BatchSize"
+          ]
+        },
+        "Enabled": "True",
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "LogStream",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "FlowLogUpload"
+        },
+        "StartingPosition": "TRIM_HORIZON"
+      }
+    },
+    "MyFlowLog": {
+      "Type": "AWS::EC2::FlowLog",
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "FlowLogsToCloudWatch",
+            "Arn"
+          ]
+        },
+        "LogGroupName": {
+          "Ref": "FlowLogs"
+        },
+        "ResourceId": {
+          "Ref": "VPC"
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL"
+      }
+    },
+    "firehosedeliveryRoleGuardDuty": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleIAM": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleInspector": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleMacie": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firehosedeliveryRoleVPC": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "firehose.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
     }
   },
   "Conditions": {
@@ -3132,6 +3180,7 @@
   "Parameters": {
     "AvailabilityZones": {
       "Description": "Availability Zone to use for the subnets in the VPC. You can select many, but we just use 1 (the first).",
+      "Default": "us-east-1",
       "Type": "List<AWS::EC2::AvailabilityZone::Name>"
     },
     "KeyPairName": {
@@ -3165,6 +3214,39 @@
       "Default": "172.16.0.0/27",
       "Description": "CIDR Block for the VPC",
       "Type": "String"
+    },
+    "InstanceTypeParameterlinux": {
+      "Type": "String",
+      "Default": "t2.2xlarge",
+      "AllowedValues": [
+        "t2.micro",
+        "t2.medium",
+        "t2.large",
+        "t2.2xlarge"
+      ],
+      "Description": "choose amazon Linux instance Type. Default is t2.2xlarge."
+    },
+    "InstanceTypeParameterWazuh": {
+      "Type": "String",
+      "Default": "t2.2xlarge",
+      "AllowedValues": [
+        "t2.micro",
+        "t2.medium",
+        "t2.large",
+        "t2.2xlarge"
+      ],
+      "Description": "choose Wazuh Server amazon linux instance Type. Default is t2.2xlarge."
+    },
+    "InstanceTypeParameterwindows": {
+      "Type": "String",
+      "Default": "t2.2xlarge",
+      "AllowedValues": [
+        "t2.micro",
+        "t2.medium",
+        "t2.large",
+        "t2.2xlarge"
+      ],
+      "Description": "choose Windows server 2016 instance Type. Default is t2.2xlarge."
     }
   }
 }
