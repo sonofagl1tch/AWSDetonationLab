@@ -496,9 +496,7 @@
             "Ref": "BastionSecurityGroup"
           }
         ],
-        "InstanceType": {
-          "Ref": "InstanceTypeParameterlinux"
-        },
+        "InstanceType": "t2.small",
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -3262,6 +3260,7 @@
   "Parameters": {
     "AvailabilityZones": {
       "Description": "Availability Zone to use for the subnets in the VPC. You can select many, but we just use 1 (the first).",
+      "Default": "us-east-1",
       "Type": "List<AWS::EC2::AvailabilityZone::Name>"
     },
     "KeyPairName": {
@@ -3298,14 +3297,14 @@
     },
     "InstanceTypeParameterlinux": {
       "Type": "String",
-      "Default": "t2.micro",
+      "Default": "t2.2xlarge",
       "AllowedValues": [
         "t2.micro",
         "t2.medium",
         "t2.large",
         "t2.2xlarge"
       ],
-      "Description": "choose amazon Linux instance Type. Default is t2.micro."
+      "Description": "choose amazon Linux instance Type. Default is t2.2xlarge."
     },
     "InstanceTypeParameterWazuh": {
       "Type": "String",
@@ -3316,18 +3315,18 @@
         "t2.large",
         "t2.2xlarge"
       ],
-      "Description": "choose Wazuh Server amazon linux instance Type. Default is t2.medium."
+      "Description": "choose Wazuh Server amazon linux instance Type. Default is t2.2xlarge."
     },
     "InstanceTypeParameterwindows": {
       "Type": "String",
-      "Default": "t2.micro",
+      "Default": "t2.2xlarge",
       "AllowedValues": [
         "t2.micro",
         "t2.medium",
         "t2.large",
         "t2.2xlarge"
       ],
-      "Description": "choose Windows server 2016 instance Type. Default is t2.micro."
+      "Description": "choose Windows server 2016 instance Type. Default is t2.2xlarge."
     }
   }
 }
