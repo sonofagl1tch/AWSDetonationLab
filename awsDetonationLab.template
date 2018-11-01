@@ -176,7 +176,17 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "BasicLinuxTarget"
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-BasicLinuxTarget"
+                ]
+              ]
+            }
           }
         ]
       }
@@ -323,7 +333,17 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "BasicWindowsTarget"
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-BasicWindowsTarget"
+                ]
+              ]
+            }
           }
         ]
       }
@@ -346,7 +366,17 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "LinuxBastion",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-LinuxBastion"
+                ]
+              ]
+            },
             "PropagateAtLaunch": "true"
           }
         ]
@@ -1671,7 +1701,17 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "RedTeam"
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-RedTeam"
+                ]
+              ]
+            }
           }
         ]
       }
@@ -2566,7 +2606,17 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "WazuhServer"
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-WazuhServer"
+                ]
+              ]
+            }
           }
         ]
       }
