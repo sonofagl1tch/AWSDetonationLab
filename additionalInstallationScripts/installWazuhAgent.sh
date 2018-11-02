@@ -25,12 +25,15 @@ MANAGER_IP="172.16.0.21"
 hostIP=$(hostname -i)
 agentName="wazuhAgent"
 
-if [ "$hostIP" == "172.16.0.21" ]
+if [ "$hostIP" == "172.16.0.22" ]
 then
   agentName="linuxVictim"
 elif [ "$hostIP" == "172.16.0.20" ]
 then
   agentName="redTeam"
+elif [ "$hostIP" == "172.16.0.21" ]
+then
+  agentName="wazuhServer"
 else
   agentName="bastion"
 fi
