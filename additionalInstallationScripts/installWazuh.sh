@@ -97,9 +97,9 @@ EOF
 #######################################
 # Installing Elastic Stack
 ## install Oracle Java JRE 8
-curl -Lo jre-8-linux-x64.rpm --header "Cookie: oraclelicense=accept-securebackup-cookie" "https://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jre-8u181-linux-x64.rpm"
+wget --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://javadl.oracle.com/webapps/download/AutoDL?BundleId=235716_2787e4a523244c269598db4e85c51e0c -O jre-8u191-linux-x64.rpm
 ## install the RPM package using yum
-yum install jre-8-linux-x64.rpm -y -q -e 0
+yum install jre-8u191-linux-x64.rpm -y -q -e 0
 ## Install the Elastic repository and its GPG key
 rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elastic.repo << EOF
