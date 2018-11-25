@@ -3143,70 +3143,74 @@
   "Mappings": {
     "AWSAMIRegionMap": {
       "NATAMI": {
-        "AWSNATHVM": "amzn-ami-vpc-nat-hvm-2017.03.0.20170401-x86_64-ebs"
+        "AWSNATHVM": "amzn-ami-vpc-nat-hvm-2018.03.0.20180816-x86_64-ebs"
       },
       "us-gov-west-1": {
-        "AWSNATHVM": "ami-3f0a8f5e"
+        "AWSNATHVM": "ami-c177eba0"
       },
       "AMI": {
-        "AMZNLINUXHVM": "amzn-ami-hvm-2017.12.0.20171223-x86_64-gp2",
-        "WS2012R2": "Windows_Server-2012-R2_RTM-English-64Bit-Base-2017.10.13"
-      },
-      "ap-northeast-1": {
-        "AMZNLINUXHVM": "ami-c2680fa4",
-        "WS2012R2": "ami-1a7ee47c"
-      },
-      "ap-northeast-2": {
-        "AMZNLINUXHVM": "ami-3e04a450",
-        "WS2012R2": "ami-0b4eee65"
-      },
-      "ap-south-1": {
-        "AMZNLINUXHVM": "ami-3b2f7954",
-        "WS2012R2": "ami-c488dfab"
-      },
-      "ap-southeast-1": {
-        "AMZNLINUXHVM": "ami-4f89f533",
-        "WS2012R2": "ami-c83944b4"
-      },
-      "ap-southeast-2": {
-        "AMZNLINUXHVM": "ami-38708c5a",
-        "WS2012R2": "ami-30a55952"
-      },
-      "ca-central-1": {
-        "AMZNLINUXHVM": "ami-7549cc11",
-        "WS2012R2": "ami-b9b431dd"
-      },
-      "eu-central-1": {
-        "AMZNLINUXHVM": "ami-1b2bb774",
-        "WS2012R2": "ami-3204995d"
-      },
-      "eu-west-1": {
-        "AMZNLINUXHVM": "ami-db1688a2",
-        "WS2012R2": "ami-cc821eb5"
-      },
-      "eu-west-2": {
-        "AMZNLINUXHVM": "ami-6d263d09",
-        "WS2012R2": "ami-9f677cfb"
-      },
-      "sa-east-1": {
-        "AMZNLINUXHVM": "ami-f1337e9d",
-        "WS2012R2": "ami-d6c785ba"
+        "AMZNLINUXHVM": "amzn-ami-hvm-2018.03.0.20181119-x86_64-gp2",
+        "WS2012R2": "Windows_Server-2012-R2_RTM-English-64Bit-Base-2018.10.14"
       },
       "us-east-1": {
-        "AMZNLINUXHVM": "ami-04681a1dbd79675a5",
-        "WS2012R2": "ami-013e197b"
+        "AMZNLINUXHVM": "ami-0d19227302e8e4bb5",
+        "WS2012R2": "ami-0f764b6278b21abc8"
       },
       "us-east-2": {
-        "AMZNLINUXHVM": "ami-710e2414",
-        "WS2012R2": "ami-02446e67"
+        "AMZNLINUXHVM": "ami-0ec1948d5caef658a",
+        "WS2012R2": "ami-0baa9c4ebf8e6f9e8"
       },
       "us-west-1": {
-        "AMZNLINUXHVM": "ami-4a787a2a",
-        "WS2012R2": "ami-92fefdf2"
+        "AMZNLINUXHVM": "ami-0c3ca2c6f4edb5546",
+        "WS2012R2": "ami-0d1b94419de19380d"
       },
       "us-west-2": {
-        "AMZNLINUXHVM": "ami-7f43f307",
-        "WS2012R2": "ami-afe051d7"
+        "AMZNLINUXHVM": "ami-0b5913cdbba67598e",
+        "WS2012R2": "ami-0cd140ff42967fb4d"
+      },
+      "ca-central-1": {
+        "AMZNLINUXHVM": "ami-08f0313c2834a2ff7",
+        "WS2012R2": "ami-0bcfa0d5c475e4908"
+      },
+      "eu-central-1": {
+        "AMZNLINUXHVM": "ami-0f0debf49705e047c",
+        "WS2012R2": "ami-0f8d4eb0ac15ad667"
+      },
+      "eu-west-1": {
+        "AMZNLINUXHVM": "ami-06e710681e5ee07aa",
+        "WS2012R2": "ami-027a1145f8fb3078f"
+      },
+      "eu-west-2": {
+        "AMZNLINUXHVM": "ami-096629e5eb19568cc",
+        "WS2012R2": "ami-009168d63faed8911"
+      },
+      "eu-west-3": {
+        "AMZNLINUXHVM": "ami-044e19acaba1ddac8",
+        "WS2012R2": "ami-04f50d3c7b555d55a"
+      },
+      "ap-southeast-1": {
+        "AMZNLINUXHVM": "ami-00cbdef8d2acf44a7",
+        "WS2012R2": "ami-0fc09699e39bd476f"
+      },
+      "ap-southeast-2": {
+        "AMZNLINUXHVM": "ami-0fbfb4926256a1f1e",
+        "WS2012R2": "ami-05c0c790a9f437fb2"
+      },
+      "ap-northeast-2": {
+        "AMZNLINUXHVM": "ami-0befa04e7b1ba50f9",
+        "WS2012R2": "ami-0699e47d765f00e8b"
+      },
+      "ap-northeast-1": {
+        "AMZNLINUXHVM": "ami-016ad6443b4a3d960",
+        "WS2012R2": "ami-063fe91b4d0205dee"
+      },
+      "ap-south-1": {
+        "AMZNLINUXHVM": "ami-04611067ce944d00f",
+        "WS2012R2": "ami-06de7188f7ca5b564"
+      },
+      "sa-east-1": {
+        "AMZNLINUXHVM": "ami-088018633b4291710",
+        "WS2012R2": " ami-087469fb80c075b45"
       }
     },
     "AMINameMap": {
