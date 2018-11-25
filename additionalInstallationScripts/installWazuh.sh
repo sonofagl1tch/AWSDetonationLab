@@ -4,9 +4,9 @@
 #######################################
 
 # Versions to install
-ELASTIC_VERSION=6.4.1
-WAZUH_VERSION=3.6
-WAZUH_PATCH=$WAZUH_VERSION.1
+ELASTIC_VERSION=6.5.0
+WAZUH_VERSION=3.7
+WAZUH_PATCH=$WAZUH_VERSION.0
 WAZUH_PACKAGE=$WAZUH_PATCH-1
 
 # Install Wazuh server on CentOS/RHEL/Fedora.
