@@ -4,9 +4,9 @@
 #######################################
 
 # Versions to install
-ELASTIC_VERSION=6.4.1
-WAZUH_VERSION=3.6
-WAZUH_PATCH=$WAZUH_VERSION.1
+ELASTIC_VERSION=6.5.0
+WAZUH_VERSION=3.7
+WAZUH_PATCH=$WAZUH_VERSION.0
 WAZUH_PACKAGE=$WAZUH_PATCH-1
 
 # Install Wazuh server on CentOS/RHEL/Fedora.
@@ -159,7 +159,7 @@ yum install kibana-$ELASTIC_VERSION -y -q -e 0
 ## Increase the default Node.js heap memory limit to prevent out of memory errors when installing the Wazuh App. Set the limit as follows
 export NODE_OPTIONS="--max-old-space-size=3072"
 ## Install the Wazuh App
-/usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-$(echo $WAZUH_PATCH)_$(echo $ELASTIC_VERSION).zip
+sudo -u kibana NODE_OPTIONS="--max-old-space-size=3072" /usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp-$(echo $WAZUH_PATCH)_$(echo $ELASTIC_VERSION).zip
 ##  Kibana will only listen on the loopback interface (localhost) by default. To set up Kibana to listen on all interfaces, edit the file /etc/kibana/kibana.yml uncommenting the setting server.host. Change the value to:
 sed -i 's/#server.host: "localhost"/server.host: "0.0.0.0"/' /etc/kibana/kibana.yml
 ## Enable and start the Kibana service
