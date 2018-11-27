@@ -130,6 +130,8 @@
               [
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
+                "sudo hostname linuxVictim\n",
+                "echo linuxVictim > /etc/hostname\n",
                 "yum update -y\n",
                 "yum install -y httpd24 php70 mysql56-server php70-mysqlnd gcc openssl-devel* nmap\n",
                 "service httpd start\n",
@@ -288,6 +290,7 @@
               "",
               [
                 "<powershell>\n",
+                "Rename-Computer -NewName windowsVictim\n",
                 "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1\" -OutFile \"C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
                 "Set-ExecutionPolicy -ExecutionPolicy Bypass # see comments\n",
                 "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
@@ -534,6 +537,8 @@
               [
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
+                "sudo hostname bastion\n",
+                "echo bastion > /etc/hostname\n",
                 "yum update -y\n",
                 "yum install nmap -y\n",
                 "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
@@ -1604,6 +1609,8 @@
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin:/usr/sbin:/root/.local/bin\n",
                 "echo 'export PATH=/root/.local/bin:/usr/sbin:$PATH' >> /home/ec2-user/.profile\n",
+                "sudo hostname redTeam\n",
+                "echo redTeam > /etc/hostname\n",
                 "yum update -y\n",
                 "yum install nmap bind-utils git python python2-pip python-argparse gcc gcc-c++ glib2-devel -y\n",
                 "yum install cmake openssl-devel libX11-devel libXi-devel libXtst-devel libXinerama-devel -y\n",
@@ -2595,6 +2602,8 @@
               [
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
+                "sudo hostname wazuhServer\n",
+                "echo wazuhServer > /etc/hostname\n",
                 "yum update -y\n",
                 "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
