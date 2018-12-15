@@ -46,6 +46,6 @@ done
 # set up manager ip in the ossec.conf file before restarting
 sed -i "s/MANAGER_IP/$MANAGER_IP/" /var/ossec/etc/ossec.conf
 
-systemctl restart wazuh-agent
+service wazuh-agent restart
 
 echo "Agent sucessfully registered"
