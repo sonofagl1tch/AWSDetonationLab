@@ -130,6 +130,8 @@
               [
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
+                "sudo hostname linuxVictim\n",
+                "echo linuxVictim > /etc/hostname\n",
                 "yum update -y\n",
                 "yum install -y httpd24 php70 mysql56-server php70-mysqlnd gcc openssl-devel* nmap\n",
                 "service httpd start\n",
@@ -288,6 +290,7 @@
               "",
               [
                 "<powershell>\n",
+                "Rename-Computer -NewName windowsVictim\n",
                 "Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.ps1\" -OutFile \"C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\"\n",
                 "Set-ExecutionPolicy -ExecutionPolicy Bypass # see comments\n",
                 "C:\\Users\\Administrator\\Desktop\\installWazuhAgent.ps1\n",
@@ -534,6 +537,8 @@
               [
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
+                "sudo hostname bastion\n",
+                "echo bastion > /etc/hostname\n",
                 "yum update -y\n",
                 "yum install nmap -y\n",
                 "easy_install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz\n",
@@ -566,6 +571,10 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "\n",
+                "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.sh\n",
+                "chmod +x /home/ec2-user/installWazuh\n",
+                "bash /home/ec2-user/installWazuh -u false\n",
                 "\n"
               ]
             ]
@@ -1600,6 +1609,8 @@
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin:/usr/sbin:/root/.local/bin\n",
                 "echo 'export PATH=/root/.local/bin:/usr/sbin:$PATH' >> /home/ec2-user/.profile\n",
+                "sudo hostname redTeam\n",
+                "echo redTeam > /etc/hostname\n",
                 "yum update -y\n",
                 "yum install nmap bind-utils git python python2-pip python-argparse gcc gcc-c++ glib2-devel -y\n",
                 "yum install cmake openssl-devel libX11-devel libXi-devel libXtst-devel libXinerama-devel -y\n",
@@ -1667,6 +1678,10 @@
                 "wget -O /home/ec2-user/installCloudWatch https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/cloudwatchAgentLogs.sh\n",
                 "chmod +x /home/ec2-user/installCloudWatch\n",
                 "bash /home/ec2-user/installCloudWatch -u false\n",
+                "\n",
+                "wget -O /home/ec2-user/installWazuh https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuhAgent.sh\n",
+                "chmod +x /home/ec2-user/installWazuh\n",
+                "bash /home/ec2-user/installWazuh -u false\n",
                 "\n"
               ]
             ]
@@ -2085,6 +2100,22 @@
             "FromPort": "1514",
             "ToPort": "1514",
             "SourceSecurityGroupId": {
+              "Ref": "BastionSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "udp",
+            "FromPort": "1514",
+            "ToPort": "1514",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "udp",
+            "FromPort": "1514",
+            "ToPort": "1514",
+            "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
             }
           },
@@ -2114,6 +2145,22 @@
           },
           {
             "IpProtocol": "tcp",
+            "FromPort": "1515",
+            "ToPort": "1515",
+            "SourceSecurityGroupId": {
+              "Ref": "BastionSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "1515",
+            "ToPort": "1515",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
             "FromPort": "55000",
             "ToPort": "55000",
             "SourceSecurityGroupId": {
@@ -2130,10 +2177,42 @@
           },
           {
             "IpProtocol": "tcp",
+            "FromPort": "55000",
+            "ToPort": "55000",
+            "SourceSecurityGroupId": {
+              "Ref": "BastionSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "55000",
+            "ToPort": "55000",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
             "FromPort": "9200",
             "ToPort": "9200",
             "SourceSecurityGroupId": {
               "Ref": "BasicLinuxSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9200",
+            "ToPort": "9200",
+            "SourceSecurityGroupId": {
+              "Ref": "BastionSecurityGroup"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "9200",
+            "ToPort": "9200",
+            "SourceSecurityGroupId": {
+              "Ref": "RedTeamSecurityGroup"
             }
           },
           {
@@ -2523,6 +2602,8 @@
               [
                 "#!/bin/bash\n",
                 "export PATH=$PATH:/usr/local/bin\n",
+                "sudo hostname wazuhServer\n",
+                "echo wazuhServer > /etc/hostname\n",
                 "yum update -y\n",
                 "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
