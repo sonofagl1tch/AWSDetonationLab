@@ -20,25 +20,8 @@ yum install wazuh-agent -y -q -e 0
 
 # register agent
 MANAGER_IP="172.16.0.21"
-
-# get host IP
-hostIP=$(hostname -i)
-agentName="wazuhAgent"
-
-if [ "$hostIP" == "172.16.0.22" ]
-then
-  agentName="linuxVictim"
-elif [ "$hostIP" == "172.16.0.20" ]
-then
-  agentName="redTeam"
-elif [ "$hostIP" == "172.16.0.21" ]
-then
-  agentName="wazuhServer"
-else
-  agentName="bastion"
-fi
   
-until /var/ossec/bin/agent-auth -m $MANAGER_IP -A $agentName; do
+until /var/ossec/bin/agent-auth -m $MANAGER_IP; do
   echo "Wazuh manager is unavailable - sleeping for 5 seconds"
   sleep 5
 done
