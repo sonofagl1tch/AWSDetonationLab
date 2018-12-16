@@ -46,9 +46,6 @@
         "GroupSet": [
           {
             "Ref": "BasicLinuxSecurityGroup"
-          },
-          {
-            "Ref": "WazuhAgentTrafficSecurityGroup"
           }
         ],
         "PrivateIpAddress": "172.16.0.22"
@@ -234,9 +231,6 @@
         "GroupSet": [
           {
             "Ref": "BasicWindowsSecurityGroup"
-          },
-          {
-            "Ref": "WazuhAgentTrafficSecurityGroup"
           }
         ],
         "PrivateIpAddress": "172.16.0.23"
@@ -2213,72 +2207,6 @@
             "ToPort": "9200",
             "SourceSecurityGroupId": {
               "Ref": "RedTeamSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "9200",
-            "ToPort": "9200",
-            "SourceSecurityGroupId": {
-              "Ref": "BasicWindowsSecurityGroup"
-            }
-          }
-        ],
-        "SecurityGroupEgress": [
-          {
-            "IpProtocol": "udp",
-            "FromPort": "1514",
-            "ToPort": "1514",
-            "DestinationSecurityGroupId": {
-              "Ref": "BasicLinuxSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "udp",
-            "FromPort": "1514",
-            "ToPort": "1514",
-            "DestinationSecurityGroupId": {
-              "Ref": "BasicWindowsSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "55000",
-            "ToPort": "55000",
-            "DestinationSecurityGroupId": {
-              "Ref": "BasicLinuxSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "1515",
-            "ToPort": "1515",
-            "SourceSecurityGroupId": {
-              "Ref": "BasicLinuxSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "1515",
-            "ToPort": "1515",
-            "SourceSecurityGroupId": {
-              "Ref": "BasicWindowsSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "55000",
-            "ToPort": "55000",
-            "DestinationSecurityGroupId": {
-              "Ref": "BasicWindowsSecurityGroup"
-            }
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "9200",
-            "ToPort": "9200",
-            "SourceSecurityGroupId": {
-              "Ref": "BasicLinuxSecurityGroup"
             }
           },
           {
