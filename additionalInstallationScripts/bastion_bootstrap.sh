@@ -56,11 +56,11 @@ function chkstatus () {
 
 function osrelease () {
     OS=`cat /etc/os-release | grep '^NAME=' |  tr -d \" | sed 's/\n//g' | sed 's/NAME=//g'`
-    if [ "$OS" == "Ubuntu" ]; then
+    if [[ "$OS" == "Ubuntu" ]]; then
         echo "Ubuntu"
-    elif [ "$OS" == "Amazon Linux" ]; then
+    elif [[ "$OS" == *"Amazon Linux"* ]]; then
         echo "AMZN"
-    elif [ "$OS" == "CentOS Linux" ]; then
+    elif [[ "$OS" == "CentOS Linux" ]]; then
         echo "CentOS"
     else
         echo "Operating System Not Found"
