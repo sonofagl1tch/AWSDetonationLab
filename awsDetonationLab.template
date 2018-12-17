@@ -1123,98 +1123,6 @@
         ]
       }
     },
-    "LambdaPolicy": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "Roles": [
-          {
-            "Ref": "LambdaRole"
-          }
-        ],
-        "PolicyName": "lambda",
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "lambda:InvokeFunction"
-              ],
-              "Resource": [
-                "*"
-              ]
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:PutObject"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketVPCflow"
-                      },
-                      "/flowlogs/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-              ],
-              "Resource": [
-                "*"
-              ]
-            },
-            {
-              "Effect": "Allow",
-              "Action": [
-                "kinesis:GetRecords",
-                "kinesis:GetShardIterator",
-                "kinesis:DescribeStream",
-                "kinesis:ListStreams"
-              ],
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "LogStream",
-                    "Arn"
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      }
-    },
-    "LambdaRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "lambda.amazonaws.com"
-                ]
-              },
-              "Action": [
-                "sts:AssumeRole"
-              ]
-            }
-          ]
-        }
-      }
-    },
     "LogStream": {
       "Type": "AWS::Kinesis::Stream",
       "Properties": {
@@ -2866,29 +2774,6 @@
         "UserName": {
           "Ref": "wazuhUser"
         }
-      }
-    },
-    "KinesisToLambda": {
-      "Type": "AWS::Lambda::EventSourceMapping",
-      "Properties": {
-        "BatchSize": {
-          "Fn::FindInMap": [
-            "Defaults",
-            "EventSourceMapping",
-            "BatchSize"
-          ]
-        },
-        "Enabled": "True",
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "LogStream",
-            "Arn"
-          ]
-        },
-        "FunctionName": {
-          "Ref": "FlowLogUpload"
-        },
-        "StartingPosition": "TRIM_HORIZON"
       }
     },
     "MyFlowLog": {
