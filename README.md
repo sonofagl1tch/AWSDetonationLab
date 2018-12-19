@@ -10,3 +10,5 @@ Then you can run [guardduty_tester.sh](https://github.com/awslabs/amazon-guarddu
  For more information please refer to the [wiki](https://github.com/sonofagl1tch/AWSDetonationLab/wiki) 
 
 Special thanks to [Marta](https://github.com/mgmacias95) and [Danny](https://github.com/randoh) for their contributions to this project.
+
+[![Waffle.io - Issues in progress](https://badge.waffle.io/sonofagl1tch/AWSDetonationLab.png?label=in%20progress&title=In%20Progress)](http://waffle.io/sonofagl1tch/AWSDetonationLab)
