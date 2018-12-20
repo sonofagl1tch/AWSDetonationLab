@@ -2537,7 +2537,7 @@
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n",
                 "yum install python-pip -y\n",
-                "pip install boto3\n",
+                "pip install boto3 requests\n",
                 "sed -i 's/cloudtraillogging/",
                 {
                   "Ref": "S3BucketCloudTrail"
@@ -2581,6 +2581,32 @@
                   ]
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
+                "cat >> /var/ossec/etc/ossec.conf <<\\EOF\n",
+                {
+                  "Fn::If": [
+                    "ConfigureVTWazuh",
+                    {
+                      "Fn::Join": [
+                        "", [
+                          "<ossec_config>\n",
+                          "  <integration>\n",
+                          "    <name>virustotal</name>\n",
+                          "    <api_key>",
+                          {
+                            "Ref": "VirusTotalAPIKey"
+                          },
+                          "</api_key>\n",
+                          "    <group>syscheck</group>\n",
+                          "    <alert_format>json</alert_format>\n",
+                          "  </integration>\n",
+                          "</ossec_config>\n"
+                        ]
+                      ]
+                    },
+                    ""
+                  ]
+                },
+                "EOF\n",
                 "/var/ossec/bin/ossec-control restart\n"
               ]
             ]
@@ -3147,6 +3173,16 @@
         },
         "us-east-1"
       ]
+    },
+    "ConfigureVTWazuh": {
+      "Fn::Not": [{
+        "Fn::Equals": [
+          {
+            "Ref": "VirusTotalAPIKey"
+          },
+          "None"
+        ]
+      }]
     }
   },
   "Mappings": {
@@ -3390,6 +3426,11 @@
         "t2.2xlarge"
       ],
       "Description": "choose Windows server 2016 instance Type. Default is t2.2xlarge."
+    },
+    "VirusTotalAPIKey": {
+      "Type": "String",
+      "Description": "Virus Total API key to use whith Wazuh's FIM module.",
+      "Default": "None"
     }
   }
 }

@@ -91,6 +91,8 @@ cat >> /var/ossec/etc/ossec.conf <<\EOF
   </wodle>
 </ossec_config>
 EOF
+# the integrator is used to run the virus total integration and must be enabled
+/var/ossec/bin/ossec-control enable integrator
 #######################################
 # Installing Filebeat
 # In a single-host architecture (where Wazuh server and Elastic Stack are installed in the same system), the installation of Filebeat is not needed since Logstash will be able to read the event/alert data directly from the local filesystem without the assistance of a forwarder.
