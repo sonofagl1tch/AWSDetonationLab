@@ -841,40 +841,6 @@
         }
       }
     },
-    "FlowLogFilter": {
-      "DependsOn": [
-        "CloudWatchToKinesisPolicy",
-        "FlowLogUpload"
-      ],
-      "Type": "AWS::Logs::SubscriptionFilter",
-      "Properties": {
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
-        "DestinationArn": {
-          "Fn::GetAtt": [
-            "LogStream",
-            "Arn"
-          ]
-        },
-        "FilterPattern": {
-          "Fn::Join": [
-            "",
-            [
-              "[version, account_id, ",
-              "interface_id, srcaddr, dstaddr, srcport, dstport, protocol, ",
-              "packets, bytes, start, end, action, log_status]"
-            ]
-          ]
-        },
-        "RoleArn": {
-          "Fn::GetAtt": [
-            "CloudWatchToKinesis",
-            "Arn"
-          ]
-        }
-      }
-    },
     "FlowLogUpload": {
       "Type": "AWS::EC2::FlowLog",
       "Properties": {
@@ -2776,25 +2742,6 @@
         }
       }
     },
-    "MyFlowLog": {
-      "Type": "AWS::EC2::FlowLog",
-      "Properties": {
-        "DeliverLogsPermissionArn": {
-          "Fn::GetAtt": [
-            "FlowLogsToCloudWatch",
-            "Arn"
-          ]
-        },
-        "LogGroupName": {
-          "Ref": "FlowLogs"
-        },
-        "ResourceId": {
-          "Ref": "VPC"
-        },
-        "ResourceType": "VPC",
-        "TrafficType": "ALL"
-      }
-    },
     "firehosedeliveryRoleGuardDuty": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -2871,31 +2818,6 @@
       }
     },
     "firehosedeliveryRoleMacie": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehosedeliveryRoleVPC": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
