@@ -844,12 +844,6 @@
     "FlowLogUpload": {
       "Type": "AWS::EC2::FlowLog",
       "Properties": {
-        "DeliverLogsPermissionArn": {
-          "Fn::GetAtt": [
-            "FlowLogsToCloudWatch",
-            "Arn"
-          ]
-        },
         "LogDestination": {
           "Fn::GetAtt": [
             "S3BucketVPCflow",
@@ -862,57 +856,6 @@
         },
         "ResourceType": "VPC",
         "TrafficType": "ALL"
-      }
-    },
-    "FlowLogs": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "RetentionInDays": {
-          "Fn::FindInMap": [
-            "Defaults",
-            "LogGroup",
-            "RetentionInDays"
-          ]
-        }
-      }
-    },
-    "FlowLogsToCloudWatch": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "vpc-flow-logs.amazonaws.com"
-                ]
-              },
-              "Action": "sts:AssumeRole"
-            }
-          ]
-        },
-        "Path": "/",
-        "Policies": [
-          {
-            "PolicyName": "flowlogs",
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:CreateLogGroup",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents",
-                    "logs:DescribeLogGroups",
-                    "logs:DescribeLogStreams"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            }
-          }
-        ]
       }
     },
     "IamPolicyWazuhAccessS3": {
