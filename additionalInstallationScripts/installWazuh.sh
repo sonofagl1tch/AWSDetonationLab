@@ -54,9 +54,9 @@ cat >> /var/ossec/etc/ossec.conf <<\EOF
     <run_on_start>yes</run_on_start>
     <skip_on_error>yes</skip_on_error>
     <bucket type="cloudtrail">
-    <name>cloudtraillogging</name>
-    <access_key>insert_access_key</access_key>
-    <secret_key>insert_secret_key</secret_key>
+      <name>cloudtraillogging</name>
+      <access_key>insert_access_key</access_key>
+      <secret_key>insert_secret_key</secret_key>
     </bucket>
     <bucket type="custom">
       <name>guarddutylogging</name>
