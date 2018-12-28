@@ -91,6 +91,23 @@ cat >> /var/ossec/etc/ossec.conf <<\EOF
   </wodle>
 </ossec_config>
 EOF
+# silent alerts from virus total that aren't showing malware files
+cat >> /var/ossec/etc/rules/local_rules.xml << \EOF
+<group name="virustotal,">
+  <rule id="87103" level="1" overwrite="yes">
+    <if_sid>87100</if_sid>
+    <field name="virustotal.found">0</field>
+    <description>VirusTotal: Alert - No records in VirusTotal database</description>
+  </rule>
+
+  <rule id="87104" level="1" overwrite="yes">
+    <if_sid>87100</if_sid>
+    <field name="virustotal.found">1</field>
+    <field name="virustotal.malicious">0</field>
+    <description>VirusTotal: Alert - $(virustotal.source.file) - No positives found</description>
+  </rule>
+</group>
+EOF
 # the integrator is used to run the virus total integration and must be enabled
 /var/ossec/bin/ossec-control enable integrator
 #######################################
