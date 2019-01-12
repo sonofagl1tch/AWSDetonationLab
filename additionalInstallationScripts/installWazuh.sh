@@ -117,6 +117,14 @@ cat > /var/ossec/etc/shared/default/agent.conf << \EOF
     <directories check_all="yes" realtime="yes" recursion_level="4">/home</directories>
   </syscheck>
 </agent_config>
+<agent_config os="Windows">
+  <syscheck>
+    <directories check_all="yes" realtime="yes" recursion_level="2">C:\Users\Administrator\Desktop</directories>
+    <directories check_all="yes" realtime="yes" recursion_level="2">C:\Users\Administrator\Downloads</directories>
+    <directories check_all="yes" realtime="yes" recursion_level="2">C:\Users\Administrator\Documents</directories>
+    <directories check_all="yes" realtime="yes" recursion_level="4">%APPDATA%</directories>
+  </syscheck>
+</agent_config>
 EOF
 # the integrator is used to run the virus total integration and must be enabled
 /var/ossec/bin/ossec-control enable integrator
