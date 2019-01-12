@@ -108,6 +108,16 @@ cat >> /var/ossec/etc/rules/local_rules.xml << \EOF
   </rule>
 </group>
 EOF
+# configure real time monitoring in:
+# - home directories under linux agents
+# - desktop, documents, downloads, startup programs and userdata under windows agents
+cat > /var/ossec/etc/shared/default/agent.conf << \EOF
+<agent_config os="Linux">
+  <syscheck>
+    <directories check_all="yes" realtime="yes" recursion_level="4">/home</directories>
+  </syscheck>
+</agent_config>
+EOF
 # the integrator is used to run the virus total integration and must be enabled
 /var/ossec/bin/ossec-control enable integrator
 #######################################
