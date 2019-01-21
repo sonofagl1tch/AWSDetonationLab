@@ -4,6 +4,11 @@
 #######################################
 #sleep timer for if you want this script to run on instance creation. the server takes 5+ minutes to intall.
 #sleep 10m
+
+WAZUH_VERSION=3.8
+WAZUH_PATCH=$WAZUH_VERSION.0
+WAZUH_PACKAGE=$WAZUH_PATCH-1
+
 # Adding the Wazuh repository
 cat > /etc/yum.repos.d/wazuh.repo <<\EOF
 [wazuh_repo]
@@ -16,7 +21,7 @@ protect=1
 EOF
 
 # Installing Wazuh agent
-yum install wazuh-agent -y -q -e 0
+yum install wazuh-agent-$WAZUH_PACKAGE -y -q -e 0
 
 # register agent
 MANAGER_IP="172.16.0.21"

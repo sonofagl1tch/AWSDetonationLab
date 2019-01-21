@@ -4,8 +4,8 @@
 #######################################
 
 # Versions to install
-ELASTIC_VERSION=6.5.0
-WAZUH_VERSION=3.7
+ELASTIC_VERSION=6.5.4
+WAZUH_VERSION=3.8
 WAZUH_PATCH=$WAZUH_VERSION.0
 WAZUH_PACKAGE=$WAZUH_PATCH-1
 
