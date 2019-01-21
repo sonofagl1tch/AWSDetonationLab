@@ -858,6 +858,30 @@
         "TrafficType": "ALL"
       }
     },
+    "IamPolicyDescribeFlowLogs": {
+      "Type": "AWS::IAM::Policy",
+      "DependsOn": "wazuhUser",
+      "Properties": {
+        "Users": [
+          {
+            "Ref": "wazuhUser"
+          }
+        ],
+        "PolicyName": "wazuh-describe-flowlogs-detlab",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeFlowLogs"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
     "IamPolicyWazuhAccessS3": {
       "Type": "AWS::IAM::Policy",
       "DependsOn": "wazuhUser",
