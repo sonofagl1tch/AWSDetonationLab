@@ -2572,14 +2572,14 @@
                   "Ref": "wazuhUserAccessKey"
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
-                "sed -i 's/insert_secret_key/",
+                "sed -i 's:insert_secret_key:",
                 {
                   "Fn::GetAtt": [
                     "wazuhUserAccessKey",
                     "SecretAccessKey"
                   ]
                 },
-                "/' /var/ossec/etc/ossec.conf\n",
+                ":' /var/ossec/etc/ossec.conf\n",
                 "/var/ossec/bin/ossec-control restart\n"
               ]
             ]
