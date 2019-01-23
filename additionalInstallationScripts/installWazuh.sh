@@ -27,9 +27,6 @@ yum install wazuh-manager-$WAZUH_PACKAGE -y -q -e 0
 chkconfig --add wazuh-manager
 chkconfig wazuh-manager on
 service wazuh-manager start
-# enable authd
-/var/ossec/bin/ossec-control enable auth
-service wazuh-manager restart
 #######################################
 # Installing the Wazuh API
 ## NodeJS >= 4.6.1 is required in order to run the Wazuh API.
