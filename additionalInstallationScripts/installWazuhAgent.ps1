@@ -1,12 +1,12 @@
 # Download agent
-$url = "https://packages.wazuh.com/3.x/windows/wazuh-agent-3.8.0-1.msi"
-$output = "C:\Users\Administrator\Desktop\wazuh-agent-3.8.0-1.msi"
+$url = "https://packages.wazuh.com/3.x/windows/wazuh-agent-3.8.1-1.msi"
+$output = "C:\Users\Administrator\Desktop\wazuh-agent-3.8.1-1.msi"
 Invoke-WebRequest -Uri $url -OutFile $output
 
 $wazuh_manager = "172.16.0.21"
 
 # install agent and register agent
-C:\Users\Administrator\Desktop\wazuh-agent-3.8.0-1.msi /q ADDRESS=$wazuh_manager
+C:\Users\Administrator\Desktop\wazuh-agent-3.8.1-1.msi /q ADDRESS=$wazuh_manager
 
 $wazuh_path = "C:\Program Files (x86)\ossec-agent"
 $agent_auth_path = "$wazuh_path\agent-auth.exe"
