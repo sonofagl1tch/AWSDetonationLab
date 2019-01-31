@@ -4,9 +4,9 @@
 #######################################
 
 # Versions to install
-ELASTIC_VERSION=6.5.0
-WAZUH_VERSION=3.7
-WAZUH_PATCH=$WAZUH_VERSION.0
+ELASTIC_VERSION=6.6.0
+WAZUH_VERSION=3.8
+WAZUH_PATCH=$WAZUH_VERSION.2
 WAZUH_PACKAGE=$WAZUH_PATCH-1
 
 # Install Wazuh server on CentOS/RHEL/Fedora.
@@ -27,9 +27,6 @@ yum install wazuh-manager-$WAZUH_PACKAGE -y -q -e 0
 chkconfig --add wazuh-manager
 chkconfig wazuh-manager on
 service wazuh-manager start
-# enable authd
-/var/ossec/bin/ossec-control enable auth
-service wazuh-manager restart
 #######################################
 # Installing the Wazuh API
 ## NodeJS >= 4.6.1 is required in order to run the Wazuh API.
@@ -54,9 +51,9 @@ cat >> /var/ossec/etc/ossec.conf <<\EOF
     <run_on_start>yes</run_on_start>
     <skip_on_error>yes</skip_on_error>
     <bucket type="cloudtrail">
-    <name>cloudtraillogging</name>
-    <access_key>insert_access_key</access_key>
-    <secret_key>insert_secret_key</secret_key>
+      <name>cloudtraillogging</name>
+      <access_key>insert_access_key</access_key>
+      <secret_key>insert_secret_key</secret_key>
     </bucket>
     <bucket type="custom">
       <name>guarddutylogging</name>
@@ -82,9 +79,8 @@ cat >> /var/ossec/etc/ossec.conf <<\EOF
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
-    <bucket type="custom">
+    <bucket type="vpcflow">
       <name>vpcflowlogging</name>
-      <path>flowlogs</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
