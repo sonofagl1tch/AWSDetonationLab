@@ -91,6 +91,43 @@ cat >> /var/ossec/etc/ossec.conf <<\EOF
   </wodle>
 </ossec_config>
 EOF
+# silent alerts from virus total that aren't showing malware files
+cat >> /var/ossec/etc/rules/local_rules.xml << \EOF
+<group name="virustotal,">
+  <rule id="87103" level="1" overwrite="yes">
+    <if_sid>87100</if_sid>
+    <field name="virustotal.found">0</field>
+    <description>VirusTotal: Alert - No records in VirusTotal database</description>
+  </rule>
+
+  <rule id="87104" level="1" overwrite="yes">
+    <if_sid>87100</if_sid>
+    <field name="virustotal.found">1</field>
+    <field name="virustotal.malicious">0</field>
+    <description>VirusTotal: Alert - $(virustotal.source.file) - No positives found</description>
+  </rule>
+</group>
+EOF
+# configure real time monitoring in:
+# - home directories under linux agents
+# - desktop, documents, downloads, startup programs and userdata under windows agents
+cat > /var/ossec/etc/shared/default/agent.conf << \EOF
+<agent_config os="Linux">
+  <syscheck>
+    <directories check_all="yes" realtime="yes" recursion_level="4">/home</directories>
+  </syscheck>
+</agent_config>
+<agent_config os="Windows">
+  <syscheck>
+    <directories check_all="yes" realtime="yes" recursion_level="2">C:\Users\Administrator\Desktop</directories>
+    <directories check_all="yes" realtime="yes" recursion_level="2">C:\Users\Administrator\Downloads</directories>
+    <directories check_all="yes" realtime="yes" recursion_level="2">C:\Users\Administrator\Documents</directories>
+    <directories check_all="yes" realtime="yes" recursion_level="4">%APPDATA%</directories>
+  </syscheck>
+</agent_config>
+EOF
+# the integrator is used to run the virus total integration and must be enabled
+/var/ossec/bin/ossec-control enable integrator
 #######################################
 # Installing Filebeat
 # In a single-host architecture (where Wazuh server and Elastic Stack are installed in the same system), the installation of Filebeat is not needed since Logstash will be able to read the event/alert data directly from the local filesystem without the assistance of a forwarder.
