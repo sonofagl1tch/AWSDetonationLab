@@ -257,6 +257,12 @@ curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuratio
 }
 '
 #######################################
+#set default kibana index to wazuh alerts
+K_URL=${K_URL:-'localhost:5601/api/kibana/settings/defaultIndex'}
+K_USER=${K_USER:-elastic}
+K_PASSWORD=${K_PASSWORD:-changeme}
+curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' http://${K_USER}:${K_PASSWORD}@${K_URL}
+#######################################
 #wait until elasticsearch comes up before continuing 
 ES_URL=${ES_URL:-'http://localhost:9200'}
 ES_USER=${ES_USER:-kibana}
@@ -266,12 +272,6 @@ until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
   sleep 5
 done
 >&2 echo "Elastic is up - executing commands"
-#######################################
-#set default kibana index to wazuh alerts
-K_URL=${K_URL:-'localhost:5601/api/kibana/settings/defaultIndex'}
-K_USER=${K_USER:-elastic}
-K_PASSWORD=${K_PASSWORD:-changeme}
-curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' http://${K_USER}:${K_PASSWORD}@${K_URL}
 #######################################
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
