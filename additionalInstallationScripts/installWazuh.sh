@@ -261,7 +261,7 @@ curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuratio
 K_URL=${K_URL:-'localhost:5601/api/kibana/settings/defaultIndex'}
 K_USER=${K_USER:-elastic}
 K_PASSWORD=${K_PASSWORD:-changeme}
-curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' http://${K_USER}:${K_PASSWORD}@${K_URL}
+curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' "http://${K_USER}:${K_PASSWORD}@${K_URL}"
 #######################################
 #wait until elasticsearch comes up before continuing 
 ES_URL=${ES_URL:-'http://localhost:9200'}
