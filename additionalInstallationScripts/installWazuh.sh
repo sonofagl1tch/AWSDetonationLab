@@ -271,6 +271,15 @@ done
 K_URL='localhost:5601/api/kibana/settings/defaultIndex'
 K_USER='elastic'
 K_PASSWORD='changeme'
+# wait until kibana service is avilable.
+until curl -u ${K_USER}:${K_PASSWORD} -XGET "localhost:5601"; do
+  sleep 5
+done
+# wait until kibana service is ready
+until [ "$(curl "http://${K_USER}:${K_PASSWORD}@localhost:5601")" != "Kibana server is not ready yet" ]; do
+  sleep 5
+done
+echo "Kibana is up"
 curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' "http://${K_USER}:${K_PASSWORD}@${K_URL}"
 #######################################
 # next steps is to configure wazuh
