@@ -31,7 +31,7 @@ set_global_parameters() {
         WAZUH_MANAGER_PKG="${WAZUH_MANAGER_PKG}=${WAZUH_PACKAGE}"
         WAZUH_API_PKG="${WAZUH_API_PKG}=${WAZUH_PACKAGE}"
         ELASTIC_PKG="${ELASTIC_PKG}=${ELASTIC_VERSION}"
-        LOGSTASH_PKG="${LOGSTASH_PKG}=1:${ELASTIC_VERSION}"
+        LOGSTASH_PKG="${LOGSTASH_PKG}=1:${ELASTIC_VERSION}-1"
         KIBANA_PKG="${KIBANA_PKG}=${ELASTIC_VERSION}"
 
     elif command -v yum > /dev/null 2>&1 ; then
@@ -66,11 +66,12 @@ set_global_parameters() {
 install_dependencies() {
     ## RHEL/CentOS/Fedora/Amazon/SUSE based OS
     if [ "${OS_FAMILY}" == "RHEL" ] || [ "${OS_FAMILY}" == "SUSE" ]; then
-        ${PKG_INSTALL} ${PKG_OPTIONS} openssl
+        ${PKG_INSTALL} ${PKG_OPTIONS} openssl wget
     ## Debian/Ubuntu based OS
     else
         ${PKG_MANAGER} update
-        ${PKG_INSTALL} ${PKG_OPTIONS} curl apt-transport-https lsb-release openssl
+        ${PKG_INSTALL} ${PKG_OPTIONS} curl apt-transport-https lsb-release \
+        openssl software-properties-common dirmngr
     fi
 }
 
@@ -95,7 +96,7 @@ add_wazuh_repository() {
     ## Debian/Ubuntu based OS
     else
         curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
-        echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee -a /etc/apt/sources.list.d/wazuh.list
+        echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee -a ${REPO_FILE}
         ${PKG_MANAGER} update
     fi
 }
@@ -259,14 +260,8 @@ install_java() {
         ## install the RPM package using yum
         ${PKG_INSTALL} ${PKG_OPTIONS} jre-8u191-linux-x64.rpm
     else
-        ## Add Java repository
-        add-apt-repository ppa:webupd8team/java -y
         ${PKG_MANAGER} update
-        ## Set up debconf
-        echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-        echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
-        ## Install Java using apt-get
-        ${PKG_INSTALL} ${PKG_OPTIONS} oracle-java8-installer -y
+        ${PKG_INSTALL} ${PKG_OPTIONS} openjdk-8-jre
     fi
 }
 
@@ -280,7 +275,7 @@ add_elastic_repository() {
     ## Debian/Ubuntu based OS
     else
         curl -s https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
-        echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee ${ELASTIC_REPO_FILE}
+        echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee -a ${ELASTIC_REPO_FILE}
         ${PKG_MANAGER} update
     fi
 }
