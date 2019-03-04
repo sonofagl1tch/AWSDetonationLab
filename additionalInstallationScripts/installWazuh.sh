@@ -290,4 +290,6 @@ curl -o Kibana-Visualizations.json https://raw.githubusercontent.com/sonofagl1tc
 curl -o Kibana-Dashboard.json https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Dashboard.json
 curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d @Kibana-Dashboard.json
 curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d @Kibana-Visualizations.json
-
+#######################################
+# next steps is to configure wazuh
+## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
