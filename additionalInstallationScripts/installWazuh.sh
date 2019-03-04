@@ -281,23 +281,9 @@ until [ "$(curl "http://${K_USER}:${K_PASSWORD}@localhost:5601")" != "Kibana ser
 done
 echo "Kibana is up"
 curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' "http://${K_USER}:${K_PASSWORD}@${K_URL}"
-#######################################
-# next steps is to configure wazuh
-## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
-
-
-
-```
-curl --user <username>:<password> -XPOST localhost:5601/api/kibana/dashboards/import 
--H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./my-dashboards.json
-```
-
-
-K_URL='localhost:5601/api/kibana/dashboards/import '
+############################################################################################################################################################
+# Import AWS Detonation lab dashboards
+K_URL='localhost:5601/api/kibana/dashboards/import'
 K_USER='elastic'
 K_PASSWORD='changeme'
-#curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" --user ${K_USER}:${K_PASSWORD} ${K_URL} -d @./my-dashboards.json
-curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" --user ${K_USER}:${K_PASSWORD} ${K_URL} -d https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Visualizations.json
-
-
-
+curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Visualizations.json
