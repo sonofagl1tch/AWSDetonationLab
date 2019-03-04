@@ -1,6 +1,9 @@
 # Changelog
 
 ## v2.1
+### Added
+* Automate setting `wazuh-alerts-3.x-*` as Kibana's default index pattern ([#64](https://github.com/sonofagl1tch/AWSDetonationLab/pull/64/)).
+
 ### Fixed
 * Retrieve AMI IDs dynamically instead of having hardcoded values ([#66](https://github.com/sonofagl1tch/AWSDetonationLab/pull/66)).
 
