@@ -286,4 +286,8 @@ curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value
 K_URL='localhost:5601/api/kibana/dashboards/import'
 K_USER='elastic'
 K_PASSWORD='changeme'
-curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Visualizations.json
+curl -o Kibana-Visualizations.json https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Visualizations.json
+curl -o Kibana-Dashboard.json https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Dashboard.json
+curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d @Kibana-Dashboard.json
+curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d @Kibana-Visualizations.json
+
