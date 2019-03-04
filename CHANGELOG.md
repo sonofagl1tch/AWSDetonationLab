@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1
+### Fixed
+* Retrieve AMI IDs dynamically instead of having hardcoded values ([#66](https://github.com/sonofagl1tch/AWSDetonationLab/pull/66)).
+
 ## v2.0
 ### Added
 * Added `apache` user to `wheel` group in Linux vulnerable server ([#20](https://github.com/sonofagl1tch/AWSDetonationLab/pull/20)).
