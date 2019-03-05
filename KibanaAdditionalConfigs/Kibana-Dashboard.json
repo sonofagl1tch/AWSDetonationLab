@@ -1,18 +1,20 @@
-[
-  {
-    "_id": "6bec8300-a4b8-11e8-846b-5b38848342c8",
-    "_type": "dashboard",
-    "_source": {
-      "title": "AWS-Logging",
-      "hits": 0,
-      "description": "",
-      "panelsJSON": "[{\"panelIndex\":\"1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":24,\"h\":15,\"i\":\"1\"},\"embeddableConfig\":{},\"id\":\"5ac185d0-a4b8-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"2\",\"gridData\":{\"x\":24,\"y\":0,\"w\":24,\"h\":15,\"i\":\"2\"},\"embeddableConfig\":{},\"id\":\"864e9ef0-a4b7-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"3\",\"gridData\":{\"x\":0,\"y\":15,\"w\":24,\"h\":15,\"i\":\"3\"},\"embeddableConfig\":{},\"id\":\"804781a0-a540-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"4\",\"gridData\":{\"x\":24,\"y\":15,\"w\":24,\"h\":15,\"i\":\"4\"},\"embeddableConfig\":{},\"id\":\"23862010-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"5\",\"gridData\":{\"x\":0,\"y\":30,\"w\":24,\"h\":15,\"i\":\"5\"},\"embeddableConfig\":{},\"id\":\"cb77bf40-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"6\",\"gridData\":{\"x\":24,\"y\":30,\"w\":24,\"h\":15,\"i\":\"6\"},\"embeddableConfig\":{},\"id\":\"3dd5d000-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"7\",\"gridData\":{\"x\":0,\"y\":45,\"w\":24,\"h\":15,\"i\":\"7\"},\"embeddableConfig\":{},\"id\":\"b4f2abe0-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"8\",\"gridData\":{\"x\":24,\"y\":60,\"w\":24,\"h\":15,\"i\":\"8\"},\"embeddableConfig\":{},\"id\":\"cf4ecc00-a54e-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"9\",\"gridData\":{\"x\":24,\"y\":45,\"w\":24,\"h\":15,\"i\":\"9\"},\"embeddableConfig\":{},\"id\":\"47bf70b0-a552-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"10\",\"gridData\":{\"x\":24,\"y\":75,\"w\":24,\"h\":15,\"i\":\"10\"},\"embeddableConfig\":{},\"id\":\"20b982d0-a552-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"11\",\"gridData\":{\"x\":0,\"y\":75,\"w\":24,\"h\":15,\"i\":\"11\"},\"embeddableConfig\":{},\"id\":\"b4666910-a54f-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"12\",\"gridData\":{\"x\":24,\"y\":90,\"w\":24,\"h\":15,\"i\":\"12\"},\"embeddableConfig\":{},\"id\":\"70762330-a54f-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"13\",\"gridData\":{\"x\":0,\"y\":90,\"w\":24,\"h\":15,\"i\":\"13\"},\"embeddableConfig\":{},\"id\":\"1298fbf0-a551-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"14\",\"gridData\":{\"x\":0,\"y\":60,\"w\":24,\"h\":15,\"i\":\"14\"},\"version\":\"6.3.2\",\"type\":\"visualization\",\"id\":\"39aabda0-a6e6-11e8-89d6-8101ba40c8df\",\"embeddableConfig\":{}},{\"panelIndex\":\"15\",\"gridData\":{\"x\":0,\"y\":105,\"w\":24,\"h\":15,\"i\":\"15\"},\"version\":\"6.3.2\",\"type\":\"visualization\",\"id\":\"90d5fd80-a6fd-11e8-89d6-8101ba40c8df\",\"embeddableConfig\":{}}]",
-      "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
-      "version": 1,
-      "timeRestore": false,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
+{
+  "objects": [
+    {
+      "id": "6bec8300-a4b8-11e8-846b-5b38848342c8",
+      "type": "dashboard",
+      "attributes": {
+        "title": "AWS-Logging",
+        "hits": 0,
+        "description": "",
+        "panelsJSON": "[{\"panelIndex\":\"1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":24,\"h\":15,\"i\":\"1\"},\"embeddableConfig\":{},\"id\":\"5ac185d0-a4b8-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"2\",\"gridData\":{\"x\":24,\"y\":0,\"w\":24,\"h\":15,\"i\":\"2\"},\"embeddableConfig\":{},\"id\":\"864e9ef0-a4b7-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"3\",\"gridData\":{\"x\":0,\"y\":15,\"w\":24,\"h\":15,\"i\":\"3\"},\"embeddableConfig\":{},\"id\":\"804781a0-a540-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"4\",\"gridData\":{\"x\":24,\"y\":15,\"w\":24,\"h\":15,\"i\":\"4\"},\"embeddableConfig\":{},\"id\":\"23862010-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"5\",\"gridData\":{\"x\":0,\"y\":30,\"w\":24,\"h\":15,\"i\":\"5\"},\"embeddableConfig\":{},\"id\":\"cb77bf40-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"6\",\"gridData\":{\"x\":24,\"y\":30,\"w\":24,\"h\":15,\"i\":\"6\"},\"embeddableConfig\":{},\"id\":\"3dd5d000-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"7\",\"gridData\":{\"x\":0,\"y\":45,\"w\":24,\"h\":15,\"i\":\"7\"},\"embeddableConfig\":{},\"id\":\"b4f2abe0-a541-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"8\",\"gridData\":{\"x\":24,\"y\":60,\"w\":24,\"h\":15,\"i\":\"8\"},\"embeddableConfig\":{},\"id\":\"cf4ecc00-a54e-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"9\",\"gridData\":{\"x\":24,\"y\":45,\"w\":24,\"h\":15,\"i\":\"9\"},\"embeddableConfig\":{},\"id\":\"47bf70b0-a552-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"10\",\"gridData\":{\"x\":24,\"y\":75,\"w\":24,\"h\":15,\"i\":\"10\"},\"embeddableConfig\":{},\"id\":\"20b982d0-a552-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"11\",\"gridData\":{\"x\":0,\"y\":75,\"w\":24,\"h\":15,\"i\":\"11\"},\"embeddableConfig\":{},\"id\":\"b4666910-a54f-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"12\",\"gridData\":{\"x\":24,\"y\":90,\"w\":24,\"h\":15,\"i\":\"12\"},\"embeddableConfig\":{},\"id\":\"70762330-a54f-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"13\",\"gridData\":{\"x\":0,\"y\":90,\"w\":24,\"h\":15,\"i\":\"13\"},\"embeddableConfig\":{},\"id\":\"1298fbf0-a551-11e8-846b-5b38848342c8\",\"type\":\"visualization\",\"version\":\"6.3.2\"},{\"panelIndex\":\"14\",\"gridData\":{\"x\":0,\"y\":60,\"w\":24,\"h\":15,\"i\":\"14\"},\"version\":\"6.3.2\",\"type\":\"visualization\",\"id\":\"39aabda0-a6e6-11e8-89d6-8101ba40c8df\",\"embeddableConfig\":{}},{\"panelIndex\":\"15\",\"gridData\":{\"x\":0,\"y\":105,\"w\":24,\"h\":15,\"i\":\"15\"},\"version\":\"6.3.2\",\"type\":\"visualization\",\"id\":\"90d5fd80-a6fd-11e8-89d6-8101ba40c8df\",\"embeddableConfig\":{}}]",
+        "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
+        "version": 1,
+        "timeRestore": false,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
+        }
       }
     }
-  }
-]
+  ]
+}
