@@ -280,12 +280,13 @@ add_elastic_repository() {
     fi
 }
 
-wait_elastic() {
-    until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
-    >&2 echo "Elastic is unavailable - sleeping for 5 seconds"
+wait_elastic_component() {
+    query="$@"
+    until ${query}; do
+    >&2 echo "Elastic component is unavailable - sleeping for 5 seconds"
     sleep 5
     done
-    >&2 echo "Elastic is up - executing commands"
+    >&2 echo "Elastic component is up - executing commands"
 }
 
 install_elastic() {
@@ -310,7 +311,8 @@ install_elastic() {
     ES_URL=${ES_URL:-'http://localhost:9200'}
     ES_USER=${ES_USER:-kibana}
     ES_PASSWORD=${ES_PASSWORD:-changeme}
-    wait_elastic
+    ES_QUERY="curl -u ${ES_USER}:${ES_PASSWORD} -XGET ${ES_URL}"
+    wait_elastic_component ${ES_QUERY}
     # Load the Wazuh template for Elasticsearch
     curl https://raw.githubusercontent.com/wazuh/wazuh/$WAZUH_VERSION/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 }
@@ -397,8 +399,9 @@ configure_wazuh_api() {
     ES_URL=${ES_URL:-'http://localhost:9200'}
     ES_USER=${ES_USER:-kibana}
     ES_PASSWORD=${ES_PASSWORD:-changeme}
+    ES_QUERY="curl -u ${ES_USER}:${ES_PASSWORD} -XGET ${ES_URL}"
     # Wait until Elasticsearch is up and running.
-    wait_elastic
+    wait_elastic_component "${ES_QUERY}"
     echo -e "\nSetting Wazuh API credentials into the Wazuh Kibana application"
     # The Wazuh Kibana application configuration is the document with the ID 1513629884013, don't change that!
     curl -s -u ${ES_USER}:${ES_PASSWORD} -XPOST "${ES_URL}/.wazuh/wazuh-configuration/1513629884013" -H 'Content-Type: application/json' -H "Accept: application/json" -d'
@@ -426,10 +429,34 @@ configure_wazuh_api() {
         }
     }
     '
-    ES_URL=${ES_URL:-'http://localhost:9200'}
-    ES_USER=${ES_USER:-kibana}
-    ES_PASSWORD=${ES_PASSWORD:-changeme}
-    wait_elastic
+    wait_elastic_component ${ES_QUERY}
+}
+
+configure_kibana() {
+    # Kibana settings
+    KIBANA_BASE_URL='localhost:5601'
+    KIBANA_USER='elastic'
+    KIBANA_PASSWORD='changeme'
+
+    check_kibana_service_availability="curl -u ${KIBANA_USER}:${KIBANA_PASSWORD} -XGET ${KIBANA_BASE_URL}"
+
+    # Wait until Kibana service is avilable.
+    wait_elastic_component "${check_kibana_service_availability}"
+    check_kibana_status="${check_kibana_service_availability} --fail"
+    wait_elastic_component "${check_kibana_status}"
+    echo "Kibana is up"
+
+    KIBANA_INDEX_URL="${KIBANA_BASE_URL}/api/kibana/settings/defaultIndex"
+
+    # Set default kibana index to wazuh alerts
+    curl --fail -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' "http://${KIBANA_USER}:${KIBANA_PASSWORD}@${KIBANA_INDEX_URL}"
+
+    # Import AWS Detonation lab dashboards
+    KIBANA_DASHBOARDS_URL="${KIBANA_BASE_URL}/api/kibana/dashboards/import"
+    curl -sO https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Visualizations.json
+    curl -sO https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Dashboard.json
+    curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${KIBANA_USER}:${KIBANA_PASSWORD}@${KIBANA_DASHBOARDS_URL}" -d @Kibana-Dashboard.json
+    curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${KIBANA_USER}:${KIBANA_PASSWORD}@${KIBANA_DASHBOARDS_URL}" -d @Kibana-Visualizations.json
 }
 
 main() {
@@ -447,44 +474,11 @@ main() {
     install_kibana
     disable_elastic_repository
     configure_wazuh_api
+    configure_kibana
 }
 
 main
 
-#######################################
-#wait until elasticsearch comes up before continuing
-ES_URL=${ES_URL:-'http://localhost:9200'}
-ES_USER=${ES_USER:-kibana}
-ES_PASSWORD=${ES_PASSWORD:-changeme}
-until curl -u ${ES_USER}:${ES_PASSWORD} -XGET "${ES_URL}"; do
-  service elasticsearch restart
-  sleep 5
-done
->&2 echo "Elastic is up - executing commands"
-#######################################
-#set default kibana index to wazuh alerts
-K_URL='localhost:5601/api/kibana/settings/defaultIndex'
-K_USER='elastic'
-K_PASSWORD='changeme'
-# wait until kibana service is avilable.
-until curl -u ${K_USER}:${K_PASSWORD} -XGET "localhost:5601"; do
-  sleep 5
-done
-# wait until kibana service is ready
-until [ "$(curl "http://${K_USER}:${K_PASSWORD}@localhost:5601")" != "Kibana server is not ready yet" ]; do
-  sleep 5
-done
-echo "Kibana is up"
-curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"wazuh-alerts-3.x-*"}' "http://${K_USER}:${K_PASSWORD}@${K_URL}"
-############################################################################################################################################################
-# Import AWS Detonation lab dashboards
-K_URL='localhost:5601/api/kibana/dashboards/import'
-K_USER='elastic'
-K_PASSWORD='changeme'
-curl -o Kibana-Visualizations.json https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Visualizations.json
-curl -o Kibana-Dashboard.json https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/KibanaAdditionalConfigs/Kibana-Dashboard.json
-curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d @Kibana-Dashboard.json
-curl -X POST -H "Content-Type: application/json" -H "kbn-xsrf: true" "http://${K_USER}:${K_PASSWORD}@${K_URL}" -d @Kibana-Visualizations.json
 #######################################
 # next steps is to configure wazuh
 ## https://documentation.wazuh.com/current/installation-guide/installing-elastic-stack/connect_wazuh_app.html
