@@ -2249,7 +2249,6 @@
                 "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n",
-                "pip install boto3 requests\n",
                 "sed -i 's/cloudtraillogging/",
                 {
                   "Ref": "S3BucketCloudTrail"
