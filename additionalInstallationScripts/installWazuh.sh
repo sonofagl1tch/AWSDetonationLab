@@ -66,13 +66,14 @@ set_global_parameters() {
 install_dependencies() {
     ## RHEL/CentOS/Fedora/Amazon/SUSE based OS
     if [ "${OS_FAMILY}" == "RHEL" ] || [ "${OS_FAMILY}" == "SUSE" ]; then
-        ${PKG_INSTALL} ${PKG_OPTIONS} openssl wget
+        ${PKG_INSTALL} ${PKG_OPTIONS} openssl wget python-pip
     ## Debian/Ubuntu based OS
     else
         ${PKG_MANAGER} update
         ${PKG_INSTALL} ${PKG_OPTIONS} curl apt-transport-https lsb-release \
-        openssl software-properties-common dirmngr
+        openssl software-properties-common dirmngr python-pip
     fi
+    pip install boto3 requests
 }
 
 add_nodejs_repository() {
