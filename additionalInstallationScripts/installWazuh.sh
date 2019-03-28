@@ -172,9 +172,8 @@ add_aws_config() {
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
-    <bucket type="custom">
+    <bucket type="vpcflow">
       <name>vpcflowlogging</name>
-      <path>flowlogs</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
