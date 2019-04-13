@@ -1334,7 +1334,7 @@
                 "yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y\n",
                 "sudo yum-config-manager --enable epel\n",
                 "yum update -y\n",
-                "yum install s3fs-fuse tcpdump tmux nmap bind-utils git python python2-pip python-argparse gcc gcc-c++ glib2-devel -y\n",
+                "yum install nikto s3fs-fuse tcpdump tmux nmap bind-utils git python python2-pip python-argparse gcc gcc-c++ glib2-devel -y\n",
                 "yum install cmake openssl-devel libX11-devel libXi-devel libXtst-devel libXinerama-devel -y\n",
                 "pip install paramiko\n",
                 "export privateIP=`curl http://169.254.169.254/latest/meta-data/local-ipv4`\n",
