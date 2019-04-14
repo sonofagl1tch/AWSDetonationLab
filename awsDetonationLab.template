@@ -733,42 +733,6 @@
         }
       }
     },
-    "FirehosedeliverystreamInspector": {
-      "DependsOn": [
-        "firehosedeliveryPolicyInspector"
-      ],
-      "Type": "AWS::KinesisFirehose::DeliveryStream",
-      "Properties": {
-        "ExtendedS3DestinationConfiguration": {
-          "BucketARN": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:aws:s3:::",
-                {
-                  "Ref": "S3BucketInspector"
-                }
-              ]
-            ]
-          },
-          "BufferingHints": {
-            "IntervalInSeconds": "300",
-            "SizeInMBs": "5"
-          },
-          "CompressionFormat": "UNCOMPRESSED",
-          "Prefix": "firehose/",
-          "RoleARN": {
-            "Fn::GetAtt": [
-              "firehosedeliveryRoleInspector",
-              "Arn"
-            ]
-          },
-          "ProcessingConfiguration": {
-            "Enabled": "false"
-          }
-        }
-      }
-    },
     "FirehosedeliverystreamMacie": {
       "DependsOn": [
         "firehosedeliveryPolicyGuardDuty"
@@ -841,6 +805,33 @@
                 "ec2:DescribeFlowLogs"
               ],
               "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "IamPolicyWazuhInspectorFindings": {
+      "Type": "AWS::IAM::Policy",
+      "DependsOn": "wazuhUser",
+      "Properties": {
+        "Users": [
+          {
+            "Ref": "wazuhUser"
+          }
+        ],
+        "PolicyName": "wazuh-describe-inspector-findings",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "inspector:ListFindings",
+                "inspector:DescribeFindings"
+              ],
+              "Resource": [
+                "*"
+              ]
             }
           ]
         }
@@ -976,29 +967,6 @@
                       "arn:aws:s3:::",
                       {
                         "Ref": "S3BucketVPCflow"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketInspector"
-                      },
-                      "/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketInspector"
                       }
                     ]
                   ]
@@ -1516,11 +1484,6 @@
       "Properties": {}
     },
     "S3BucketIAM": {
-      "DeletionPolicy": "Retain",
-      "Type": "AWS::S3::Bucket",
-      "Properties": {}
-    },
-    "S3BucketInspector": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
       "Properties": {}
@@ -2115,58 +2078,6 @@
         ]
       }
     },
-    "firehosedeliveryPolicyInspector": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "firehose_delivery_policy_Inspector",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:AbortMultipartUpload",
-                "s3:GetBucketLocation",
-                "s3:GetObject",
-                "s3:ListBucket",
-                "s3:ListBucketMultipartUploads",
-                "s3:PutObject"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketInspector"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketInspector"
-                      },
-                      "*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "firehosedeliveryRoleInspector"
-          }
-        ]
-      }
-    },
     "firehosedeliveryPolicyMacie": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -2262,11 +2173,6 @@
                 "sed -i 's/iamlogging/",
                 {
                   "Ref": "S3BucketIAM"
-                },
-                "/' /var/ossec/etc/ossec.conf\n",
-                "sed -i 's/inspectorlogging/",
-                {
-                  "Ref": "S3BucketInspector"
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
                 "sed -i 's/macielogging/",
@@ -2492,44 +2398,6 @@
         ]
       }
     },
-    "CloudwatchEventRuleInspector": {
-      "DependsOn": [
-        "cloudwatchEventsInvokeKinesisTargetRole"
-      ],
-      "Type": "AWS::Events::Rule",
-      "Properties": {
-        "Description": "Events Rule with KinesisParameters",
-        "EventPattern": {
-          "source": [
-            "aws.inspector"
-          ]
-        },
-        "RoleArn": {
-          "Fn::GetAtt": [
-            "cloudwatchEventsInvokeKinesisTargetRole",
-            "Arn"
-          ]
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Id": "Id123",
-            "Arn": {
-              "Fn::GetAtt": [
-                "FirehosedeliverystreamInspector",
-                "Arn"
-              ]
-            },
-            "RoleArn": {
-              "Fn::GetAtt": [
-                "cloudwatchEventsInvokeKinesisTargetRole",
-                "Arn"
-              ]
-            }
-          }
-        ]
-      }
-    },
     "cloudwatchEventsInvokeKinesisTargetRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -2593,35 +2461,6 @@
               "Resource": {
                 "Fn::GetAtt": [
                   "FirehosedeliverystreamMacie",
-                  "Arn"
-                ]
-              }
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "cloudwatchEventsInvokeKinesisTargetRole"
-          }
-        ]
-      }
-    },
-    "cloudwatchEventsInvokeKinesisTargetPolicyInspector": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "firehose_delivery_policy_EventsInvoke-inspector",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "firehose:PutRecord",
-                "firehose:PutRecordBatch"
-              ],
-              "Resource": {
-                "Fn::GetAtt": [
-                  "FirehosedeliverystreamInspector",
                   "Arn"
                 ]
               }
@@ -2699,31 +2538,6 @@
       }
     },
     "firehosedeliveryRoleIAM": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    "firehosedeliveryRoleInspector": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
