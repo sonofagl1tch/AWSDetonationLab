@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.2
+### Changed
+* Inspector logs are fetched directly from the AWS API instead of being fetched from an S3 bucket.
+
 ## v2.1
 ### Added
 * Automate setting `wazuh-alerts-3.x-*` as Kibana's default index pattern ([#64](https://github.com/sonofagl1tch/AWSDetonationLab/pull/64/)).
