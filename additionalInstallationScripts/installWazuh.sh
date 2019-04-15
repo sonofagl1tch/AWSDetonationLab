@@ -160,12 +160,10 @@ add_aws_config() {
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
-    <bucket type="custom">
-      <name>inspectorlogging</name>
-      <path>firehose</path>
-      <access_key>insert_access_key</access_key>
-      <secret_key>insert_secret_key</secret_key>
-    </bucket>
+    <service type="inspector">
+        <access_key>insert_access_key</access_key>
+        <secret_key>insert_secret_key</secret_key>
+    </service>
     <bucket type="custom">
       <name>macielogging</name>
       <path>firehose</path>
