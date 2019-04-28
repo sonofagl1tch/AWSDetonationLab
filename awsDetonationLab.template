@@ -885,7 +885,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "S3BucketCloudTrail"
+                        "Ref": "S3BucketAll"
                       },
                       "/*"
                     ]
@@ -897,7 +897,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "S3BucketCloudTrail"
+                        "Ref": "S3BucketAll"
                       }
                     ]
                   ]
@@ -1482,11 +1482,6 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {}
     },
-    "S3BucketCloudTrail": {
-      "DeletionPolicy": "Retain",
-      "Type": "AWS::S3::Bucket",
-      "Properties": {}
-    },
     "S3BucketGuardDuty": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
@@ -1535,11 +1530,39 @@
               }
             },
             {
+              "Sid": "AWSCloudTrailWrite",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+              },
+              "Action": "s3:PutObject",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "S3BucketAll"
+                    },
+                    "/cloudtrail/AWSLogs/",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Condition": {
+                "StringEquals": {
+                  "s3:x-amz-acl": "bucket-owner-full-control"
+                }
+              }
+            },
+            {
               "Sid": "AWSAllWrite",
               "Effect": "Allow",
               "Principal": {
                 "Service": [
-                  "cloudtrail.amazonaws.com",
                   "guardduty.amazonaws.com",
                   "macie.amazonaws.com"
                 ]
@@ -1556,67 +1579,6 @@
                     "/*"
                   ]
                 ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    "S3BucketPolicyCloudTrail": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Properties": {
-        "Bucket": {
-          "Ref": "S3BucketCloudTrail"
-        },
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "AWSCloudTrailAclCheck",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "cloudtrail.amazonaws.com"
-              },
-              "Action": "s3:GetBucketAcl",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Ref": "S3BucketCloudTrail"
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              "Sid": "AWSCloudTrailWrite",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "cloudtrail.amazonaws.com"
-              },
-              "Action": "s3:PutObject",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Ref": "S3BucketCloudTrail"
-                    },
-                    "/AWSLogs/",
-                    {
-                      "Ref": "AWS::AccountId"
-                    },
-                    "/*"
-                  ]
-                ]
-              },
-              "Condition": {
-                "StringEquals": {
-                  "s3:x-amz-acl": "bucket-owner-full-control"
-                }
               }
             }
           ]
@@ -2033,14 +1995,15 @@
     },
     "detonationLabCloudTrail": {
       "DependsOn": [
-        "S3BucketPolicyCloudTrail"
+        "S3BucketPolicyAll"
       ],
       "Type": "AWS::CloudTrail::Trail",
       "Properties": {
         "S3BucketName": {
-          "Ref": "S3BucketCloudTrail"
+          "Ref": "S3BucketAll"
         },
-        "IsLogging": true
+        "IsLogging": true,
+        "S3KeyPrefix": "cloudtrail"
       }
     },
     "firehosedeliveryPolicyGuardDuty": {
@@ -2232,11 +2195,6 @@
                 "sed -i 's/alllogging/",
                 {
                   "Ref": "S3BucketAll"
-                },
-                "/' /var/ossec/etc/ossec.conf\n",
-                "sed -i 's/cloudtraillogging/",
-                {
-                  "Ref": "S3BucketCloudTrail"
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
                 "sed -i 's/guarddutylogging/",
