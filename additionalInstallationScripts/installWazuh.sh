@@ -166,8 +166,8 @@ add_aws_config() {
         <secret_key>insert_secret_key</secret_key>
     </service>
     <bucket type="custom">
-      <name>macielogging</name>
-      <path>firehose</path>
+      <name>alllogging</name>
+      <path>macie</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>

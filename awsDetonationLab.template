@@ -735,7 +735,7 @@
     },
     "FirehosedeliverystreamMacie": {
       "DependsOn": [
-        "firehosedeliveryPolicyGuardDuty"
+        "firehosedeliveryPolicyAll"
       ],
       "Type": "AWS::KinesisFirehose::DeliveryStream",
       "Properties": {
@@ -746,7 +746,7 @@
               [
                 "arn:aws:s3:::",
                 {
-                  "Ref": "S3BucketMacie"
+                  "Ref": "S3BucketAll"
                 }
               ]
             ]
@@ -756,10 +756,10 @@
             "SizeInMBs": "5"
           },
           "CompressionFormat": "UNCOMPRESSED",
-          "Prefix": "firehose/",
+          "Prefix": "macie/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehosedeliveryRoleMacie",
+              "firehosedeliveryRoleAll",
               "Arn"
             ]
           },
@@ -875,29 +875,6 @@
                       "arn:aws:s3:::",
                       {
                         "Ref": "S3BucketAll"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketMacie"
-                      },
-                      "/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketMacie"
                       }
                     ]
                   ]
@@ -1436,11 +1413,6 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {}
     },
-    "S3BucketMacie": {
-      "DeletionPolicy": "Retain",
-      "Type": "AWS::S3::Bucket",
-      "Properties": {}
-    },
     "S3BucketPolicyAll": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
@@ -1532,60 +1504,6 @@
               }
             },
             {
-              "Sid": "AWSAllWrite",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "macie.amazonaws.com"
-                ]
-              },
-              "Action": "s3:PutObject",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Ref": "S3BucketAll"
-                    },
-                    "/*"
-                  ]
-                ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    "S3BucketPolicyMacie": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Properties": {
-        "Bucket": {
-          "Ref": "S3BucketMacie"
-        },
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "AWSMacieAclCheck",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "macie.amazonaws.com"
-              },
-              "Action": "s3:GetBucketAcl",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Ref": "S3BucketMacie"
-                    }
-                  ]
-                ]
-              }
-            },
-            {
               "Sid": "AWSmacieWrite",
               "Effect": "Allow",
               "Principal": {
@@ -1598,9 +1516,9 @@
                   [
                     "arn:aws:s3:::",
                     {
-                      "Ref": "S3BucketMacie"
+                      "Ref": "S3BucketAll"
                     },
-                    "/AWSLogs/",
+                    "/macie/AWSLogs/",
                     {
                       "Ref": "AWS::AccountId"
                     },
@@ -1969,58 +1887,6 @@
         ]
       }
     },
-    "firehosedeliveryPolicyMacie": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "firehose_delivery_policy_Macie",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:AbortMultipartUpload",
-                "s3:GetBucketLocation",
-                "s3:GetObject",
-                "s3:ListBucket",
-                "s3:ListBucketMultipartUploads",
-                "s3:PutObject"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketMacie"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketMacie"
-                      },
-                      "*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "firehosedeliveryRoleMacie"
-          }
-        ]
-      }
-    },
     "wazuh": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
@@ -2054,11 +1920,6 @@
                 "sed -i 's/alllogging/",
                 {
                   "Ref": "S3BucketAll"
-                },
-                "/' /var/ossec/etc/ossec.conf\n",
-                "sed -i 's/macielogging/",
-                {
-                  "Ref": "S3BucketMacie"
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
                 "sed -i 's/vpcflowlogging/",
@@ -2176,7 +2037,8 @@
         "EventPattern": {
           "source": [
             "aws.guardduty",
-            "aws.iam"
+            "aws.iam",
+            "aws.macie"
           ]
         },
         "RoleArn": {
@@ -2216,32 +2078,9 @@
                 "Arn"
               ]
             }
-          }
-        ]
-      }
-    },
-    "CloudwatchEventRuleMacie": {
-      "DependsOn": [
-        "cloudwatchEventsInvokeKinesisTargetRole"
-      ],
-      "Type": "AWS::Events::Rule",
-      "Properties": {
-        "Description": "Events Rule with KinesisParameters",
-        "EventPattern": {
-          "source": [
-            "aws.macie"
-          ]
-        },
-        "RoleArn": {
-          "Fn::GetAtt": [
-            "cloudwatchEventsInvokeKinesisTargetRole",
-            "Arn"
-          ]
-        },
-        "State": "ENABLED",
-        "Targets": [
+          },
           {
-            "Id": "Id123",
+            "Id": "Id125",
             "Arn": {
               "Fn::GetAtt": [
                 "FirehosedeliverystreamMacie",
@@ -2301,37 +2140,14 @@
                     "FirehosedeliverystreamIAM",
                     "Arn"
                   ]
+                },
+                {
+                  "Fn::GetAtt": [
+                    "FirehosedeliverystreamMacie",
+                    "Arn"
+                  ]
                 }
               ]
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "cloudwatchEventsInvokeKinesisTargetRole"
-          }
-        ]
-      }
-    },
-    "cloudwatchEventsInvokeKinesisTargetPolicyMacie": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "firehose_delivery_policy_EventsInvoke-macie",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "firehose:PutRecord",
-                "firehose:PutRecordBatch"
-              ],
-              "Resource": {
-                "Fn::GetAtt": [
-                  "FirehosedeliverystreamMacie",
-                  "Arn"
-                ]
-              }
             }
           ]
         },
@@ -2401,31 +2217,6 @@
         }
       }
     },
-    "firehosedeliveryRoleMacie": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "firehose.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    }
   },
   "Conditions": {
     "GovCloudCondition": {
