@@ -663,7 +663,7 @@
     },
     "FirehosedeliverystreamGuardDuty": {
       "DependsOn": [
-        "firehosedeliveryPolicyGuardDuty"
+        "firehosedeliveryPolicyAll"
       ],
       "Type": "AWS::KinesisFirehose::DeliveryStream",
       "Properties": {
@@ -674,7 +674,7 @@
               [
                 "arn:aws:s3:::",
                 {
-                  "Ref": "S3BucketGuardDuty"
+                  "Ref": "S3BucketAll"
                 }
               ]
             ]
@@ -684,10 +684,10 @@
             "SizeInMBs": "5"
           },
           "CompressionFormat": "UNCOMPRESSED",
-          "Prefix": "firehose/",
+          "Prefix": "guardduty/",
           "RoleARN": {
             "Fn::GetAtt": [
-              "firehosedeliveryRoleGuardDuty",
+              "firehosedeliveryRoleAll",
               "Arn"
             ]
           },
@@ -856,29 +856,6 @@
                 "s3:*"
               ],
               "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketGuardDuty"
-                      },
-                      "/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketGuardDuty"
-                      }
-                    ]
-                  ]
-                },
                 {
                   "Fn::Join": [
                     "",
@@ -1482,11 +1459,6 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {}
     },
-    "S3BucketGuardDuty": {
-      "DeletionPolicy": "Retain",
-      "Type": "AWS::S3::Bucket",
-      "Properties": {}
-    },
     "S3BucketIAM": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
@@ -1559,11 +1531,39 @@
               }
             },
             {
+              "Sid": "AWSGuardDutyWrite",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "guardduty.amazonaws.com"
+              },
+              "Action": "s3:PutObject",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "S3BucketAll"
+                    },
+                    "/guardduty/AWSLogs/",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Condition": {
+                "StringEquals": {
+                  "s3:x-amz-acl": "bucket-owner-full-control"
+                }
+              }
+            },
+            {
               "Sid": "AWSAllWrite",
               "Effect": "Allow",
               "Principal": {
                 "Service": [
-                  "guardduty.amazonaws.com",
                   "macie.amazonaws.com"
                 ]
               },
@@ -1579,67 +1579,6 @@
                     "/*"
                   ]
                 ]
-              }
-            }
-          ]
-        }
-      }
-    },
-    "S3BucketPolicyGuardDuty": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Properties": {
-        "Bucket": {
-          "Ref": "S3BucketGuardDuty"
-        },
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "AWSGuardDutyAclCheck",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "guardduty.amazonaws.com"
-              },
-              "Action": "s3:GetBucketAcl",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Ref": "S3BucketGuardDuty"
-                    }
-                  ]
-                ]
-              }
-            },
-            {
-              "Sid": "AWSGuardDutyWrite",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "guardduty.amazonaws.com"
-              },
-              "Action": "s3:PutObject",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::",
-                    {
-                      "Ref": "S3BucketGuardDuty"
-                    },
-                    "/AWSLogs/",
-                    {
-                      "Ref": "AWS::AccountId"
-                    },
-                    "/*"
-                  ]
-                ]
-              },
-              "Condition": {
-                "StringEquals": {
-                  "s3:x-amz-acl": "bucket-owner-full-control"
-                }
               }
             }
           ]
@@ -2006,10 +1945,10 @@
         "S3KeyPrefix": "cloudtrail"
       }
     },
-    "firehosedeliveryPolicyGuardDuty": {
+    "firehosedeliveryPolicyAll": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "firehose_delivery_policy_GuardDuty",
+        "PolicyName": "firehose_delivery_policy_All",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -2030,7 +1969,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "S3BucketGuardDuty"
+                        "Ref": "S3BucketAll"
                       }
                     ]
                   ]
@@ -2041,7 +1980,7 @@
                     [
                       "arn:aws:s3:::",
                       {
-                        "Ref": "S3BucketGuardDuty"
+                        "Ref": "S3BucketAll"
                       },
                       "*"
                     ]
@@ -2053,7 +1992,7 @@
         },
         "Roles": [
           {
-            "Ref": "firehosedeliveryRoleGuardDuty"
+            "Ref": "firehosedeliveryRoleAll"
           }
         ]
       }
@@ -2197,11 +2136,6 @@
                   "Ref": "S3BucketAll"
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
-                "sed -i 's/guarddutylogging/",
-                {
-                  "Ref": "S3BucketGuardDuty"
-                },
-                "/' /var/ossec/etc/ossec.conf\n",
                 "sed -i 's/iamlogging/",
                 {
                   "Ref": "S3BucketIAM"
@@ -2317,7 +2251,7 @@
         "Path": "/"
       }
     },
-    "CloudwatchEventRuleGuardduty": {
+    "CloudwatchEventRuleAll": {
       "DependsOn": [
         "cloudwatchEventsInvokeKinesisTargetRole"
       ],
@@ -2449,10 +2383,10 @@
         }
       }
     },
-    "cloudwatchEventsInvokeKinesisTargetPolicyGuardDuty": {
+    "cloudwatchEventsInvokeKinesisTargetPolicyAll": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "firehose_delivery_policy_EventsInvoke-guardduty",
+        "PolicyName": "firehose_delivery_policy_EventsInvoke-All",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -2462,12 +2396,14 @@
                 "firehose:PutRecord",
                 "firehose:PutRecordBatch"
               ],
-              "Resource": {
-                "Fn::GetAtt": [
-                  "FirehosedeliverystreamGuardDuty",
-                  "Arn"
-                ]
-              }
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "FirehosedeliverystreamGuardDuty",
+                    "Arn"
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -2545,7 +2481,7 @@
         }
       }
     },
-    "firehosedeliveryRoleGuardDuty": {
+    "firehosedeliveryRoleAll": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
