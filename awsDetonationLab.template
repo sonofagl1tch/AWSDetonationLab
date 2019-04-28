@@ -773,9 +773,17 @@
       "Type": "AWS::EC2::FlowLog",
       "Properties": {
         "LogDestination": {
-          "Fn::GetAtt": [
-            "S3BucketVPCflow",
-            "Arn"
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::GetAtt": [
+                  "S3BucketAll",
+                  "Arn"
+                ]
+              },
+              "/vpc"
+            ]
           ]
         },
         "LogDestinationType": "s3",
@@ -875,29 +883,6 @@
                       "arn:aws:s3:::",
                       {
                         "Ref": "S3BucketAll"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketVPCflow"
-                      },
-                      "/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketVPCflow"
                       }
                     ]
                   ]
@@ -1411,7 +1396,17 @@
     "S3BucketAll": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
-      "Properties": {}
+      "Properties": {
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Prefix": "vpc/",
+              "Status": "Enabled",
+              "ExpirationInDays": 7
+            }
+          ]
+        }
+      }
     },
     "S3BucketPolicyAll": {
       "Type": "AWS::S3::BucketPolicy",
@@ -1531,20 +1526,6 @@
                   "s3:x-amz-acl": "bucket-owner-full-control"
                 }
               }
-            }
-          ]
-        }
-      }
-    },
-    "S3BucketVPCflow": {
-      "DeletionPolicy": "Retain",
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "LifecycleConfiguration": {
-          "Rules": [
-            {
-              "Status": "Enabled",
-              "ExpirationInDays": 7
             }
           ]
         }
@@ -1920,11 +1901,6 @@
                 "sed -i 's/alllogging/",
                 {
                   "Ref": "S3BucketAll"
-                },
-                "/' /var/ossec/etc/ossec.conf\n",
-                "sed -i 's/vpcflowlogging/",
-                {
-                  "Ref": "S3BucketVPCflow"
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
                 "sed -i 's/insert_access_key/",
