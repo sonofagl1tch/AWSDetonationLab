@@ -1477,6 +1477,11 @@
         ]
       }
     },
+    "S3BucketAll": {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "Properties": {}
+    },
     "S3BucketCloudTrail": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
@@ -1496,6 +1501,66 @@
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
       "Properties": {}
+    },
+    "S3BucketPolicyAll": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "S3BucketAll"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AWSAllAclCheck",
+              "Effect": "Allow",
+              "Action": "s3:GetBucketAcl",
+              "Principal": {
+                "Service": [
+                  "cloudtrail.amazonaws.com",
+                  "guardduty.amazonaws.com",
+                  "macie.amazonaws.com"
+                ]
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "S3BucketAll"
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              "Sid": "AWSAllWrite",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "cloudtrail.amazonaws.com",
+                  "guardduty.amazonaws.com",
+                  "macie.amazonaws.com"
+                ]
+              },
+              "Action": "s3:PutObject",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "S3BucketAll"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      }
     },
     "S3BucketPolicyCloudTrail": {
       "Type": "AWS::S3::BucketPolicy",
@@ -2164,6 +2229,11 @@
                 "wget -O /home/ec2-user/install https://raw.githubusercontent.com/sonofagl1tch/AWSDetonationLab/master/additionalInstallationScripts/installWazuh.sh\n",
                 "chmod +x /home/ec2-user/install\n",
                 "bash /home/ec2-user/install -u false\n",
+                "sed -i 's/alllogging/",
+                {
+                  "Ref": "S3BucketAll"
+                },
+                "/' /var/ossec/etc/ossec.conf\n",
                 "sed -i 's/cloudtraillogging/",
                 {
                   "Ref": "S3BucketCloudTrail"
