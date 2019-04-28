@@ -699,7 +699,7 @@
     },
     "FirehosedeliverystreamIAM": {
       "DependsOn": [
-        "firehosedeliveryPolicyIAM"
+        "firehosedeliveryPolicyAll"
       ],
       "Type": "AWS::KinesisFirehose::DeliveryStream",
       "Properties": {
@@ -710,7 +710,7 @@
               [
                 "arn:aws:s3:::",
                 {
-                  "Ref": "S3BucketIAM"
+                  "Ref": "S3BucketAll"
                 }
               ]
             ]
@@ -720,7 +720,7 @@
             "SizeInMBs": "5"
           },
           "CompressionFormat": "UNCOMPRESSED",
-          "Prefix": "firehose/",
+          "Prefix": "iam/",
           "RoleARN": {
             "Fn::GetAtt": [
               "firehosedeliveryRoleIAM",
@@ -898,29 +898,6 @@
                       "arn:aws:s3:::",
                       {
                         "Ref": "S3BucketMacie"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketIAM"
-                      },
-                      "/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketIAM"
                       }
                     ]
                   ]
@@ -1459,11 +1436,6 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {}
     },
-    "S3BucketIAM": {
-      "DeletionPolicy": "Retain",
-      "Type": "AWS::S3::Bucket",
-      "Properties": {}
-    },
     "S3BucketMacie": {
       "DeletionPolicy": "Retain",
       "Type": "AWS::S3::Bucket",
@@ -1997,58 +1969,6 @@
         ]
       }
     },
-    "firehosedeliveryPolicyIAM": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "firehose_delivery_policy_IAM",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "s3:AbortMultipartUpload",
-                "s3:GetBucketLocation",
-                "s3:GetObject",
-                "s3:ListBucket",
-                "s3:ListBucketMultipartUploads",
-                "s3:PutObject"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketIAM"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::",
-                      {
-                        "Ref": "S3BucketIAM"
-                      },
-                      "*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "firehosedeliveryRoleIAM"
-          }
-        ]
-      }
-    },
     "firehosedeliveryPolicyMacie": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
@@ -2134,11 +2054,6 @@
                 "sed -i 's/alllogging/",
                 {
                   "Ref": "S3BucketAll"
-                },
-                "/' /var/ossec/etc/ossec.conf\n",
-                "sed -i 's/iamlogging/",
-                {
-                  "Ref": "S3BucketIAM"
                 },
                 "/' /var/ossec/etc/ossec.conf\n",
                 "sed -i 's/macielogging/",
@@ -2260,7 +2175,8 @@
         "Description": "Events Rule with KinesisParameters",
         "EventPattern": {
           "source": [
-            "aws.guardduty"
+            "aws.guardduty",
+            "aws.iam"
           ]
         },
         "RoleArn": {
@@ -2285,32 +2201,9 @@
                 "Arn"
               ]
             }
-          }
-        ]
-      }
-    },
-    "CloudwatchEventRuleIam": {
-      "DependsOn": [
-        "cloudwatchEventsInvokeKinesisTargetRole"
-      ],
-      "Type": "AWS::Events::Rule",
-      "Properties": {
-        "Description": "Events Rule with KinesisParameters",
-        "EventPattern": {
-          "source": [
-            "aws.iam"
-          ]
-        },
-        "RoleArn": {
-          "Fn::GetAtt": [
-            "cloudwatchEventsInvokeKinesisTargetRole",
-            "Arn"
-          ]
-        },
-        "State": "ENABLED",
-        "Targets": [
+          },
           {
-            "Id": "Id123",
+            "Id": "Id124",
             "Arn": {
               "Fn::GetAtt": [
                 "FirehosedeliverystreamIAM",
@@ -2402,6 +2295,12 @@
                     "FirehosedeliverystreamGuardDuty",
                     "Arn"
                   ]
+                },
+                {
+                  "Fn::GetAtt": [
+                    "FirehosedeliverystreamIAM",
+                    "Arn"
+                  ]
                 }
               ]
             }
@@ -2430,35 +2329,6 @@
               "Resource": {
                 "Fn::GetAtt": [
                   "FirehosedeliverystreamMacie",
-                  "Arn"
-                ]
-              }
-            }
-          ]
-        },
-        "Roles": [
-          {
-            "Ref": "cloudwatchEventsInvokeKinesisTargetRole"
-          }
-        ]
-      }
-    },
-    "cloudwatchEventsInvokeKinesisTargetPolicyIAM": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "firehose_delivery_policy_EventsInvoke-iam",
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "firehose:PutRecord",
-                "firehose:PutRecordBatch"
-              ],
-              "Resource": {
-                "Fn::GetAtt": [
-                  "FirehosedeliverystreamIAM",
                   "Arn"
                 ]
               }

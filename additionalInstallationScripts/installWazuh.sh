@@ -156,8 +156,8 @@ add_aws_config() {
       <secret_key>insert_secret_key</secret_key>
     </bucket>
     <bucket type="custom">
-      <name>iamlogging</name>
-      <path>firehose</path>
+      <name>alllogging</name>
+      <path>iam</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
