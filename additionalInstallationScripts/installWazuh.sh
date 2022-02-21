@@ -144,19 +144,20 @@ add_aws_config() {
     <run_on_start>yes</run_on_start>
     <skip_on_error>yes</skip_on_error>
     <bucket type="cloudtrail">
-    <name>cloudtraillogging</name>
+    <name>alllogging</name>
+    <path>cloudtrail</path>
     <access_key>insert_access_key</access_key>
     <secret_key>insert_secret_key</secret_key>
     </bucket>
     <bucket type="custom">
-      <name>guarddutylogging</name>
-      <path>firehose</path>
+      <name>alllogging</name>
+      <path>guardduty</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
     <bucket type="custom">
-      <name>iamlogging</name>
-      <path>firehose</path>
+      <name>alllogging</name>
+      <path>iam</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
@@ -165,13 +166,14 @@ add_aws_config() {
         <secret_key>insert_secret_key</secret_key>
     </service>
     <bucket type="custom">
-      <name>macielogging</name>
-      <path>firehose</path>
+      <name>alllogging</name>
+      <path>macie</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
     <bucket type="vpcflow">
-      <name>vpcflowlogging</name>
+      <name>alllogging</name>
+      <path>vpc</path>
       <access_key>insert_access_key</access_key>
       <secret_key>insert_secret_key</secret_key>
     </bucket>
